@@ -3,7 +3,13 @@ public struct Resource<Content, Failure: Error> {
     public var isLoading: Bool
     public var error: Failure?
 
-    public init(content: Content? = nil) {
+    public init(content: Content? = nil, isLoading: Bool = false, error: Failure? = nil) {
+        self.content = content
+        self.isLoading = isLoading
+        self.error = error
+    }
+
+    public init(content: Content) {
         self.content = content
         self.isLoading = false
         self.error = nil
