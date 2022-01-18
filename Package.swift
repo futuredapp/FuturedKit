@@ -14,7 +14,7 @@ let package = Package(
         .library(
             name: "FuturedKit",
             targets: ["FuturedKit"]
-        ),
+        )
     ],
     targets: [
         .target(
@@ -24,6 +24,6 @@ let package = Package(
         .testTarget(
             name: "FuturedKitTests",
             dependencies: ["FuturedKit"]
-        ),
+        )
     ]
 )
