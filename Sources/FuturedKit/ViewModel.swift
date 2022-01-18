@@ -65,7 +65,7 @@ public typealias ViewModelProtocol = DynamicProperty
 @propertyWrapper
 public struct ViewModel<VM: ViewModelProtocol>: DynamicProperty {
     public private(set) var wrappedValue: VM
-    
+
     /// Creates new view model property wrapper with a wrapped value of concrete
     /// view model.
     /// - Parameter wrappedValue: Concrete view model conforming
