@@ -16,7 +16,7 @@ public struct Resource<Content, Failure: Error> {
     public var isLoading: Bool
     /// Optional strongly-typed error which occured during the load or refresh.
     public var error: Failure?
-    
+
     /// Created a new resource.
     /// - Parameters:
     ///   - content: Optional content. Default value is `nil`.
