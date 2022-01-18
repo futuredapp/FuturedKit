@@ -33,4 +33,3 @@ public struct Resource<Content, Failure: Error> {
         error != nil
     }
 }
-

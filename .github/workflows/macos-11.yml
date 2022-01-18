@@ -1,0 +1,23 @@
+name: macOS 11
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  test:
+    runs-on: macos-11
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Lint
+      run: |
+        swiftlint --strict
+    - name: Swift build & test
+      run: |
+        swift build
+        swift test
