@@ -54,7 +54,7 @@ public struct Resource<Content, Failure: Error> {
     ///
     /// ## Discussion
     ///
-    /// Te flag is set to true when the resource is loading and has some content.
+    /// The flag is set to true when the resource is loading and has some content.
     public var isRefreshing: Bool {
         isLoading && hasContent
     }
