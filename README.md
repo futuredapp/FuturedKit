@@ -5,8 +5,6 @@ SwiftUI state management tools, resources and views used by Futured.
 ## Features
 
 - State management
-  - `ViewState` protocol for separation of state and presentation.
-    and logic from the view.
   - `Resource` modelling states for asynchronously loaded data
     including errors, loading and refreshing.
 - Views
