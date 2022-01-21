@@ -3,7 +3,7 @@
 ///
 /// ## Overview
 ///
-/// States are not exlusive, you can even have error and content
+/// States are not exclusive, you can even have error and content
 /// if its required to represent error which happened during
 /// refreshing.
 ///
