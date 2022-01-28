@@ -11,6 +11,14 @@ SwiftUI state management tools, resources and views used by Futured.
 - Views
   - `AnyShape` type-erased view for cases where you need to change the shape
     easily by using ternary operator.
+    
+## Installation
+
+When using Swift package manager install using or add following line to your dependencies:
+
+```swift
+.package(url: "https://github.com/futuredapp/FuturedKit.git", from: "0.4.0")
+```
 
 ## Contributions
 
