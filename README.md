@@ -7,6 +7,7 @@ SwiftUI state management tools, resources and views used by Futured.
 - State management
   - `Resource` modelling states for asynchronously loaded data
     including errors, loading and refreshing.
+  - `ViewState` typealias representing view state.
 - Views
   - `AnyShape` type-erased view for cases where you need to change the shape
     easily by using ternary operator.
