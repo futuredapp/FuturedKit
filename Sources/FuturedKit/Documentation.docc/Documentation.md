@@ -12,3 +12,7 @@ SwiftUI state management tools, resources and views used by Futured.
 ### Views
 
 - ``AnyShape``
+
+### Navigation
+
+- ``NavigationLinks`
