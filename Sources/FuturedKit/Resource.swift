@@ -28,28 +28,6 @@ public struct Resource<Content, Failure: Error> {
         self.error = error
     }
 
-    /// Created a new resource with pre-loaded content.
-    ///
-    /// ## Discussion
-    ///
-    /// Loading flag will be set to false and error will be set to `nil`.
-    public init(content: Content) {
-        self.content = content
-        self.isLoading = false
-        self.error = nil
-    }
-
-    /// Created a new resource with error.
-    ///
-    /// ## Discussion
-    ///
-    /// Loading flag will be set to false and content will be set to `nil`.
-    public init(error: Failure) {
-        self.content = nil
-        self.isLoading = false
-        self.error = error
-    }
-
     /// Read-only flag representing if the content is refreshing.
     ///
     /// ## Discussion
