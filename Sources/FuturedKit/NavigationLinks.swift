@@ -1,6 +1,7 @@
 import SwiftUI
 ///
-/// ViewModifier and protocol for creating and handling NavigationLinks
+/// ViewModifier and protocol for creating and handling NavigationLinks.
+/// Use ``NavigationLinks`` protocol to define push navigation destinations and create its `NavigationLink`.
 ///
 /// ```swift
 /// enum HomeLinks: NavigationLinks {
@@ -22,8 +23,7 @@ import SwiftUI
 ///     }
 /// }
 /// ```
-
-/// Protocol, by which you should specify and create links to different destinations
+///
 public protocol NavigationLinks: Hashable {
     func link<Destination: View>(to destination: Destination, selection: Binding<Self?>) -> NavigationLink<EmptyView, Destination>
 }

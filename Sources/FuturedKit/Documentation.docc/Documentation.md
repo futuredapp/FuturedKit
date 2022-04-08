@@ -15,4 +15,4 @@ SwiftUI state management tools, resources and views used by Futured.
 
 ### Navigation
 
-- ``NavigationLinks`
+- ``NavigationLinks``
