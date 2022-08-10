@@ -16,10 +16,13 @@ let package = Package(
             targets: ["FuturedKit"]
         )
     ],
+    dependencies: [
+        .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0")
+    ],
     targets: [
         .target(
             name: "FuturedKit",
-            dependencies: []
+            dependencies: [.product(name: "BindingKit", package: "BindingKit")]
         ),
         .testTarget(
             name: "FuturedKitTests",
