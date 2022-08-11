@@ -23,7 +23,7 @@ public struct CameraImagePicker: View {
         let message: String
         let dismissButtonTitle: String
         let settingsButtonTitle: String
-    
+
         /// Creates an permission alert configuration.
         /// - Parameters:
         ///   - title: The title of the alert.

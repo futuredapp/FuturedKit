@@ -47,7 +47,10 @@ public struct WrappedUIImagePicker: UIViewControllerRepresentable {
             self.didFinishPicking = didFinishPicking
         }
 
-        public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        public func imagePickerController(
+            _ picker: UIImagePickerController,
+            didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+        ) {
             didFinishPicking(info)
         }
     }
