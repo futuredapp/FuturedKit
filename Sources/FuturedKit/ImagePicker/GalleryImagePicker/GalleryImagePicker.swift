@@ -62,7 +62,7 @@ public struct GalleryImagePicker: View {
     }
 }
 
-extension NSItemProvider {
+private extension NSItemProvider {
     enum LoadImageError: Error {
         case castToImageFailed
     }
