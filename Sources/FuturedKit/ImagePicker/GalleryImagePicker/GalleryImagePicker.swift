@@ -1,6 +1,7 @@
 #if canImport(UIKit)
 
 import BindingKit
+import CollectionConcurrencyKit
 import SwiftUI
 import PhotosUI
 
