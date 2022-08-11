@@ -9,7 +9,7 @@ final class PublisherResultTests: XCTestCase {
             case .success(let success):
                 XCTAssertTrue(success)
             case .failure:
-                XCTFail()
+                XCTFail("Result should be success")
             }
         }
     }
@@ -18,7 +18,7 @@ final class PublisherResultTests: XCTestCase {
         _ = Fail<Void, MockError>(error: MockError.failed).result().sink { result in
             switch result {
             case .success:
-                XCTFail()
+                XCTFail("Result should be failure")
             case .failure(let error):
                 XCTAssertEqual(error, MockError.failed)
             }

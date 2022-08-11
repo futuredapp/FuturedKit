@@ -2,7 +2,8 @@ import SwiftUI
 ///
 /// ## Overview
 ///
-/// Use ``NavigationLinks`` to define all the possibilities of push navigation for a certain view and create its `NavigationLink` in one place of your view.
+/// Use ``NavigationLinks`` to define all the possibilities of push navigation
+/// for a certain view and create its `NavigationLink` in one place of your view.
 ///
 /// ```swift
 /// enum HomeLinks: NavigationLinks {
@@ -29,11 +30,17 @@ import SwiftUI
 /// Use ``NavigationLinks`` protocol to define push navigation destinations and create its `NavigationLink`.
 ///
 public protocol NavigationLinks: Hashable {
-    func link<Destination: View>(to destination: Destination, selection: Binding<Self?>) -> NavigationLink<EmptyView, Destination>
+    func link<Destination: View>(
+        to destination: Destination,
+        selection: Binding<Self?>
+    ) -> NavigationLink<EmptyView, Destination>
 }
 
 public extension NavigationLinks {
-    func link<Destination: View>(to destination: Destination, selection: Binding<Self?>) -> NavigationLink<EmptyView, Destination> {
+    func link<Destination: View>(
+        to destination: Destination,
+        selection: Binding<Self?>
+    ) -> NavigationLink<EmptyView, Destination> {
         NavigationLink(destination: destination, tag: self, selection: selection, label: EmptyView.init)
     }
 }
