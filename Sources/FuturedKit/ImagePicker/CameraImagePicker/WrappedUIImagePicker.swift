@@ -12,9 +12,10 @@ public struct WrappedUIImagePicker: UIViewControllerRepresentable {
     private let didFinishPickingMediaWithInfo: ([UIImagePickerController.InfoKey: Any]) -> Void
     private let setup: ((UIImagePickerController) -> Void)?
     
-    /// Creates a wrapped `UIImagePickerController`.
+    /// Creates a wrapped `UIImagePickerController` with the handler for data processing and additional
+    /// view controller setup.
     /// - Parameters:
-    ///   - didFinishPickingMediaWithInfo: The closure which process data obtained
+    ///   - didFinishPickingMediaWithInfo: The handler which process data obtained
     ///   by `imagePickerController(_:didFinishPickingMediaWithInfo:)` delegate method.
     ///   - setup: The closure for additional view controller setup.
     public init(
