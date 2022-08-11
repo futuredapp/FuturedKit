@@ -53,6 +53,7 @@ public struct GalleryImagePicker: View {
     }
     
     private func handlePickerResult(_ results: [PHPickerResult]) {
+        presentationMode.wrappedValue.dismiss()
         Task {
             selection = try await results.map(\.itemProvider).concurrentMap { item in
                 try await item.loadImage()
