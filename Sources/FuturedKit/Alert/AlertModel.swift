@@ -56,15 +56,15 @@ public struct AlertModel: Identifiable {
         /// It provides two custom buttons, specified by `primary` and `secondary` parameters.
         case custom(primary: Alert.Button, secondary: Alert.Button)
     }
-    
+
     public var id: String? {
         title + (message ?? "")
     }
-    
+
     let title: String
     let message: String?
     let action: Action
-    
+
     /// Creates an alert model.
     /// - Parameters:
     ///   - title: The title of the alert.

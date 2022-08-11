@@ -14,16 +14,16 @@ public struct CameraImagePicker: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding private var selection: UIImage?
     @State private var permissionAlertModel: AlertModel?
-    
+
     private let cameraPermissionAlertConfiguration: CameraPermissionAlertConfiguration
-    
+
     /// A configuration for unauthorized permission alert.
     public struct CameraPermissionAlertConfiguration {
         let title: String
         let message: String
         let dismissButtonTitle: String
         let settingsButtonTitle: String
-        
+    
         /// Creates an permission alert configuration.
         /// - Parameters:
         ///   - title: The title of the alert.
@@ -42,7 +42,7 @@ public struct CameraImagePicker: View {
             self.settingsButtonTitle = settingsButtonTitle
         }
     }
-    
+
     /// Creates a picker that selects an item and configures alert in camera permission status is unauthorized.
     /// - Parameters:
     ///   - selection: The selected photo.
@@ -54,7 +54,7 @@ public struct CameraImagePicker: View {
         self._selection = selection
         self.cameraPermissionAlertConfiguration = cameraPermissionAlertConfiguration
     }
-    
+
     public var body: some View {
         WrappedUIImagePicker(didFinishPickingMediaWithInfo: handlePickerResult) { viewController in
             viewController.sourceType = .camera
@@ -63,7 +63,7 @@ public struct CameraImagePicker: View {
         .onAppear(perform: checkCameraAuthorizationStatus)
         .alert(model: $permissionAlertModel)
     }
-    
+
     private var cameraPermissionAlert: AlertModel {
         AlertModel(
             title: cameraPermissionAlertConfiguration.title,
@@ -80,17 +80,17 @@ public struct CameraImagePicker: View {
             )
         )
     }
-    
+
     private func dismiss() {
         presentationMode.wrappedValue.dismiss()
     }
-    
+
     private func goToSettings() {
         if let url = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(url)
         }
     }
-    
+
     private func checkCameraAuthorizationStatus() {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -111,7 +111,7 @@ public struct CameraImagePicker: View {
             assertionFailure("Unknown state")
         }
     }
-    
+
     private func handlePickerResult(with info: [UIImagePickerController.InfoKey: Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             selection = image

@@ -15,9 +15,9 @@ import PhotosUI
 public struct GalleryImagePicker: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding private var selection: [UIImage]
-    
+
     private let selectionLimit: Int
-    
+
     /// Creates a picker that selects an images which count is specified by `selection` parameter.
     /// - Parameters:
     ///   - selection: The selected images.
@@ -26,7 +26,7 @@ public struct GalleryImagePicker: View {
         self._selection = selection
         self.selectionLimit = selectionLimit
     }
-    
+
     /// Creates a picker that selects an image.
     /// - Parameters:
     ///   - selection: The selected images.
@@ -39,19 +39,19 @@ public struct GalleryImagePicker: View {
         }
         self.selectionLimit = 1
     }
-    
+
     public var body: some View {
         WrappedPHPicker(configuration: configuration, didFinishPicking: handlePickerResult)
             .edgesIgnoringSafeArea(.all)
     }
-    
+
     private var configuration: PHPickerConfiguration {
         var configuration = PHPickerConfiguration()
         configuration.filter = .images
         configuration.selectionLimit = selectionLimit
         return configuration
     }
-    
+
     private func handlePickerResult(_ results: [PHPickerResult]) {
         presentationMode.wrappedValue.dismiss()
         Task {
@@ -66,7 +66,7 @@ extension NSItemProvider {
     enum LoadImageError: Error {
         case castToImageFailed
     }
-    
+
     func loadImage() async throws -> UIImage {
         guard canLoadObject(ofClass: UIImage.self) else {
             throw NSError()

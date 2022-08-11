@@ -2,11 +2,11 @@ import SwiftUI
 
 private struct AlertModifier: ViewModifier {
     @Binding var model: AlertModel?
-    
+
     init(_ model: Binding<AlertModel?>) {
         self._model = model
     }
-    
+
     func body(content: Content) -> some View {
         content.alert(item: $model) { model -> Alert in
             switch model.action {
