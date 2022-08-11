@@ -12,6 +12,8 @@ SwiftUI state management tools, resources and views used by Futured.
 ### Views
 
 - ``AnyShape``
+- ``WrappedUIImagePicker``
+- ``CameraImagePicker``
 
 ### Alert presentation
 
