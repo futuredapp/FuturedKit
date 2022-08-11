@@ -9,6 +9,7 @@ import SwiftUI
 ///
 /// Camera image picker uses ``WrappedUIImagePicker`` and automatically shows the alert if camera permission is camera
 /// permission status is unauthorized.
+/// After selection is the view automatically dismissed.
 public struct CameraImagePicker: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding private var selection: UIImage?
