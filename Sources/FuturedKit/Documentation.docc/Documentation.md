@@ -20,3 +20,7 @@ SwiftUI state management tools, resources and views used by Futured.
 ### Alert presentation
 
 - ``AlertModel``
+
+### Navigation
+
+- ``NavigationLinks``

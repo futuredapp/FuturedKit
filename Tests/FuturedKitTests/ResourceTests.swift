@@ -15,7 +15,7 @@ final class ResourceTests: XCTestCase {
     }
 
     func testHasFailed() {
-        let resource = Resource<Bool, Error>(error: ResourceMockError.failed)
+        let resource = Resource<Bool, Error>(error: MockError.failed)
         XCTAssertTrue(resource.hasFailed)
     }
 
