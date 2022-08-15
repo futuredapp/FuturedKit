@@ -31,7 +31,7 @@ final class PublisherResourceTests: XCTestCase {
     }
 
     func testFailureHasFailed() {
-        _ = Fail(outputType: Bool.self, failure: ResourceMockError.failed)
+        _ = Fail(outputType: Bool.self, failure: MockError.failed)
             .resource()
             .sink { resource in
                 XCTAssertTrue(resource.hasFailed)
@@ -39,7 +39,7 @@ final class PublisherResourceTests: XCTestCase {
     }
 
     func testFailureHasNoContent() {
-        _ = Fail(outputType: Bool.self, failure: ResourceMockError.failed)
+        _ = Fail(outputType: Bool.self, failure: MockError.failed)
             .resource()
             .sink { resource in
                 XCTAssertFalse(resource.hasContent)
@@ -47,7 +47,7 @@ final class PublisherResourceTests: XCTestCase {
     }
 
     func testFailureContentIsNil() {
-        _ = Fail(outputType: Bool.self, failure: ResourceMockError.failed)
+        _ = Fail(outputType: Bool.self, failure: MockError.failed)
             .resource()
             .sink { resource in
                 XCTAssertEqual(nil, resource.content)
@@ -55,7 +55,7 @@ final class PublisherResourceTests: XCTestCase {
     }
 
     func testFailureIsNotLoading() {
-        _ = Fail(outputType: Bool.self, failure: ResourceMockError.failed)
+        _ = Fail(outputType: Bool.self, failure: MockError.failed)
             .resource()
             .sink { resource in
                 XCTAssertFalse(resource.isLoading)
