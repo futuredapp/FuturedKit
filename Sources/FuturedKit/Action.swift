@@ -4,14 +4,26 @@
 ///
 /// This is ideal for observing state of remote action in any app.
 public enum Action<Failure: Error>: AsynchronousOperation {
-    case inactive, loading, success, failure(Failure?)
+    case inactive, loading, success, failure(Failure)
 
     public var isLoading: Bool {
         self == .loading
     }
 
+    public var error: Failure? {
+        if case .failure(let error) = self {
+            return error
+        } else {
+            return nil
+        }
+    }
+
     public var hasFailed: Bool {
-        self == .failure(Error.self as? Failure)
+        if case .failure = self {
+            return true
+        } else {
+            return false
+        }
     }
 }
 
