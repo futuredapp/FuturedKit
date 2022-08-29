@@ -6,7 +6,9 @@ SwiftUI state management tools, resources and views used by Futured.
 
 ### State management
 
-- ``Resource``
+- ``AsynchronousOperation``
+    - ``Action``
+    - ``Resource``
 - ``ViewState``
 
 ### Views

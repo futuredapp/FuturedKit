@@ -9,7 +9,7 @@
 ///
 /// This is ideal for modelling state for remotely loaded resource
 /// in any app.
-public struct Resource<Content, Failure: Error> {
+public struct Resource<Content, Failure: Error>: AsynchronousOperation {
     /// Content if it was loaded.
     public var content: Content?
     /// Flag representing if the resource is currently loading.
