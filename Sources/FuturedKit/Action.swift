@@ -5,6 +5,14 @@
 /// This is ideal for observing state of remote action in any app.
 public enum Action<Failure: Error>: AsynchronousOperation {
     case inactive, loading, success, failure(Failure?)
+
+    public var isLoading: Bool {
+        self == .loading
+    }
+
+    public var hasFailed: Bool {
+        self == .failure(Error.self as? Failure?)
+    }
 }
 
 extension Action: Equatable {
