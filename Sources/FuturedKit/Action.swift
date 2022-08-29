@@ -11,7 +11,7 @@ public enum Action<Failure: Error>: AsynchronousOperation {
     }
 
     public var hasFailed: Bool {
-        self == .failure(Error.self as? Failure?)
+        self == .failure(Error.self as? Failure)
     }
 }
 
