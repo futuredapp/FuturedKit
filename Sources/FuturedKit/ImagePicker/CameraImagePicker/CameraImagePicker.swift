@@ -75,7 +75,10 @@ public struct CameraImagePicker: View {
                 ),
                 secondary: .default(
                     Text(cameraPermissionAlertConfiguration.settingsButtonTitle),
-                    action: goToSettings
+                    action: {
+                        goToSettings()
+                        dismiss()
+                    }
                 )
             )
         )
