@@ -29,11 +29,29 @@ private struct AlertModifier: ViewModifier {
 }
 
 extension View {
-    /// Creates an alert with specified action.
+    /// Presents an alert to the user.
     /// - Parameters:
-    ///   - title: The title of the alert.
-    ///   - message: The message to display in the body of the alert.
-    ///   - action: The specification of the alert action.
+    ///   - model: A binding to a `Alert` value that determines whether to present the alert
+    ///   that you define by this model.
+    ///
+    /// ## Overview
+    ///
+    /// Use this method when you need to show an alert to the user.
+    /// In the following example, a button presents a simple alert when tapped, by updating a local `alertModel` property.
+    ///
+    /// ```swift
+    /// @State private var alertModel: AlertModel?
+    /// var body: some View {
+    ///     Button("Tap to show alert") {
+    ///         alertModel = AlertModel(
+    ///             title: "Current Location Not Available",
+    ///             message: "Your current location can’t be determined at this time.",
+    ///             action: .dismiss
+    ///         )
+    ///     }
+    ///     .alert(model: $alertModel)
+    /// }
+    /// ```
     public func alert(model: Binding<AlertModel?>) -> some View {
         modifier(AlertModifier(model))
     }
