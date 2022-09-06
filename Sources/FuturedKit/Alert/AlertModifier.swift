@@ -37,7 +37,8 @@ extension View {
     /// ## Overview
     ///
     /// Use this method when you need to show an alert to the user.
-    /// In the following example, a button presents a simple alert when tapped, by updating a local `alertModel` property.
+    /// In the following example, a button presents a simple alert when tapped,
+    /// by updating a local `alertModel` property.
     ///
     /// ```swift
     /// @State private var alertModel: AlertModel?
