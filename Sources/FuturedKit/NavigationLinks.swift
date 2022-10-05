@@ -61,9 +61,9 @@ struct NavigationLinksWrapper<Links: View>: ViewModifier {
         if #available(iOS 14.0, *) {
             ZStack {
                 navigationLinks
+                    .accessibilityHidden(true)
                 content
             }
-            .accessibilityHidden(true)
         } else {
             ZStack {
                 navigationLinks
