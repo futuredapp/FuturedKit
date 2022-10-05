@@ -58,9 +58,17 @@ struct NavigationLinksWrapper<Links: View>: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        ZStack {
-            navigationLinks
-            content
+        if #available(macOS 11.0, iOS 14.0, *) {
+            ZStack {
+                navigationLinks
+                    .accessibilityHidden(true)
+                content
+            }
+        } else {
+            ZStack {
+                navigationLinks
+                content
+            }
         }
     }
 }
