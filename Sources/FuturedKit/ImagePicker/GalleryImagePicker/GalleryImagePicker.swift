@@ -1,7 +1,6 @@
 #if canImport(UIKit)
 
 import BindingKit
-import CollectionConcurrencyKit
 import SwiftUI
 import PhotosUI
 
@@ -55,8 +54,9 @@ public struct GalleryImagePicker: View {
     private func handlePickerResult(_ results: [PHPickerResult]) {
         presentationMode.wrappedValue.dismiss()
         Task {
-            selection = try await results.map(\.itemProvider).concurrentMap { item in
-                try await item.loadImage()
+            selection = []
+            for item in results.map(\.itemProvider) {
+                selection.append(try await item.loadImage())
             }
         }
     }

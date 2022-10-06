@@ -17,15 +17,13 @@ let package = Package(
         )
     ],
     dependencies: [
-        .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0"),
-        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0")
+        .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0")
     ],
     targets: [
         .target(
             name: "FuturedKit",
             dependencies: [
-                .product(name: "BindingKit", package: "BindingKit"),
-                .product(name: "CollectionConcurrencyKit", package: "CollectionConcurrencyKit")
+                .product(name: "BindingKit", package: "BindingKit")
             ]
         ),
         .testTarget(
