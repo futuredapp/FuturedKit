@@ -35,7 +35,6 @@ public struct MailView: View {
     let content: MailViewContent
     let completion: (Result<MFMailComposeResult, Error>) -> Void
 
-
     /// Returns a Boolean that indicates whether the current device is able to send email.
     /// ## Discussion
     /// You should call this method before attempting to display the mail view.
