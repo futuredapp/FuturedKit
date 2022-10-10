@@ -34,8 +34,8 @@ import SwiftUI
 public struct MailView: View {
     let content: MailViewContent
     let completion: (Result<MFMailComposeResult, Error>) -> Void
-    
-    
+
+
     /// Returns a Boolean that indicates whether the current device is able to send email.
     /// ## Discussion
     /// You should call this method before attempting to display the mail view.
@@ -44,12 +44,15 @@ public struct MailView: View {
     public static func canSendMail() -> Bool {
         MFMailComposeViewController.canSendMail()
     }
-    
+
     /// Creates a mail view.
     /// - Parameters:
     ///   - content: The default values of the mail fields.
     ///   - completion: The block to execute after the user taps the buttons to send the email or cancel the interface.
-    public init(content: MailViewContent = .init(), completion: @escaping (Result<MFMailComposeResult, Error>) -> Void) {
+    public init(
+        content: MailViewContent = .init(),
+        completion: @escaping (Result<MFMailComposeResult, Error>) -> Void
+    ) {
         self.content = content
         self.completion = completion
     }

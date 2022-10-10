@@ -4,7 +4,7 @@ import SwiftUI
 struct WrappedMFMailComposeViewController: UIViewControllerRepresentable {
     let content: MailViewContent
     let completion: (Result<MFMailComposeResult, Error>) -> Void
-    
+
     init(content: MailViewContent = .init(), completion: @escaping (Result<MFMailComposeResult, Error>) -> Void) {
         self.content = content
         self.completion = completion
@@ -29,7 +29,7 @@ struct WrappedMFMailComposeViewController: UIViewControllerRepresentable {
         update(uiViewController, with: content)
         context.coordinator.completion = context.coordinator.completion
     }
-    
+
     private func update(_ viewController: MFMailComposeViewController, with content: MailViewContent) {
         if let subject = content.subject {
             viewController.setSubject(subject)
@@ -46,14 +46,18 @@ struct WrappedMFMailComposeViewController: UIViewControllerRepresentable {
         if let (body, isHtml) = content.messageBody {
             viewController.setMessageBody(body, isHTML: isHtml)
         }
-        content.attachmentData.forEach { attachment, mimeType, fileName in
-            viewController.addAttachmentData(attachment, mimeType: mimeType, fileName: fileName)
+        content.attachments.forEach { attachement in
+            viewController.addAttachmentData(
+                attachement.data,
+                mimeType: attachement.mimeType,
+                fileName: attachement.fileName
+            )
         }
         if let preferredSendingEmailAddress = content.preferredSendingEmailAddress {
             viewController.setPreferredSendingEmailAddress(preferredSendingEmailAddress)
         }
     }
-    
+
     final class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
         var completion: (Result<MFMailComposeResult, Error>) -> Void
 
