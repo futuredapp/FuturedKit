@@ -1,3 +1,5 @@
+#if canImport(MessageUI)
+
 import MessageUI
 import SwiftUI
 
@@ -78,3 +80,5 @@ struct WrappedMFMailComposeViewController: UIViewControllerRepresentable {
         }
     }
 }
+
+#endif
