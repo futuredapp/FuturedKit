@@ -18,7 +18,8 @@ public struct MailViewContent {
     ///   - bccRecipients: The initial recipients to include in the email’s Bcc field.
     ///   - messageBody: The initial body text to include in the email.
     ///   - attachments: The specified data as an attachment to the message.
-    ///   - preferredSendingEmailAddress: The preferred email address to use in the From field, if such an address is available.
+    ///   - preferredSendingEmailAddress: The preferred email address to use in the From field,
+    ///   if such an address is available.
     public init(
         subject: String? = nil,
         toRecipients: [String]? = nil,
@@ -42,7 +43,7 @@ public struct MailViewContent {
         public let data: Data
         public let mimeType: String
         public let fileName: String
-        
+
         /// Creates a data which can be attached to the mail message.
         /// - Parameters:
         ///   - data: The data to attach. Typically, this is the contents of a file that you want to include.
