@@ -59,7 +59,7 @@ public struct CameraImagePicker: View {
         WrappedUIImagePicker(didFinishPickingMediaWithInfo: handlePickerResult) { viewController in
             viewController.sourceType = .camera
         }
-        .background(Color.black.edgesIgnoringSafeArea(.bottom))
+        .background(Color.black.edgesIgnoringSafeArea(.all))
         .onAppear(perform: checkCameraAuthorizationStatus)
         .alert(model: $permissionAlertModel)
     }
