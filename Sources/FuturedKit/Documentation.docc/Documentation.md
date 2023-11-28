@@ -4,23 +4,20 @@ SwiftUI architecture, resources and views used by Futured.
 
 ## Topics
 
-### State management
+### Architecture
 
-- ``Resource``
-- ``ViewState``
+- ``Coordinator``
+- ``NavigationStackFlow``
+- ``TabViewFlow``
+- ``DataCache``
 
 ### Views
 
 - ``AnyShape``
 - ``WrappedUIImagePicker``
 - ``CameraImagePicker``
-- ``PHPickerViewController``
 - ``GalleryImagePicker``
 
 ### Alert presentation
 
 - ``AlertModel``
-
-### Navigation
-
-- ``NavigationLinks``

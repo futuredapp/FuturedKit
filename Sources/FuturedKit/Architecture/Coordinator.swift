@@ -9,6 +9,7 @@ public protocol Coordinator: ObservableObject {
     static func rootView(with instance: Self) -> RootView
 
     var sheet: Destination? { get set }
+    var alertModel: AlertModel? { get set }
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
