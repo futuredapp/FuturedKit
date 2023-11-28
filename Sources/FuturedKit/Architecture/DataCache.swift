@@ -12,11 +12,8 @@ public actor DataCache<Model: Equatable> {
         self.value = value
     }
 
-    public func update<each T: Equatable>(keyPath: repeat WritableKeyPath<Model, each T>, value: repeat each T) {
-        var newValue = self.value
-        repeat newValue[keyPath: each keyPath] = each value
-
-        guard newValue != self.value else { return }
-        self.value = newValue
+    public func update<T: Equatable>(_ keyPath: WritableKeyPath<Model, T>, with value: T) {
+        guard value != self.value[keyPath: keyPath] else { return }
+        self.value[keyPath: keyPath] = value
     }
 }
