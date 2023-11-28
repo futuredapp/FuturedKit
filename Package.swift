@@ -1,11 +1,11 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.8
 
 import PackageDescription
 
 let package = Package(
     name: "FuturedKit",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v16),
         .macOS(.v10_15),
         .watchOS(.v6),
         .tvOS(.v13)
