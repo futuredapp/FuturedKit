@@ -9,6 +9,7 @@ SwiftUI architecture, resources and views used by Futured.
 - ``Coordinator``
 - ``NavigationStackFlow``
 - ``TabViewFlow``
+- ``ComponentModel``
 - ``DataCache``
 
 ### Views
