@@ -1,5 +1,5 @@
 import XCTest
-import FuturedKitHelpers
+import FuturedHelpers
 
 final class ResourceTests: XCTestCase {
     func testHasContent() {

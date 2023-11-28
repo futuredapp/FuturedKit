@@ -2,7 +2,7 @@
 
 import AVFoundation
 import SwiftUI
-import FuturedKitArchitecture
+import FuturedArchitecture
 
 /// A view that displays a camera for picking photo.
 ///
