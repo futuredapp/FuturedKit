@@ -1,5 +1,5 @@
 import XCTest
-import FuturedKit
+import FuturedKitHelpers
 import Combine
 
 final class PublisherResultTests: XCTestCase {

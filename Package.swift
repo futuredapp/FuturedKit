@@ -12,8 +12,12 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "FuturedKit",
-            targets: ["FuturedKit"]
+            name: "FuturedKitArchitecture",
+            targets: ["FuturedKitArchitecture"]
+        ),
+        .library(
+            name: "FuturedKitHelpers",
+            targets: ["FuturedKitHelpers"]
         )
     ],
     dependencies: [
@@ -22,15 +26,19 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "FuturedKit",
+            name: "FuturedKitArchitecture"
+        ),
+        .target(
+            name: "FuturedKitHelpers",
             dependencies: [
+                "FuturedKitArchitecture",
                 .product(name: "BindingKit", package: "BindingKit"),
                 .product(name: "CollectionConcurrencyKit", package: "CollectionConcurrencyKit")
             ]
         ),
         .testTarget(
             name: "FuturedKitTests",
-            dependencies: ["FuturedKit"]
+            dependencies: ["FuturedKitArchitecture", "FuturedKitHelpers"]
         )
     ]
 )
