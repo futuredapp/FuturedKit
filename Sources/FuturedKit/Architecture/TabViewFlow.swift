@@ -1,10 +1,15 @@
 import SwiftUI
 
-struct TabViewFlow<TabViewCoordinator: TabCoordinator, Content: View>: View {
-    @StateObject var coordinator: TabViewCoordinator
-    @ViewBuilder let content: () -> Content
+public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
+    @StateObject private var coordinator: Coordinator
+    @ViewBuilder private let content: () -> Content
 
-    var body: some View {
+    public init(coordinator: Coordinator, content: @escaping () -> Content) {
+        self._coordinator = StateObject(wrappedValue: coordinator)
+        self.content = content
+    }
+
+    public var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             content()
         }
