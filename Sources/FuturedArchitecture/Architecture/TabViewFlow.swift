@@ -4,7 +4,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
-    public init(coordinator: Coordinator, content: @escaping () -> Content) {
+    public init(coordinator: Coordinator, @ViewBuilder content: @escaping () -> Content) {
         self._coordinator = StateObject(wrappedValue: coordinator)
         self.content = content
     }
