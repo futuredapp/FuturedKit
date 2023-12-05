@@ -14,7 +14,7 @@ final class ___VARIABLE_appIdentifier___AppCoordinator: ObservableObject {
     }
 }
 
-extension FuturedArchitectureAppCoordinator: ___VARIABLE_appIdentifier___AppDelegateProtocol {
+extension ___VARIABLE_appIdentifier___AppCoordinator: ___VARIABLE_appIdentifier___AppDelegateProtocol {
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey : Any]?) {
     }
 }

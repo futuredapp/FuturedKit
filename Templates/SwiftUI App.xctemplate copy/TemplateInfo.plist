@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>DefaultCompletionName</key>
-	<string>Scene</string>
+	<string>SwiftUI App</string>
 	<key>Description</key>
 	<string>This generates a new SwiftUI App which containes App, AppCoordinator, AppDelegate and Container files</string>
 	<key>Kind</key>
@@ -38,7 +38,7 @@
 			<key>Description</key>
 			<string>App name</string>
 			<key>Identifier</key>
-			<string>appName</string>
+			<string>appNameName</string>
 			<key>Name</key>
 			<string>App Name:</string>
 			<key>Required</key>
@@ -55,6 +55,48 @@
 			<string>appCoordinatorName</string>
 			<key>Name</key>
 			<string>AppCoordinator Name:</string>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appIdentifier___AppDelegate</string>
+			<key>Description</key>
+			<string>AppDelegate name</string>
+			<key>Identifier</key>
+			<string>appDelegateName</string>
+			<key>Name</key>
+			<string>AppDelegate Name:</string>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appIdentifier___Container</string>
+			<key>Description</key>
+			<string>Services Container name</string>
+			<key>Identifier</key>
+			<string>containerName</string>
+			<key>Name</key>
+			<string>Container Name:</string>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appIdentifier___CacheModel</string>
+			<key>Description</key>
+			<string>App Data Cache Model</string>
+			<key>Identifier</key>
+			<string>dataCacheModelName</string>
+			<key>Name</key>
+			<string>Data Cache Model Name:</string>
 			<key>Required</key>
 			<true/>
 			<key>Type</key>
