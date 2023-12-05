@@ -31,6 +31,29 @@
 			<string>sceneIdentifier</string>
 			<key>Type</key>
 			<string>static</string>
+			<key>NotPersisted</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>sceneType</string>
+			<key>Required</key>
+			<true/>
+			<key>Name</key>
+			<string>Scene Type:</string>
+			<key>Description</key>
+			<string>The type of scene to create</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Type</key>
+			<string>popup</string>
+			<key>Default</key>
+			<string>Scene</string>
+			<key>Values</key>
+			<array>
+				<string>Scene</string>
+				<string>Resource Scene</string>
+			</array>
 		</dict>
 		<dict>
 			<key>Default</key>
@@ -39,6 +62,8 @@
 			<string>Component name</string>
 			<key>Identifier</key>
 			<string>componentNameName</string>
+			<key>NotPersisted</key>
+			<true/>
 			<key>Name</key>
 			<string>Component Name:</string>
 			<key>Required</key>
@@ -55,6 +80,31 @@
 			<string>componentModelName</string>
 			<key>Name</key>
 			<string>ComponentModel Name:</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>RequiredOptions</key>
+			<dict>
+				<key>sceneType</key>
+				<array>
+					<string>Resource Scene</string>
+				</array>
+			</dict>
+			<key>Default</key>
+			<string>___VARIABLE_sceneIdentifier___Resource</string>
+			<key>Description</key>
+			<string>Component Resource</string>
+			<key>Identifier</key>
+			<string>resourceName</string>
+			<key>Name</key>
+			<string>Resource name:</string>
+			<key>NotPersisted</key>
+			<true/>
 			<key>Required</key>
 			<true/>
 			<key>Type</key>
@@ -65,8 +115,6 @@
 	<array>
 		<string>com.apple.platform.iphoneos</string>
 	</array>
-	<key>SortOrder</key>
-	<string>9</string>
 	<key>Summary</key>
 	<string>This generates a new SwiftUI scene using Futured architecture.</string>
 </dict>
