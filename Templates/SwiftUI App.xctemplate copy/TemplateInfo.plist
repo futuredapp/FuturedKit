@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>DefaultCompletionName</key>
+	<string>Scene</string>
+	<key>Description</key>
+	<string>This generates a new SwiftUI App which containes App, AppCoordinator, AppDelegate and Container files</string>
+	<key>Kind</key>
+	<string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Description</key>
+			<string>The name of the App to create</string>
+			<key>Identifier</key>
+			<string>appName</string>
+			<key>Name</key>
+			<string>New App Name:</string>
+			<key>NotPersisted</key>
+			<true/>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>text</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appName:identifier___</string>
+			<key>Identifier</key>
+			<string>appIdentifier</string>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appIdentifier___App</string>
+			<key>Description</key>
+			<string>App name</string>
+			<key>Identifier</key>
+			<string>appName</string>
+			<key>Name</key>
+			<string>App Name:</string>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+		<dict>
+			<key>Default</key>
+			<string>___VARIABLE_appIdentifier___AppCoordinator</string>
+			<key>Description</key>
+			<string>AppCoordinator name</string>
+			<key>Identifier</key>
+			<string>appCoordinatorName</string>
+			<key>Name</key>
+			<string>AppCoordinator Name:</string>
+			<key>Required</key>
+			<true/>
+			<key>Type</key>
+			<string>static</string>
+		</dict>
+	</array>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>SortOrder</key>
+	<string>9</string>
+	<key>Summary</key>
+	<string>This generates a new SwiftUI scene using Futured architecture.</string>
+</dict>
+</plist>
