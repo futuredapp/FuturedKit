@@ -1,5 +1,5 @@
 import XCTest
-import FuturedKit
+import FuturedHelpers
 
 final class URLExpressibleByStringLiteralTests: XCTestCase {
     func testValidStaticStringInitialization() {

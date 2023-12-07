@@ -1,19 +1,23 @@
-// swift-tools-version:5.6
+// swift-tools-version:5.8
 
 import PackageDescription
 
 let package = Package(
     name: "FuturedKit",
     platforms: [
-        .iOS(.v13),
+        .iOS(.v16),
         .macOS(.v10_15),
-        .watchOS(.v6),
-        .tvOS(.v13)
+        .watchOS(.v9),
+        .tvOS(.v16)
     ],
     products: [
         .library(
-            name: "FuturedKit",
-            targets: ["FuturedKit"]
+            name: "FuturedArchitecture",
+            targets: ["FuturedArchitecture"]
+        ),
+        .library(
+            name: "FuturedHelpers",
+            targets: ["FuturedHelpers"]
         )
     ],
     dependencies: [
@@ -22,15 +26,19 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "FuturedKit",
+            name: "FuturedArchitecture"
+        ),
+        .target(
+            name: "FuturedHelpers",
             dependencies: [
+                "FuturedArchitecture",
                 .product(name: "BindingKit", package: "BindingKit"),
                 .product(name: "CollectionConcurrencyKit", package: "CollectionConcurrencyKit")
             ]
         ),
         .testTarget(
             name: "FuturedKitTests",
-            dependencies: ["FuturedKit"]
+            dependencies: ["FuturedArchitecture", "FuturedHelpers"]
         )
     ]
 )
