@@ -1,14 +1,18 @@
 import SwiftUI
 
-/// A representation of an alert presentation.
+/// A model representation of an alert, which is used by `defaultAlert(model: AlertModel)` SwiftUI View modifier
 ///
 /// ## Overview
 ///
-/// It wrappes the native `Alert`, but you show an alert in different way by using the `alert(model:)` view modifier,
+/// It wrappes the native `alert(_:isPresented:presenting:actions:message:)`, but you show an alert in different way by using the `defaultAlert(model:)` view modifier,
 /// which then appears whenever the bound `model` value is not `nil` value.
-/// Binded value is exactly an alert model which defines the alert view so you don't create a view content manually.
+/// Alert model contains two actions: `primaryAction` and `secondaryAction`, which are then represented as SwiftUI Button
+/// If both values are nil, system presents alert with standard "OK" button and given `title` and `message`
+/// If one of the actions contains `destructive` button role and there is no `cancel` button role, system will add standard button with "Cancel" title.
+/// If both `primaryAction` and `secondaryAction` actions have `destructive` button roles, system will still add standard "Cancel" button to the alert.
 ///
 /// In the following example, a button presents a simple alert when tapped, by updating a local `alertModel` property.
+/// Alert contains given `title` and `message` with standard "OK" button
 ///
 /// ```swift
 /// @State private var alertModel: AlertModel?
@@ -16,17 +20,14 @@ import SwiftUI
 ///     Button("Tap to show alert") {
 ///         alertModel = AlertModel(
 ///             title: "Current Location Not Available",
-///             message: "Your current location can’t be determined at this time.",
-///             action: .dismiss
+///             message: "Your current location can’t be determined at this time."
 ///         )
 ///     }
-///     .alert(model: $alertModel)
+///     .defaultAlert(model: $alertModel)
 /// }
 /// ```
 ///
-/// To specify alert action you can use `.dismiss` or `.custom` instance of the ``Action`` type.
-/// The following example uses two buttons: a default button labeled “Try Again” that calls a `saveWorkoutData` method,
-/// and a “Delete” button that calls a destructive `deleteWorkoutData` method.
+/// The following example adds primary “Delete” button with `destructive` button role and standard "Cancel" button which is added by system.
 ///
 /// ```swift
 /// @State private var alertModel: AlertModel?
@@ -35,26 +36,30 @@ import SwiftUI
 ///         alertModel = AlertModel(
 ///             title: "Unable to Save Workout Data",
 ///             message: "The connection to the server was lost.",
-///             action: .custom(
-///                 primary: .default(Text("Try Again"), action: saveWorkoutData),
-///                 secondary: .destructive(Text("Delete"), action: deleteWorkoutData)
+///             primaryAction: AlertModel.ButtonAction(
+///                 title: "Delete,
+///                 buttonRole: .destructive,
+///                 action: deleteWorkoutData
 ///             )
 ///         )
 ///     }
-///     .alert(model: $alertModel)
+///     .defaultAlert(model: $alertModel)
 /// }
 /// ```
 ///
 /// The alert handles its own dismissal when the user taps one of the buttons in the alert,
 /// by setting the bound `model` value back to `nil`.
 public struct AlertModel: Identifiable {
-    /// A representation of the alert actions.
-    public enum Action {
-        /// It provides single button with optional `Alert.Button` instance parameter. Default value is `nil`.
-        /// If the `button` parameter is set to nil an alert uses `.cancel` button by defaul.
-        case dismiss(button: Alert.Button? = nil)
-        /// It provides two custom buttons, specified by `primary` and `secondary` parameters.
-        case custom(primary: Alert.Button, secondary: Alert.Button)
+    public struct ButtonAction {
+        let title: String
+        let buttonRole: ButtonRole?
+        let action: () -> Void
+
+        public init(title: String, buttonRole: ButtonRole? = nil, action: @escaping () -> Void) {
+            self.title = title
+            self.buttonRole = buttonRole
+            self.action = action
+        }
     }
 
     public var id: String? {
@@ -63,16 +68,20 @@ public struct AlertModel: Identifiable {
 
     let title: String
     let message: String?
-    let action: Action
+    let primaryAction: ButtonAction?
+    let secondaryAction: ButtonAction?
 
     /// Creates an alert model.
     /// - Parameters:
     ///   - title: The title of the alert.
     ///   - message: The message to display in the body of the alert.
-    ///   - action: The specification of the alert action.
-    public init(title: String, message: String? = nil, action: AlertModel.Action) {
+    ///   - primaryAction: The specification of the alert primary action.
+    ///   - secondaryAction: The specification of the alert secondary action.
+
+    public init(title: String, message: String?, primaryAction: ButtonAction? = nil, secondaryAction: ButtonAction? = nil) {
         self.title = title
         self.message = message
-        self.action = action
+        self.primaryAction = primaryAction
+        self.secondaryAction = secondaryAction
     }
 }
