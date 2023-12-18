@@ -8,37 +8,54 @@ private struct AlertModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
-        content.alert(item: $model) { model -> Alert in
-            switch model.action {
-            case .dismiss(button: let button):
-                return Alert(
-                    title: Text(model.title),
-                    message: model.message.map(Text.init),
-                    dismissButton: button ?? .cancel()
-                )
-            case let .custom(primary: primary, secondary: secondary):
-                return Alert(
-                    title: Text(model.title),
-                    message: model.message.map(Text.init),
-                    primaryButton: primary,
-                    secondaryButton: secondary
-                )
+        content.alert(
+            model?.title ?? "",
+            isPresented: .init(
+                get: { model != nil },
+                set: { isPresented, _ in
+                    if !isPresented {
+                        model = nil
+                    }
+                }
+            ),
+            presenting: model,
+            actions: { model in
+                if let primaryAction = model.primaryAction {
+                    Button(
+                        primaryAction.title,
+                        role: primaryAction.buttonRole,
+                        action: primaryAction.action
+                    )
+
+                    if let secondaryAction = model.secondaryAction {
+                        Button(
+                            secondaryAction.title,
+                            role: secondaryAction.buttonRole,
+                            action: secondaryAction.action
+                        )
+                    }
+                }
+            },
+            message: { model in
+                if let message = model.message {
+                    Text(message)
+                }
             }
-        }
+        )
     }
 }
 
 extension View {
     /// Presents an alert to the user.
     /// - Parameters:
-    ///   - model: A binding to a `Alert` value that determines whether to present the alert
+    ///   - model: A binding to a `AlertModel` value that determines whether to present the alert
     ///   that you define by this model.
     ///
     /// ## Overview
     ///
-    /// Use this method when you need to show an alert to the user.
-    /// In the following example, a button presents a simple alert when tapped,
-    /// by updating a local `alertModel` property.
+    /// Use this method when you need to show simplified an alert to the user.
+    /// In the following example, a button presents an alert when tapped, by updating a local `alertModel` property.
+    /// Alert contains given `title` and `message` with standard "OK" button
     ///
     /// ```swift
     /// @State private var alertModel: AlertModel?
@@ -46,14 +63,13 @@ extension View {
     ///     Button("Tap to show alert") {
     ///         alertModel = AlertModel(
     ///             title: "Current Location Not Available",
-    ///             message: "Your current location can’t be determined at this time.",
-    ///             action: .dismiss
+    ///             message: "Your current location can’t be determined at this time."
     ///         )
     ///     }
-    ///     .alert(model: $alertModel)
+    ///     .defaultAlert(model: $alertModel)
     /// }
     /// ```
-    public func alert(model: Binding<AlertModel?>) -> some View {
+    public func defaultAlert(model: Binding<AlertModel?>) -> some View {
         modifier(AlertModifier(model))
     }
 }
