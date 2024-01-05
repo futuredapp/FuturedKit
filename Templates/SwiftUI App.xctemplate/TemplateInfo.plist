@@ -90,7 +90,7 @@
 		</dict>
 		<dict>
 			<key>Default</key>
-			<string>___VARIABLE_appIdentifier___CacheModel</string>
+			<string>DataCacheModel</string>
 			<key>Description</key>
 			<string>App Data Cache Model</string>
 			<key>Identifier</key>
