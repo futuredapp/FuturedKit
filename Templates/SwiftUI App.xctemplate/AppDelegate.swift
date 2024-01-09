@@ -2,12 +2,12 @@
 
 import UIKit
 
-protocol ___VARIABLE_appIdentifier___AppDelegateProtocol: AnyObject {
+protocol ___PACKAGENAME:identifier___AppDelegateProtocol: AnyObject {
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
 }
 
-class ___VARIABLE_appIdentifier___AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
-    weak var delegate: ___VARIABLE_appIdentifier___AppDelegateProtocol?
+class ___PACKAGENAME:identifier___AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
+    weak var delegate: ___PACKAGENAME:identifier___AppDelegateProtocol?
 
     func application(
         _ application: UIApplication,
