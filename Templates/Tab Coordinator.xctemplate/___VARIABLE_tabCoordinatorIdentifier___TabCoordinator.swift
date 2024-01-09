@@ -17,13 +17,13 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
         case secondTab
     }
 
-    private let container: Container
+    private let container: ___PACKAGENAME:identifier___Container
 
     @Published var sheet: Destination?
     @Published var selectedTab: Tab
     @Published var alertModel: AlertModel?
 
-    init(container: Container, selectedTab: Tab) {
+    init(container: ___PACKAGENAME:identifier___Container, selectedTab: Tab) {
         self.container = container
         self.selectedTab = selectedTab
     }

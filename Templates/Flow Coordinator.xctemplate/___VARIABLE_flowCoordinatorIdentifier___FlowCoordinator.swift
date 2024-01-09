@@ -4,13 +4,13 @@ import FuturedArchitecture
 import SwiftUI
 
 final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationStackCoordinator {
-    private var container: Container
+    private var container: ___PACKAGENAME:identifier___Container
 
     @Published var path: [Destination] = []
     @Published var sheet: Destination?
     @Published var alertModel: AlertModel?
 
-    init(container: Container) {
+    init(container: ___PACKAGENAME:identifier___Container) {
         self.container = container
     }
 
