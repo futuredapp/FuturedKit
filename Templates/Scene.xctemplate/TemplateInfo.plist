@@ -91,9 +91,7 @@
 			<key>RequiredOptions</key>
 			<dict>
 				<key>sceneType</key>
-				<array>
-					<string>Resource Scene</string>
-				</array>
+				<string>Resource Scene</string>
 			</dict>
 			<key>Default</key>
 			<string>___VARIABLE_sceneIdentifier___Resource</string>
@@ -104,8 +102,6 @@
 			<key>Name</key>
 			<string>Resource name:</string>
 			<key>NotPersisted</key>
-			<true/>
-			<key>Required</key>
 			<true/>
 			<key>Type</key>
 			<string>static</string>
