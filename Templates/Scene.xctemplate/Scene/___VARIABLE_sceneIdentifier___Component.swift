@@ -13,8 +13,10 @@ struct ___VARIABLE_sceneIdentifier___Component<Model: ___VARIABLE_sceneIdentifie
     }
 }
 
+#if DEBUG
 #Preview {
     ___VARIABLE_sceneIdentifier___Component(
         model: ___VARIABLE_sceneIdentifier___ComponentModelMock()
     )
 }
+#endif

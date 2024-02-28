@@ -10,7 +10,9 @@ final class ___PACKAGENAME:identifier___AppCoordinator: ObservableObject {
     }
 
     var rootView: some View {
-        Text("Hello World!")
+        BaseFlowCoordinator.rootView(
+            with: BaseFlowCoordinator(container: container)
+        )
     }
 }
 

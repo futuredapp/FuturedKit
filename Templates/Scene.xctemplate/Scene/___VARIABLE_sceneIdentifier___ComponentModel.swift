@@ -32,6 +32,7 @@ extension ___VARIABLE_sceneIdentifier___ComponentModel {
     }
 }
 
+#if DEBUG
 final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
@@ -40,3 +41,4 @@ final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneI
     func onAppear() async {
     }
 }
+#endif
