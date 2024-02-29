@@ -2,6 +2,8 @@
 
 import SwiftUI
 
+#error("Add https://github.com/futuredapp/FuturedKit.git to the project!")
+
 @main
 struct ___PACKAGENAME:identifier___App: App {
     @UIApplicationDelegateAdaptor

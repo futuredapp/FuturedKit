@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+<!-- Template -->
 	<key>Kind</key>
 	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
 	<key>Identifier</key>
@@ -12,75 +14,21 @@
 		<string>com.apple.dt.unit.iosBase</string>
 		<string>com.apple.dt.unit.appLifecycle.iOS</string>
 	</array>
-	<key>Targets</key>
-	<array>
-		<dict>
-			<key>TargetIdentifier</key>
-			<string>com.apple.dt.cocoaTouchApplicationTarget</string>
-			<key>SharedSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME</key>
-				<string>AccentColor</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<string>$(inherited) @executable_path/Frameworks</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents</key>
-				<string>YES</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
-				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad</key>
-				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
-			</dict>
-		</dict>
-	</array>
-	<key>Nodes</key>
-	<array>
-		<string>Assets.xcassets</string>
-	</array>
-	<key>Definitions</key>
-	<dict>
-		<key>Assets.xcassets</key>
-		<dict>
-			<key>Path</key>
-			<string>Assets.xcassets</string>
-			<key>AssetGeneration</key>
-			<array>
-				<dict>
-					<key>Type</key>
-					<string>appicon</string>
-					<key>Name</key>
-					<string>AppIcon</string>
-					<key>Platforms</key>
-					<dict>
-						<key>iOS</key>
-						<string>true</string>
-					</dict>
-				</dict>
-			</array>
-			<key>SortOrder</key>
-			<integer>100</integer>
-		</dict>
-		<key>Preview Content/Preview Assets.xcassets</key>
-		<dict>
-			<key>SortOrder</key>
-			<integer>100</integer>
-			<key>Path</key>
-			<string>Preview Assets.xcassets</string>
-			<key>Group</key>
-			<string>Preview Content</string>
-		</dict>
-	</dict>
 	<key>Concrete</key>
 	<true/>
 	<key>Description</key>
 	<string>This template provides a starting point for SwiftUI application that uses Futured Architecture</string>
 	<key>SortOrder</key>
 	<integer>1</integer>
-	<key>NameOfInitialFileForEditor</key>
-	<string>App.swift</string>
+	<key>Image</key>
+	<dict>
+		<key>BundleImageName</key>
+		<string>app</string>
+		<key>BundleIdentifier</key>
+		<string>com.apple.dt.IDEKit</string>
+	</dict>
+
+<!-- Project creation dialog options -->
 	<key>Options</key>
 	<array>
 		<dict>
@@ -119,122 +67,188 @@
 			</dict>
 		</dict>
 		<dict>
-			<key>Identifier</key>
-			<string>appLifecycle</string>
-			<key>Units</key>
-			<dict>
-				<key>SwiftUI</key>
-				<array>
-					<dict>
-						<key>Nodes</key>
-						<array>
-							<string>Preview Content/Preview Assets.xcassets</string>
-						</array>
-						<key>Targets</key>
-						<array>
-							<dict>
-								<key>SharedSettings</key>
-								<dict>
-									<key>ENABLE_PREVIEWS</key>
-									<string>YES</string>
-									<key>DEVELOPMENT_ASSET_PATHS</key>
-									<string>___PACKAGENAMEPREVIEWCONTENT:quoteIfNeeded___</string>
-									<key>INFOPLIST_KEY_UIApplicationSceneManifest_Generation</key>
-									<string>YES</string>
-									<key>INFOPLIST_KEY_UILaunchScreen_Generation</key>
-									<string>YES</string>
-								</dict>
-							</dict>
-						</array>
-					</dict>
-					<dict>
-						<key>Nodes</key>
-						<array>
-							<string>___PACKAGENAME:identifier___App.swift</string>
-							<string>___PACKAGENAME:identifier___AppCoordinator.swift</string>
-							<string>___PACKAGENAME:identifier___AppDelegate.swift</string>
-							<string>___PACKAGENAME:identifier___Container.swift</string>
-							<string>___PACKAGENAME:identifier___DataCacheModel.swift</string>
-						</array>
-						<key>Definitions</key>
-						<dict>
-							<key>___PACKAGENAME:identifier___App.swift</key>
-							<dict>
-								<key>Path</key>
-								<string>App.swift</string>
-								<key>SortOrder</key>
-								<integer>99</integer>
-							</dict>
-							<key>___PACKAGENAME:identifier___AppCoordinator.swift</key>
-							<dict>
-								<key>SortOrder</key>
-								<integer>99</integer>
-								<key>Path</key>
-								<string>AppCoordinator.swift</string>
-							</dict>
-							<key>___PACKAGENAME:identifier___AppDelegate.swift</key>
-							<dict>
-								<key>SortOrder</key>
-								<integer>99</integer>
-								<key>Path</key>
-								<string>AppDelegate.swift</string>
-							</dict>
-							<key>___PACKAGENAME:identifier___Container.swift</key>
-							<dict>
-								<key>SortOrder</key>
-								<integer>99</integer>
-								<key>Path</key>
-								<string>Container.swift</string>
-							</dict>
-							<key>___PACKAGENAME:identifier___DataCacheModel.swift</key>
-							<dict>
-								<key>SortOrder</key>
-								<integer>99</integer>
-								<key>Path</key>
-								<string>DataCacheModel.swift</string>
-							</dict>
-						</dict>
-					</dict>
-				</array>
-			</dict>
-		</dict>
+            <key>Identifier</key>
+            <string>languageChoice</string>
+            <key>Override</key>
+            <string>Swift</string>
+        </dict>
+	</array>
+
+<!-- Project and target configuration -->
+	<key>Project</key>
+	<dict>
+		<key>Configurations</key>
+        <dict>
+        	<key>Beta</key>
+        	<dict>
+        		<key>ENABLE_NS_ASSERTIONS</key>
+                <string>NO</string>
+                <key>MTL_ENABLE_DEBUG_INFO</key>
+                <string>NO</string>
+                <key>DEBUG_INFORMATION_FORMAT</key>
+                <string>dwarf-with-dsym</string>
+                <key>SWIFT_COMPILATION_MODE</key>
+                <string>wholemodule</string>
+                <key>SWIFT_OPTIMIZATION_LEVEL</key>
+                <string>-O</string>
+                <key>VALIDATE_PRODUCT</key>
+                <string>YES</string>
+            </dict>
+        </dict>
+    </dict>
+	<key>Targets</key>
+	<array>
 		<dict>
-			<key>Identifier</key>
-			<string>languageChoice</string>
-			<key>Required</key>
-			<true/>
-			<key>Name</key>
-			<string>Language:</string>
-			<key>Description</key>
-			<string>Your primary implementation language.</string>
-			<key>SortOrder</key>
-			<integer>120</integer>
-			<key>Type</key>
-			<string>popup</string>
-			<key>Default</key>
-			<string>Swift</string>
-			<key>Values</key>
-			<array>
-				<string>Swift</string>
-			</array>
-			<key>Variables</key>
+			<key>TargetIdentifier</key>
+			<string>com.apple.dt.cocoaTouchApplicationTarget</string>
+			<key>SharedSettings</key>
 			<dict>
-				<key>Swift</key>
-				<dict>
-					<key>ibCustomModuleProvider</key>
-					<string>target</string>
-					<key>moduleNamePrefixForClasses</key>
-					<string>$(PRODUCT_MODULE_NAME).</string>
-				</dict>
+				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
+				<string>AppIcon</string>
+				<key>ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME</key>
+				<string>AccentColor</string>
+				<key>TARGETED_DEVICE_FAMILY</key>
+				<string>1,2</string>
+				<key>INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents</key>
+				<string>YES</string>
+				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone</key>
+				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
+				<key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad</key>
+				<string>UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
+				<key>CODE_SIGN_STYLE</key>
+				<string>Manual</string>
 			</dict>
+			<key>Configurations</key>
+            <dict>
+                <key>Debug</key>
+                <dict/>
+                <key>Release</key>
+                <dict/>
+                <key>Beta</key>
+                <dict>
+            		<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+                	<string>___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___PACKAGENAMEASRFC1034IDENTIFIER___.beta</string>
+            	</dict> 
+            </dict>
 		</dict>
 	</array>
-	<key>Image</key>
+
+<!-- Files -->
+
+	<key>NameOfInitialFileForEditor</key>
+	<string>___PACKAGENAME:identifier___App.swift</string>
+
+	<key>Nodes</key>
+	<array>
+		<string>Resources/Assets.xcassets</string>
+		<string>___PACKAGENAME:identifier___App.swift</string>
+		<string>___PACKAGENAME:identifier___AppCoordinator.swift</string>
+		<string>___PACKAGENAME:identifier___AppDelegate.swift</string>
+		<string>___PACKAGENAME:identifier___Container.swift</string>
+		<string>Model/___PACKAGENAME:identifier___DataCacheModel.swift</string>
+		<string>Scenes/Base/BaseComponentModel.swift</string>
+		<string>Scenes/Base/BaseComponent.swift</string>
+		<string>Flow Coordinators/BaseFlowCoordinator.swift</string>
+	</array>
+
+<!-- Files contained in template -->
+	<key>Definitions</key>
 	<dict>
-		<key>BundleImageName</key>
-		<string>app</string>
-		<key>BundleIdentifier</key>
-		<string>com.apple.dt.IDEKit</string>
+		<key>Resources/Assets.xcassets</key>
+		<dict>
+			<key>Path</key>
+			<string>Assets.xcassets</string>
+			<key>Group</key>
+			<string>Resources</string>
+			<key>AssetGeneration</key>
+			<array>
+				<dict>
+					<key>Type</key>
+					<string>appicon</string>
+					<key>Name</key>
+					<string>AppIcon</string>
+					<key>Platforms</key>
+					<dict>
+						<key>iOS</key>
+						<string>true</string>
+					</dict>
+				</dict>
+			</array>
+			<key>SortOrder</key>
+			<integer>100</integer>
+		</dict>
+
+		<key>___PACKAGENAME:identifier___App.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>App.swift</string>
+			<key>SortOrder</key>
+			<integer>99</integer>
+		</dict>
+		<key>___PACKAGENAME:identifier___AppCoordinator.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>AppCoordinator.swift</string>
+		</dict>
+		<key>___PACKAGENAME:identifier___AppDelegate.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>AppDelegate.swift</string>
+		</dict>
+		<key>___PACKAGENAME:identifier___Container.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>Container.swift</string>
+		</dict>
+		<key>Model/___PACKAGENAME:identifier___DataCacheModel.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>DataCacheModel.swift</string>
+			<key>Group</key>
+			<string>Model</string>
+		</dict>
+		<key>Flow Coordinators/BaseFlowCoordinator.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>BaseFlowCoordinator.swift</string>
+			<key>Group</key>
+			<string>Flow Coordinators</string>
+		</dict>
+		<key>Scenes/Base/BaseComponent.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>BaseComponent.swift</string>
+			<key>Group</key>
+			<array>
+                <string>Scenes</string>
+                <string>Base</string>
+            </array>
+		</dict>
+		<key>Scenes/Base/BaseComponentModel.swift</key>
+		<dict>
+			<key>SortOrder</key>
+			<integer>99</integer>
+			<key>Path</key>
+			<string>BaseComponentModel.swift</string>
+			<key>Group</key>
+			<array>
+                <string>Scenes</string>
+                <string>Base</string>
+            </array>
+		</dict>
 	</dict>
+
 </dict>
 </plist>
