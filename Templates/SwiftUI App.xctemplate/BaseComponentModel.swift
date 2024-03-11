@@ -42,7 +42,7 @@ final class BaseComponentModelMock: BaseComponentModelProtocol {
     typealias Event = BaseComponentModel.Event
 
     var onEvent: (BaseComponentModel.Event) -> Void = { _ in }
-    
+
     func onAppear() async { }
 
     func onTouchUpInside() { }

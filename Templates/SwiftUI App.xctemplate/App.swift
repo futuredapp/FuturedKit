@@ -24,4 +24,3 @@ struct ___PACKAGENAME:identifier___App: App {
         }
     }
 }
-

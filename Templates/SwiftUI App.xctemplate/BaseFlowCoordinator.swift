@@ -18,10 +18,10 @@ final class BaseFlowCoordinator: NavigationStackCoordinator {
         NavigationStackFlow(coordinator: instance) {
             BaseComponent(model: BaseComponentModel(
                 dataCache: instance.container.dataCache,
-                onEvent: { [weak instance] event in 
+                onEvent: { [weak instance] event in
                     switch event {
-                        case .touchEvent:
-                            instance?.path.append(.destination)
+                    case .touchEvent:
+                        instance?.path.append(.destination)
                     }
                 }
             ))
