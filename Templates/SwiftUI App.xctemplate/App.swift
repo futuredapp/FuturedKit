@@ -6,12 +6,12 @@ import SwiftUI
 
 @main
 struct ___PACKAGENAME:identifier___App: App {
-    @UIApplicationDelegateAdaptor private var appDelegate: ___PACKAGENAME:identifier___AppDelegate
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
-    @StateObject private var coordinator: ___PACKAGENAME:identifier___AppCoordinator
+    @StateObject private var coordinator: AppCoordinator
 
     init() {
-        let coordinator = ___PACKAGENAME:identifier___AppCoordinator(container: ___PACKAGENAME:identifier___Container())
+        let coordinator = AppCoordinator(container: Container())
         self._coordinator = StateObject(wrappedValue: coordinator)
         self.appDelegate.delegate = coordinator
     }

@@ -11,10 +11,10 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
 
     let onEvent: (Event) -> Void
 
-    private let dataCache: DataCache<___PACKAGENAME:identifier___DataCacheModel>
+    private let dataCache: DataCache<DataCacheModel>
 
     init(
-        dataCache: DataCache<___PACKAGENAME:identifier___DataCacheModel>,
+        dataCache: DataCache<DataCacheModel>,
         onEvent: @escaping (Event) -> Void
     ) {
         self.dataCache = dataCache
