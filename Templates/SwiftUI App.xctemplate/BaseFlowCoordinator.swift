@@ -22,6 +22,8 @@ final class BaseFlowCoordinator: NavigationStackCoordinator {
                     switch event {
                     case .touchEvent:
                         instance?.path.append(.destination)
+                    case let .alert(title, message):
+                        instance?.alertModel = .init(title: title, message: message)
                     }
                 }
             ))

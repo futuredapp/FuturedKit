@@ -34,6 +34,7 @@ final class BaseComponentModel: BaseComponentModelProtocol {
 extension BaseComponentModel {
     enum Event {
         case touchEvent
+        case alert(title: String, message: String)
     }
 }
 
