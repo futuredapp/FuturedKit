@@ -17,6 +17,7 @@ final class ___PACKAGENAME:identifier___AppCoordinator: ObservableObject {
 }
 
 extension ___PACKAGENAME:identifier___AppCoordinator: ___PACKAGENAME:identifier___AppDelegateProtocol {
+    // swiftlint:disable:next discouraged_optional_collection
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
     }
 }

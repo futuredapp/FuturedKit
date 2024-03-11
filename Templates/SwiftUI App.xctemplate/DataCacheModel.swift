@@ -1,5 +1,5 @@
 //  ___FILEHEADER___
 
-struct DataCacheModel: Equatable {
+struct ___PACKAGENAME:identifier___DataCacheModel: Equatable {
     // Cached properties
 }

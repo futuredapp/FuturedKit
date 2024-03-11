@@ -2,6 +2,7 @@
 
 import UIKit
 
+// swiftlint:disable discouraged_optional_collection
 protocol ___PACKAGENAME:identifier___AppDelegateProtocol: AnyObject {
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
 }
@@ -17,3 +18,4 @@ class ___PACKAGENAME:identifier___AppDelegate: UIResponder, UIApplicationDelegat
         return true
     }
 }
+// swiftlint:enable discouraged_optional_collection

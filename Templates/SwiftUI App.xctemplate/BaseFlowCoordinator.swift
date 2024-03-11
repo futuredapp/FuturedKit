@@ -17,16 +17,14 @@ final class BaseFlowCoordinator: NavigationStackCoordinator {
     static func rootView(with instance: BaseFlowCoordinator) -> some View {
         NavigationStackFlow(coordinator: instance) {
             BaseComponent(model: BaseComponentModel(
-                dataCache: instance.container.dataCache,
-                onEvent: { [weak instance] event in
+                dataCache: instance.container.dataCache) { [weak instance] event in
                     switch event {
                     case .touchEvent:
                         instance?.path.append(.destination)
                     case let .alert(title, message):
                         instance?.alertModel = .init(title: title, message: message)
                     }
-                }
-            ))
+            })
         }
     }
 
