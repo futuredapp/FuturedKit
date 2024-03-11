@@ -3,7 +3,7 @@
 import FuturedArchitecture
 import SwiftUI
 
-final class BaseFlowCoordinator: NavigationStackCoordinator {
+final class ExampleFlowCoordinator: NavigationStackCoordinator {
     private var container: ___PACKAGENAME:identifier___Container
 
     @Published var path: [Destination] = []
@@ -14,17 +14,19 @@ final class BaseFlowCoordinator: NavigationStackCoordinator {
         self.container = container
     }
 
-    static func rootView(with instance: BaseFlowCoordinator) -> some View {
+    static func rootView(with instance: ExampleFlowCoordinator) -> some View {
         NavigationStackFlow(coordinator: instance) {
-            BaseComponent(model: BaseComponentModel(
-                dataCache: instance.container.dataCache) { [weak instance] event in
+            ExampleComponent(
+                model: ExampleComponentModel(
+                    dataCache: instance.container.dataCache) { [weak instance] event in
                     switch event {
                     case .touchEvent:
                         instance?.path.append(.destination)
                     case let .alert(title, message):
                         instance?.alertModel = .init(title: title, message: message)
                     }
-            })
+                }
+            )
         }
     }
 
@@ -37,7 +39,7 @@ final class BaseFlowCoordinator: NavigationStackCoordinator {
     }
 }
 
-extension BaseFlowCoordinator {
+extension ExampleFlowCoordinator {
     enum Destination: String, Hashable, Identifiable {
         case destination
 

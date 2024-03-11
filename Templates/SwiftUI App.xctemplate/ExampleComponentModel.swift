@@ -2,12 +2,12 @@
 
 import FuturedArchitecture
 
-protocol BaseComponentModelProtocol: ComponentModel {
+protocol ExampleComponentModelProtocol: ComponentModel {
     func onAppear() async
     func onTouchUpInside()
 }
 
-final class BaseComponentModel: BaseComponentModelProtocol {
+final class ExampleComponentModel: ExampleComponentModelProtocol {
 
     let onEvent: (Event) -> Void
 
@@ -31,7 +31,7 @@ final class BaseComponentModel: BaseComponentModelProtocol {
     }
 }
 
-extension BaseComponentModel {
+extension ExampleComponentModel {
     enum Event {
         case touchEvent
         case alert(title: String, message: String)
@@ -39,10 +39,10 @@ extension BaseComponentModel {
 }
 
 #if DEBUG
-final class BaseComponentModelMock: BaseComponentModelProtocol {
-    typealias Event = BaseComponentModel.Event
+final class ExampleComponentModelMock: ExampleComponentModelProtocol {
+    typealias Event = ExampleComponentModel.Event
 
-    var onEvent: (BaseComponentModel.Event) -> Void = { _ in }
+    var onEvent: (ExampleComponentModel.Event) -> Void = { _ in }
 
     func onAppear() async { }
 

@@ -146,9 +146,9 @@
 		<string>___PACKAGENAME:identifier___AppDelegate.swift</string>
 		<string>___PACKAGENAME:identifier___Container.swift</string>
 		<string>Model/___PACKAGENAME:identifier___DataCacheModel.swift</string>
-		<string>Scenes/Base/BaseComponentModel.swift</string>
-		<string>Scenes/Base/BaseComponent.swift</string>
-		<string>Flow Coordinators/BaseFlowCoordinator.swift</string>
+		<string>Scenes/Example/ExampleComponentModel.swift</string>
+		<string>Scenes/Example/ExampleComponent.swift</string>
+		<string>Flow Coordinators/ExampleFlowCoordinator.swift</string>
 	</array>
 
 <!-- Files contained in template -->
@@ -215,37 +215,37 @@
 			<key>Group</key>
 			<string>Model</string>
 		</dict>
-		<key>Flow Coordinators/BaseFlowCoordinator.swift</key>
+		<key>Flow Coordinators/ExampleFlowCoordinator.swift</key>
 		<dict>
 			<key>SortOrder</key>
 			<integer>99</integer>
 			<key>Path</key>
-			<string>BaseFlowCoordinator.swift</string>
+			<string>ExampleFlowCoordinator.swift</string>
 			<key>Group</key>
 			<string>Flow Coordinators</string>
 		</dict>
-		<key>Scenes/Base/BaseComponent.swift</key>
+		<key>Scenes/Example/ExampleComponent.swift</key>
 		<dict>
 			<key>SortOrder</key>
 			<integer>99</integer>
 			<key>Path</key>
-			<string>BaseComponent.swift</string>
+			<string>ExampleComponent.swift</string>
 			<key>Group</key>
 			<array>
                 <string>Scenes</string>
-                <string>Base</string>
+                <string>Example</string>
             </array>
 		</dict>
-		<key>Scenes/Base/BaseComponentModel.swift</key>
+		<key>Scenes/Example/ExampleComponentModel.swift</key>
 		<dict>
 			<key>SortOrder</key>
 			<integer>99</integer>
 			<key>Path</key>
-			<string>BaseComponentModel.swift</string>
+			<string>ExampleComponentModel.swift</string>
 			<key>Group</key>
 			<array>
                 <string>Scenes</string>
-                <string>Base</string>
+                <string>Example</string>
             </array>
 		</dict>
 	</dict>
