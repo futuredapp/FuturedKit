@@ -2,7 +2,7 @@
 
 import FuturedArchitecture
 
-final class ___PACKAGENAME:identifier___Container {
+final class Container {
     private(set) var dataCache = DataCache(value: DataCacheModel())
 
     init() {

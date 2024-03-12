@@ -2,21 +2,22 @@
 
 import SwiftUI
 
-final class ___PACKAGENAME:identifier___AppCoordinator: ObservableObject {
-    private var container: ___PACKAGENAME:identifier___Container
+final class AppCoordinator: ObservableObject {
+    private var container: Container
 
-    init(container: ___PACKAGENAME:identifier___Container) {
+    init(container: Container) {
         self.container = container
     }
 
     var rootView: some View {
-        BaseFlowCoordinator.rootView(
-            with: BaseFlowCoordinator(container: container)
+        ExampleFlowCoordinator.rootView(
+            with: ExampleFlowCoordinator(container: container)
         )
     }
 }
 
-extension ___PACKAGENAME:identifier___AppCoordinator: ___PACKAGENAME:identifier___AppDelegateProtocol {
-    func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey : Any]?) {
+extension AppCoordinator: AppDelegateProtocol {
+    // swiftlint:disable:next discouraged_optional_collection
+    func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
     }
 }

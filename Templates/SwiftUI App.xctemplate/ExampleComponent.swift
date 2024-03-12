@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct BaseComponent<Model: BaseComponentModelProtocol>: View {
+struct ExampleComponent<Model: ExampleComponentModelProtocol>: View {
     @StateObject var model: Model
 
     var body: some View {
@@ -17,8 +17,8 @@ struct BaseComponent<Model: BaseComponentModelProtocol>: View {
 
 #if DEBUG
 #Preview {
-    BaseComponent(
-        model: BaseComponentModelMock()
+    ExampleComponent(
+        model: ExampleComponentModelMock()
     )
 }
 #endif

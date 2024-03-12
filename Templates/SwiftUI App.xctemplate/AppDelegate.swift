@@ -2,12 +2,13 @@
 
 import UIKit
 
-protocol ___PACKAGENAME:identifier___AppDelegateProtocol: AnyObject {
+// swiftlint:disable discouraged_optional_collection
+protocol AppDelegateProtocol: AnyObject {
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
 }
 
-class ___PACKAGENAME:identifier___AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
-    weak var delegate: ___PACKAGENAME:identifier___AppDelegateProtocol?
+class AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
+    weak var delegate: AppDelegateProtocol?
 
     func application(
         _ application: UIApplication,
@@ -17,3 +18,4 @@ class ___PACKAGENAME:identifier___AppDelegate: UIResponder, UIApplicationDelegat
         return true
     }
 }
+// swiftlint:enable discouraged_optional_collection

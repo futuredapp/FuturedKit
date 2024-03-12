@@ -8,5 +8,7 @@ install:
 		cp -R *.xctemplate $(TEMPLATE_DIR)$$name ; \
 		cd .. ; \
 	done
+	echo "\033[0;32mInstallation was successful!\033[0m"
 
 .PHONY = install
+.SILENT: install
