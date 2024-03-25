@@ -14,6 +14,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
             content()
         }
         .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
+        .fullScreenCover(item: $coordinator.fullscreenCover, onDismiss: coordinator.onFullscreenCoverDismiss, content: coordinator.scene(for:))
         .defaultAlert(model: $coordinator.alertModel)
     }
 }
