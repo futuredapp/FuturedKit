@@ -15,6 +15,7 @@ public protocol Coordinator: ObservableObject {
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
     func onSheetDismiss()
+    func onFullscreenCoverDismiss()
 }
 
 public extension Coordinator {
