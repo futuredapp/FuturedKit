@@ -9,11 +9,13 @@ public protocol Coordinator: ObservableObject {
     static func rootView(with instance: Self) -> RootView
 
     var sheet: Destination? { get set }
+    var fullscreenCover: Destination? { get set }
     var alertModel: AlertModel? { get set }
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
     func onSheetDismiss()
+    func onFullscreenCoverDismiss()
 }
 
 public extension Coordinator {
@@ -30,6 +32,22 @@ public extension Coordinator {
     }
 
     func onSheetDismiss() {}
+}
+
+public extension Coordinator {
+    func present(fullscreenCover: Destination) {
+        Task { @MainActor in
+            self.fullscreenCover = fullscreenCover
+        }
+    }
+
+    func dismissFullscreenCover() {
+        Task { @MainActor in
+            self.fullscreenCover = nil
+        }
+    }
+
+    func onFullscreenCoverDismiss() {}
 }
 
 public protocol TabCoordinator: Coordinator {
