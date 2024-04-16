@@ -4,8 +4,8 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
-    public init(coordinator: Coordinator, content: @escaping () -> Content) {
-        self._coordinator = StateObject(wrappedValue: coordinator)
+    public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @escaping () -> Content) {
+        self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
     }
 
