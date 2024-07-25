@@ -2,6 +2,7 @@
 
 import AVFoundation
 import SwiftUI
+import FuturedArchitecture
 
 /// A view that displays a camera for picking photo.
 ///
@@ -61,25 +62,24 @@ public struct CameraImagePicker: View {
         }
         .background(Color.black.edgesIgnoringSafeArea(.bottom))
         .onAppear(perform: checkCameraAuthorizationStatus)
-        .alert(model: $permissionAlertModel)
+        .defaultAlert(model: $permissionAlertModel)
     }
 
     private var cameraPermissionAlert: AlertModel {
         AlertModel(
             title: cameraPermissionAlertConfiguration.title,
             message: cameraPermissionAlertConfiguration.message,
-            action: .custom(
-                primary: .cancel(
-                    Text(cameraPermissionAlertConfiguration.dismissButtonTitle),
-                    action: dismiss
-                ),
-                secondary: .default(
-                    Text(cameraPermissionAlertConfiguration.settingsButtonTitle),
-                    action: {
-                        goToSettings()
-                        dismiss()
-                    }
-                )
+            primaryAction: AlertModel.ButtonAction(
+                title: cameraPermissionAlertConfiguration.dismissButtonTitle,
+                buttonRole: .cancel,
+                action: dismiss
+            ),
+            secondaryAction: AlertModel.ButtonAction(
+                title: cameraPermissionAlertConfiguration.settingsButtonTitle,
+                action: {
+                    goToSettings()
+                    dismiss()
+                }
             )
         )
     }

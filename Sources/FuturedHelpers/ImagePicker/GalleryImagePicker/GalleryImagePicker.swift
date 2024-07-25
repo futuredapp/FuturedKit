@@ -11,7 +11,7 @@ import PhotosUI
 /// 
 /// Gallery image picker uses `WrappedPHPicker`. It supports single and multiple selection.
 /// After selection is the view automatically dismissed.
-@available(iOS 14, *)
+
 public struct GalleryImagePicker: View {
     @Environment(\.presentationMode) private var presentationMode
     @Binding private var selection: [UIImage]
