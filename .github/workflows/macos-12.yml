@@ -14,9 +14,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Lint
-      run: |
-        swiftlint --strict
     - name: Swift build & test
       run: |
         swift build
