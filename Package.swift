@@ -6,7 +6,7 @@ let package = Package(
     name: "FuturedKit",
     platforms: [
         .iOS(.v16),
-        .macOS(.v10_15),
+        .macOS(.v13),
         .watchOS(.v9),
         .tvOS(.v16)
     ],
