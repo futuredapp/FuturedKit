@@ -9,6 +9,15 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         self.content = content
     }
 
+    #if os(macOS)
+    public var body: some View {
+        TabView(selection: $coordinator.selectedTab) {
+            content()
+        }
+        .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
+        .defaultAlert(model: $coordinator.alertModel)
+    }
+    #else
     public var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             content()
@@ -17,4 +26,5 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         .fullScreenCover(item: $coordinator.fullscreenCover, onDismiss: coordinator.onFullscreenCoverDismiss, content: coordinator.scene(for:))
         .defaultAlert(model: $coordinator.alertModel)
     }
+    #endif
 }

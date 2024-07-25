@@ -9,13 +9,17 @@ public protocol Coordinator: ObservableObject {
     static func rootView(with instance: Self) -> RootView
 
     var sheet: Destination? { get set }
+    #if !os(macOS)
     var fullscreenCover: Destination? { get set }
+    #endif
     var alertModel: AlertModel? { get set }
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
     func onSheetDismiss()
+    #if !os(macOS)
     func onFullscreenCoverDismiss()
+    #endif
 }
 
 public extension Coordinator {
@@ -34,6 +38,7 @@ public extension Coordinator {
     func onSheetDismiss() {}
 }
 
+#if !os(macOS)
 public extension Coordinator {
     func present(fullscreenCover: Destination) {
         Task { @MainActor in
@@ -49,6 +54,7 @@ public extension Coordinator {
 
     func onFullscreenCoverDismiss() {}
 }
+#endif
 
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
