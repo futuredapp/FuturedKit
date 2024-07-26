@@ -30,18 +30,15 @@ final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdent
 }
 
 extension ___VARIABLE_sceneIdentifier___ComponentModel {
-    enum Event {
-
-    }
+    enum Event {}
 }
 
 #if DEBUG
 final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
-    var onEvent: (___VARIABLE_sceneIdentifier___ComponentModel.Event) -> Void = { _ in }
-    
-    func onAppear() async {
-    }
+    var onEvent: (Event) -> Void = { _ in }
+
+    func onAppear() async {}
 }
 #endif

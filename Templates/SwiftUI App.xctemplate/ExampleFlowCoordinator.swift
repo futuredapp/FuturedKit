@@ -8,6 +8,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 
     @Published var path: [Destination] = []
     @Published var sheet: Destination?
+    @Published var fullscreenCover: Destination?
     @Published var alertModel: AlertModel?
 
     init(container: Container) {

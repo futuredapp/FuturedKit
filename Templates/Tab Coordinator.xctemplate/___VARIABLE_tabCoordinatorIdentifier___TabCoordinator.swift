@@ -1,7 +1,7 @@
 //  ___FILEHEADER___
 
-import SwiftUI
 import FuturedArchitecture
+import SwiftUI
 
 final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinator {
     enum Destination: String, Hashable, Identifiable {
@@ -17,13 +17,14 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
         case secondTab
     }
 
-    private let container: ___PACKAGENAME:identifier___Container
+    private let container: Container
 
-    @Published var sheet: Destination?
     @Published var selectedTab: Tab
+    @Published var sheet: Destination?
+    @Published var fullscreenCover: Destination?
     @Published var alertModel: AlertModel?
 
-    init(container: ___PACKAGENAME:identifier___Container, selectedTab: Tab) {
+    init(container: Container, selectedTab: Tab) {
         self.container = container
         self.selectedTab = selectedTab
     }
