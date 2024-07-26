@@ -5,6 +5,9 @@ public protocol Coordinator: ObservableObject {
     associatedtype RootView: View
     associatedtype DestinationViews: View
 
+    /// `rootView` returns the coordinator's main view. Maintain its purity by defining only the view, without added logic or modifiers.
+    /// If logic or modifiers are needed, encapsulate them in a separate view that can accommodate necessary dependencies.
+    /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
