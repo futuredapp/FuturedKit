@@ -1,6 +1,7 @@
-// swift-tools-version:5.7.1
+// swift-tools-version:5.9
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "FuturedKit",
@@ -13,7 +14,10 @@ let package = Package(
     products: [
         .library(
             name: "FuturedArchitecture",
-            targets: ["FuturedArchitecture"]
+            targets: [
+                "FuturedArchitecture",
+                "EnumIdentifiersGenerator"
+            ]
         ),
         .library(
             name: "FuturedHelpers",
@@ -22,9 +26,23 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0"),
-        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0")
+        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0")
     ],
     targets: [
+        .target(
+            name: "EnumIdentifiersGenerator",
+            dependencies: [
+                "EnumIdentifiersGeneratorMacro"
+            ]
+        ),
+        .macro(
+            name: "EnumIdentifiersGeneratorMacro",
+            dependencies: [
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
+            ]
+        ),
         .target(
             name: "FuturedArchitecture"
         ),

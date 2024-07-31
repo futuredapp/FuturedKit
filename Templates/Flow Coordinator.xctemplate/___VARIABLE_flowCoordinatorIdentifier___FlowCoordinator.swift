@@ -1,5 +1,6 @@
 //  ___FILEHEADER___
 
+import EnumIdentifiersGenerator
 import FuturedArchitecture
 import SwiftUI
 
@@ -30,11 +31,8 @@ final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationS
 }
 
 extension ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator {
+    @EnumIdentifiersGenerator
     enum Destination: String, Hashable, Identifiable {
         case destination
-
-        var id: String {
-            rawValue
-        }
     }
 }
