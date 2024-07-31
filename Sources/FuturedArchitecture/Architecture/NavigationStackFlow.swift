@@ -15,7 +15,6 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
             content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
         }
         .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
-        .defaultAlert(model: $coordinator.alertModel)
     }
     #else
     public var body: some View {
@@ -24,7 +23,6 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         }
         .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
         .fullScreenCover(item: $coordinator.fullscreenCover, onDismiss: coordinator.onFullscreenCoverDismiss, content: coordinator.scene(for:))
-        .defaultAlert(model: $coordinator.alertModel)
     }
     #endif
 }

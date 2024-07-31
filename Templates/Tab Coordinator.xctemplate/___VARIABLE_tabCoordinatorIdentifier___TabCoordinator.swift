@@ -22,7 +22,6 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
     @Published var selectedTab: Tab
     @Published var sheet: Destination?
     @Published var fullscreenCover: Destination?
-    @Published var alertModel: AlertModel?
 
     init(container: Container, selectedTab: Tab) {
         self.container = container

@@ -15,7 +15,6 @@ public protocol Coordinator: ObservableObject {
     #if !os(macOS)
     var fullscreenCover: Destination? { get set }
     #endif
-    var alertModel: AlertModel? { get set }
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews

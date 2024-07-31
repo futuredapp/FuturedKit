@@ -9,7 +9,6 @@ final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationS
     @Published var path: [Destination] = []
     @Published var sheet: Destination?
     @Published var fullscreenCover: Destination?
-    @Published var alertModel: AlertModel?
 
     init(container: Container) {
         self.container = container

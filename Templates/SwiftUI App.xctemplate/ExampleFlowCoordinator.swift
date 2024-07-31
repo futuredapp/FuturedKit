@@ -9,7 +9,6 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
     @Published var path: [Destination] = []
     @Published var sheet: Destination?
     @Published var fullscreenCover: Destination?
-    @Published var alertModel: AlertModel?
 
     init(container: Container) {
         self.container = container
@@ -23,8 +22,6 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
                     switch event {
                     case .touchEvent:
                         instance?.path.append(.destination)
-                    case let .alert(title, message):
-                        instance?.alertModel = .init(title: title, message: message)
                     }
                 }
             )
