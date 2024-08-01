@@ -21,7 +21,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
                     dataCache: instance.container.dataCache) { [weak instance] event in
                     switch event {
                     case .touchEvent:
-                        instance?.path.append(.destination)
+                        instance?.navigate(to: .destination)
                     }
                 }
             )

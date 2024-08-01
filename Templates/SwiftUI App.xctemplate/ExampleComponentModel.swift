@@ -41,7 +41,7 @@ extension ExampleComponentModel {
 final class ExampleComponentModelMock: ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
-    var onEvent: (ExampleComponentModel.Event) -> Void = { _ in }
+    var onEvent: (Event) -> Void = { _ in }
 
     func onAppear() async { }
 

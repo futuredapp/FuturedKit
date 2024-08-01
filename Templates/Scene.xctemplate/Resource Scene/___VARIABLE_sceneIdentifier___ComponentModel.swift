@@ -1,6 +1,7 @@
 //  ___FILEHEADER___
 
 import FuturedArchitecture
+import SwiftUI
 
 protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
     func onAppear() async
