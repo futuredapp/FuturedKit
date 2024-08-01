@@ -11,10 +11,7 @@ public protocol Coordinator: ObservableObject {
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
-    var sheet: Destination? { get set }
-    #if !os(macOS)
-    var fullscreenCover: Destination? { get set }
-    #endif
+    var modalCover: ModalCoverModel<Destination>? { get set }
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
@@ -38,6 +35,16 @@ public extension Coordinator {
     }
 
     func onSheetDismiss() {}
+
+    var sheet: Destination? {
+        get { modalCover?.style == .sheet ? modalCover?.destination : nil }
+        set { modalCover = newValue.map { ModalCoverModel(destination: $0, style: .sheet) } }
+    }
+
+    var fullscreenCover: Destination? {
+        get { modalCover?.style == .fullscreenCover ? modalCover?.destination : nil }
+        set { modalCover = newValue.map { ModalCoverModel(destination: $0, style: .fullscreenCover) } }
+    }
 }
 
 #if !os(macOS)

@@ -8,8 +8,7 @@ final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationS
     private var container: Container
 
     @Published var path: [Destination] = []
-    @Published var sheet: Destination?
-    @Published var fullscreenCover: Destination?
+    @Published var modalCover: ModalCoverModel<Destination>?
 
     init(container: Container) {
         self.container = container
