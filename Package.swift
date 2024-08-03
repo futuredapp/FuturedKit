@@ -14,10 +14,7 @@ let package = Package(
     products: [
         .library(
             name: "FuturedArchitecture",
-            targets: [
-                "FuturedArchitecture",
-                "EnumIdentifiersGenerator"
-            ]
+            targets: ["FuturedArchitecture"]
         ),
         .library(
             name: "FuturedHelpers",
@@ -27,24 +24,14 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0"),
         .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0")
+        .package(url: "https://github.com/futuredapp/futured-macros", branch: "main")
     ],
     targets: [
         .target(
-            name: "EnumIdentifiersGenerator",
+            name: "FuturedArchitecture",
             dependencies: [
-                "EnumIdentifiersGeneratorMacro"
+                .product(name: "FuturedMacros", package: "futured-macros")
             ]
-        ),
-        .macro(
-            name: "EnumIdentifiersGeneratorMacro",
-            dependencies: [
-                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-            ]
-        ),
-        .target(
-            name: "FuturedArchitecture"
         ),
         .target(
             name: "FuturedHelpers",

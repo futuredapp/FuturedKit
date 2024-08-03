@@ -1,6 +1,6 @@
 //  ___FILEHEADER___
 
-import EnumIdentifiersGenerator
+import EnumIdentable
 import FuturedArchitecture
 import SwiftUI
 
@@ -38,7 +38,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 }
 
 extension ExampleFlowCoordinator {
-    @EnumIdentifiersGenerator
+    @EnumIdentable
     enum Destination: String, Hashable, Identifiable {
         case destination
     }

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  ModalCoverModel.swift
 //  
 //
 //  Created by Simon Sestak on 01/08/2024.
