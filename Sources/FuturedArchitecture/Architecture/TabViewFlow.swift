@@ -21,8 +21,24 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         TabView(selection: $coordinator.selectedTab) {
             content()
         }
-        .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
-        .fullScreenCover(item: $coordinator.fullscreenCover, onDismiss: coordinator.onFullscreenCoverDismiss, content: coordinator.scene(for:))
+        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
     }
     #endif
+
+    private var sheetBinding: Binding<Coordinator.Destination?> {
+        .init {
+            coordinator.modalCover?.style == .sheet ? coordinator.modalCover?.destination : nil
+        } set: { destination in
+            coordinator.modalCover = destination.map { .init(destination: $0, style: .sheet) }
+        }
+    }
+
+    private var fullscreenCoverBinding: Binding<Coordinator.Destination?> {
+        .init {
+            coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
+        } set: { destination in
+            coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
+        }
+    }
 }

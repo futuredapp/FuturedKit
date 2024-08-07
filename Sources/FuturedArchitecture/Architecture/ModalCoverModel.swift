@@ -11,9 +11,11 @@ public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiabl
     let destination: Destination
     let style: Style
 
-    enum Style {
+    public enum Style {
         case sheet
+        #if !os(macOS)
         case fullscreenCover
+        #endif
     }
 
     public var id: Destination.ID {

@@ -15,55 +15,31 @@ public protocol Coordinator: ObservableObject {
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
-    func onSheetDismiss()
-    #if !os(macOS)
-    func onFullscreenCoverDismiss()
-    #endif
+    func onModalDismiss()
 }
 
 public extension Coordinator {
-    func present(sheet: Destination) {
-        Task { @MainActor in
-            self.sheet = sheet
+    func present(modal destination: Destination, type: ModalCoverModel<Destination>.Style) {
+        switch type {
+        case .sheet:
+            Task { @MainActor in
+                self.modalCover = .init(destination: destination, style: .sheet)
+            }
+        case .fullscreenCover:
+            Task { @MainActor in
+                self.modalCover = .init(destination: destination, style: .fullscreenCover)
+            }
         }
     }
 
-    func dismissSheet() {
+    func dismissModal() {
         Task { @MainActor in
-            self.sheet = nil
+            self.modalCover = nil
         }
     }
 
-    func onSheetDismiss() {}
-
-    var sheet: Destination? {
-        get { modalCover?.style == .sheet ? modalCover?.destination : nil }
-        set { modalCover = newValue.map { ModalCoverModel(destination: $0, style: .sheet) } }
-    }
-
-    var fullscreenCover: Destination? {
-        get { modalCover?.style == .fullscreenCover ? modalCover?.destination : nil }
-        set { modalCover = newValue.map { ModalCoverModel(destination: $0, style: .fullscreenCover) } }
-    }
+    func onModalDismiss() {}
 }
-
-#if !os(macOS)
-public extension Coordinator {
-    func present(fullscreenCover: Destination) {
-        Task { @MainActor in
-            self.fullscreenCover = fullscreenCover
-        }
-    }
-
-    func dismissFullscreenCover() {
-        Task { @MainActor in
-            self.fullscreenCover = nil
-        }
-    }
-
-    func onFullscreenCoverDismiss() {}
-}
-#endif
 
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
