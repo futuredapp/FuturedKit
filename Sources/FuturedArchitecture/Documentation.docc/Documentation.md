@@ -18,7 +18,3 @@ SwiftUI architecture, resources and views used by Futured.
 - ``WrappedUIImagePicker``
 - ``CameraImagePicker``
 - ``GalleryImagePicker``
-
-### Alert presentation
-
-- ``AlertModel``

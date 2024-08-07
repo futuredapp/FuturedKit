@@ -34,7 +34,6 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
 extension ExampleComponentModel {
     enum Event {
         case touchEvent
-        case alert(title: String, message: String)
     }
 }
 
@@ -42,7 +41,7 @@ extension ExampleComponentModel {
 final class ExampleComponentModelMock: ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
-    var onEvent: (ExampleComponentModel.Event) -> Void = { _ in }
+    var onEvent: (Event) -> Void = { _ in }
 
     func onAppear() async { }
 

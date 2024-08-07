@@ -28,10 +28,6 @@ SwiftUI state management tools, resources and views used by Futured.
 - ``CameraImagePicker``
 - ``GalleryImagePicker``
 
-### Alert presentation
-
-- ``AlertModel``
-
 ## Installation
 
 When using Swift package manager install using or add following line to your dependencies:
