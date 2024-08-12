@@ -14,7 +14,7 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         NavigationStack(path: $coordinator.path) {
             content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
         }
-        .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
+        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
     }
     #else
     public var body: some View {
@@ -34,6 +34,7 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         }
     }
 
+    #if !os(macOS)
     private var fullscreenCoverBinding: Binding<Coordinator.Destination?> {
         .init {
             coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
@@ -41,4 +42,5 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
             coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
         }
     }
+    #endif
 }

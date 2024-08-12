@@ -14,7 +14,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         TabView(selection: $coordinator.selectedTab) {
             content()
         }
-        .sheet(item: $coordinator.sheet, onDismiss: coordinator.onSheetDismiss, content: coordinator.scene(for:))
+        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
     }
     #else
     public var body: some View {
@@ -34,6 +34,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         }
     }
 
+    #if !os(macOS)
     private var fullscreenCoverBinding: Binding<Coordinator.Destination?> {
         .init {
             coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
@@ -41,4 +42,5 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
             coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
         }
     }
+    #endif
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+#if !os(macOS)
 protocol AppSceneDelegate: AnyObject, UIWindowSceneDelegate, ObservableObject {
     var delegate: SceneDelegate? { get set }
 }
@@ -40,3 +41,4 @@ extension View {
         modifier(SceneDelegateWrapperViewModifier<T>(delegate: sceneDelegate))
     }
 }
+#endif

@@ -25,10 +25,12 @@ public extension Coordinator {
             Task { @MainActor in
                 self.modalCover = .init(destination: destination, style: .sheet)
             }
+        #if !os(macOS)
         case .fullscreenCover:
             Task { @MainActor in
                 self.modalCover = .init(destination: destination, style: .fullscreenCover)
             }
+        #endif
         }
     }
 
