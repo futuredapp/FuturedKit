@@ -5,6 +5,7 @@
 //
 
 import SwiftUI
+import FuturedArchitecture
 
 /**
  A typealias representing navigable destinations in a reusable scene flow.
@@ -27,6 +28,8 @@ public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equ
 
 /**
  A protocol providing an interface for reusable scene flow providers.
+ Protocol defines necessary (`navigateTo`, `pop`) and optional navigation functions.
+ Optional functions cater to specific navigational use cases like presenting/dismissing modal screen, and popping to destinations.
 
  - Warning: The `@EnumIndetable` macro won't function with this scene provider as you need to define a destination with an associated value, which isn't primitive.
 
@@ -43,13 +46,13 @@ public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equ
  private lazy var templateSceneProvider: TemplateSceneFlowProvider = {
     TemplateSceneFlowProvider(
         container: container,
-        onNavigateToDestination: { [weak self] destination in
+        navigateTo: { [weak self] destination in
             if destination == .end {
                 self?.navigate(to: .flowSpecificDestinationAfterEmbededFlow)
             } else {
                 self?.navigate(to: destination)
             }
-        }, onPop: { [weak self] in
+        }, pop: { [weak self] in
             self?.pop()
         }
     )
@@ -68,9 +71,9 @@ public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equ
  ```
  */
 public protocol CoordinatorSceneFlowProvider {
+    associatedtype Destination: Hashable & Identifiable
     associatedtype RootView: View
     associatedtype DestinationViews: View
-    associatedtype Destination: Hashable & Identifiable
 
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
@@ -78,48 +81,11 @@ public protocol CoordinatorSceneFlowProvider {
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
 
-    var onNavigateToDestination: (Destination) -> Void { get }
-    var onPop: () -> Void { get }
+    var navigateTo: (Destination) -> Void { get }
+    var pop: () -> Void { get }
 
-    var onPresentSheet: ((Destination) -> Void)? { get }
-    var onDismissSheet: (() -> Void)? { get }
-    var onPresentFullscreenCover: ((Destination) -> Void)? { get }
-    var onDismissFullscreenCover: (() -> Void)? { get }
-    var onPopToDestination: ((Destination?) -> Void)? { get }
-    var onShowError: ((Error) -> Void)? { get }
+    var present: ((Destination, ModalCoverModel<Destination>.Style) -> Void)? { get }
+    var dismissModal: (() -> Void)? { get }
+    var onModalDismiss: (() -> Void)? { get }
+    var popTo: ((Destination?) -> Void)? { get }
 }
-
-public extension CoordinatorSceneFlowProvider {
-    func navigate(to destination: Destination) {
-        onNavigateToDestination(destination)
-    }
-
-    func pop() {
-        onPop()
-    }
-
-    func present(sheet: Destination) {
-        onPresentSheet?(sheet)
-    }
-
-    func onSheetDismiss() {
-        onDismissSheet?()
-    }
-
-    func present(fullscreenCover: Destination) {
-        onPresentFullscreenCover?(fullscreenCover)
-    }
-
-    func onFullscreenCoverDismiss() {
-        onDismissFullscreenCover?()
-    }
-
-    func pop(to destination: Destination?) {
-        onPopToDestination?(destination)
-    }
-
-    func show(error: Error) {
-        onShowError?(error)
-    }
-}
-
