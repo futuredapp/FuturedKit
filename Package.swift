@@ -1,6 +1,7 @@
-// swift-tools-version:5.7.1
+// swift-tools-version:5.9
 
 import PackageDescription
+import CompilerPluginSupport
 
 let package = Package(
     name: "FuturedKit",
@@ -22,11 +23,15 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/mkj-is/BindingKit", from: "1.0.0"),
-        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0")
+        .package(url: "https://github.com/JohnSundell/CollectionConcurrencyKit", from: "0.1.0"),
+        .package(url: "https://github.com/futuredapp/futured-macros", from: "0.1.0")
     ],
     targets: [
         .target(
-            name: "FuturedArchitecture"
+            name: "FuturedArchitecture",
+            dependencies: [
+                .product(name: "FuturedMacros", package: "futured-macros")
+            ]
         ),
         .target(
             name: "FuturedHelpers",

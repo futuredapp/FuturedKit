@@ -1,5 +1,6 @@
 //  ___FILEHEADER___
 
+import EnumIdentable
 import FuturedArchitecture
 import SwiftUI
 
@@ -7,8 +8,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
     private var container: Container
 
     @Published var path: [Destination] = []
-    @Published var sheet: Destination?
-    @Published var alertModel: AlertModel?
+    @Published var modalCover: ModalCoverModel<Destination>?
 
     init(container: Container) {
         self.container = container
@@ -21,9 +21,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
                     dataCache: instance.container.dataCache) { [weak instance] event in
                     switch event {
                     case .touchEvent:
-                        instance?.path.append(.destination)
-                    case let .alert(title, message):
-                        instance?.alertModel = .init(title: title, message: message)
+                        instance?.navigate(to: .destination)
                     }
                 }
             )
@@ -40,11 +38,8 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 }
 
 extension ExampleFlowCoordinator {
-    enum Destination: String, Hashable, Identifiable {
+    @EnumIdentable
+    enum Destination: Hashable, Identifiable {
         case destination
-
-        var id: String {
-            rawValue
-        }
     }
 }

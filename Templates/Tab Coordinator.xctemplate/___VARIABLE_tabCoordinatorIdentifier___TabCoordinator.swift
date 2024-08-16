@@ -1,29 +1,21 @@
 //  ___FILEHEADER___
 
-import SwiftUI
+import EnumIdentable
 import FuturedArchitecture
+import SwiftUI
 
 final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinator {
-    enum Destination: String, Hashable, Identifiable {
-        case destination
-
-        var id: String {
-            rawValue
-        }
-    }
-
     enum Tab {
         case firstTab
         case secondTab
     }
 
-    private let container: ___PACKAGENAME:identifier___Container
+    private let container: Container
 
-    @Published var sheet: Destination?
     @Published var selectedTab: Tab
-    @Published var alertModel: AlertModel?
+    @Published var modalCover: ModalCoverModel<Destination>?
 
-    init(container: ___PACKAGENAME:identifier___Container, selectedTab: Tab) {
+    init(container: Container, selectedTab: Tab) {
         self.container = container
         self.selectedTab = selectedTab
     }
@@ -50,5 +42,12 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
         case .destination:
             EmptyView()
         }
+    }
+}
+
+extension ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator {
+    @EnumIdentable
+    enum Destination: Hashable, Identifiable {
+        case destination
     }
 }
