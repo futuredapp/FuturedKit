@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/futuredapp/futured-macros",
       "state" : {
-        "branch" : "main",
-        "revision" : "e2d832df517e1dd00be6c45a1560b349ca9d337f"
+        "revision" : "ef659dff70d16d27cbe091d365e561c4087e61f5",
+        "version" : "0.1.0"
       }
     },
     {
