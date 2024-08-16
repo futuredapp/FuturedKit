@@ -7,7 +7,12 @@
 import SwiftUI
 
 /**
- A protocol to represent navigable destinations in a reusable scene flow
+ A typealias representing navigable destinations in a reusable scene flow.
+
+ # Notes: #
+ 1. If the scenes defined in the provider can continue with other scenes, define an end destination.
+    - This end destination should trigger a scene display outside of the scene provider.
+ 2. Other destinations will be used to display scenes defined within the scene provider.
 
  # Example #
  ```
@@ -17,71 +22,28 @@ import SwiftUI
  }
  ```
  */
-public protocol CoordinatorSceneFlowDestination: Hashable, Identifiable, Equatable {}
+public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equatable
+
 
 /**
- A protocol defining an interface for reusable scene flow providers.
+ A protocol providing an interface for reusable scene flow providers.
+
+ - Warning: The `@EnumIndetable` macro won't function with this scene provider as you need to define a destination with an associated value, which isn't primitive.
+
+ # Notes: #
+ 1. Declare the scene flow provider as a lazy var property in the coordinator.
+ 2. Coordinator destinations should have an enum that encapsulates flow provider destinations.
+ - `case embededFlow(destination: (any TemplateFlowDestination)?)`
+ 3. To display the first scene of a scene provider, navigate to the embedded flow with nil.
+ - `instance?.navigate(to: .embededFlow(destination: nil))`
+
+ # Example #
+ The scene provider is defined in the coordinator as follows:
  ```
-final class TemplateSceneFlowProvider: CoordinatorSceneFlowProvider {
-     let onNavigateToDestination: (Destination) -> Void
-     let onPop: () -> Void
-     let onPresentSheet: ((Destination) -> Void)? = nil
-     let onDismissSheet: (() -> Void)? = nil
-     let onPresentFullscreenCover: ((Destination) -> Void)? = nil
-     let onDismissFullscreenCover: (() -> Void)? = nil
-     let onPopToDestination: ((Destination?) -> Void)? = nil
-     let onShowError: ((AppError) -> Void)? = nil
-
-     private let container: BasicCapitalContainer
-
-     init(container: BasicCapitalContainer, onNavigateToDestination: @escaping (Destination) -> Void, onPop: @escaping () -> Void) {
-         self.container = container
-         self.onNavigateToDestination = onNavigateToDestination
-         self.onPop = onPop
-     }
-
-     static func rootView(with instance: TemplateSceneFlowProvider) -> some View {
-         LearnComponent(
-            model: LearnComponentModel(
-                dataCache: instance.container.dataCache
-            ) { [weak instance] event in
-                switch event {
-                case .showUnderstandBasicCapital:
-                    instance?.navigate(to: .destination)
-                }
-            }
-         )
-     }
-
-     func scene(for destination: Destination) -> some View {
-         switch destination {
-         case .destination:
-             Color.red
-         case .end:
-             EmptyView()
-         }
-     }
-
-     enum Destination: String, TemplateFlowDestination {
-         case destination
-         case end
-
-         var id: String {
-             rawValue
-         }
-     }
- }
-
-final class TemplateCoordinator: NavigationStackCoordinator {
-    @Published var path: [Destination] = []
-    @Published var sheet: Destination?
-    @Published var fullscreenCover: Destination?
-    @Published var alertModel: AlertModel?
-
-    private let container: BasicCapitalContainer
-
-    private lazy var templateSceneProvider: TemplateSceneFlowProvider = {
-        TemplateSceneFlowProvider(container: container, onNavigateToDestination: { [weak self] destination in
+ private lazy var templateSceneProvider: TemplateSceneFlowProvider = {
+    TemplateSceneFlowProvider(
+        container: container,
+        onNavigateToDestination: { [weak self] destination in
             if destination == .end {
                 self?.navigate(to: .flowSpecificDestinationAfterEmbededFlow)
             } else {
@@ -89,72 +51,22 @@ final class TemplateCoordinator: NavigationStackCoordinator {
             }
         }, onPop: { [weak self] in
             self?.pop()
-        })
-    }()
-
-    init(container: BasicCapitalContainer) {
-        self.container = container
-    }
-
-    static func rootView(with instance: TemplateCoordinator) -> some View {
-        NavigationStackFlow(coordinator: instance) {
-            SomeSpeficComponent(
-                model: SomeSpeficComponentModel(
-                    dataCache: instance.container.dataCache
-                ) { [weak instance] event in
-                    switch event {
-                    case .showFlowSpecificDestination:
-                        instance?.navigate(to: .flowSpecificDestination)
-                    case .showEmbededFlow:
-                        instance?.navigate(to: .embededFlow(destination: nil))
-                    }
-                }
-            )
         }
+    )
+ }()
+ ```
+ To create a scene from the SceneFlowProvider:
+ ```
+ @ViewBuilder
+ private func embededFlowScenes(destination: (any TemplateFlowDestination)?) -> some View {
+    if let destination = destination as? TemplateSceneFlowProvider.Destination {
+        templateSceneProvider.scene(for: destination)
+    } else {
+        TemplateSceneFlowProvider.rootView(with: templateSceneProvider)
     }
-
-    func scene(for destination: Destination) -> some View {
-        switch destination {
-        case let .embededFlow(destination):
-            embededFlowScenes(destination: destination)
-        default:
-            FlowSpecificComponent(model: FlowSpecificComponentModel())
-        }
-    }
-
-    @ViewBuilder
-    private func embededFlowScenes(destination: (any TemplateFlowDestination)?) -> some View {
-        if let destination = destination as? TemplateSceneFlowProvider.Destination {
-            templateSceneProvider.scene(for: destination)
-        } else {
-            TemplateSceneFlowProvider.rootView(with: templateSceneProvider)
-        }
-    }
-
-    enum Destination: Hashable, Identifiable {
-        case flowSpecificDestination
-        case embededFlow(destination: (any TemplateFlowDestination)?)
-        case flowSpecificDestinationAfterEmbededFlow
-
-        var id: String {
-            switch self {
-            case .flowSpecificDestination:
-                "flowSpecificDestination"
-            case let .embededFlow(destination):
-                "embededFlow-\(destination?.id ?? "")"
-            case .flowSpecificDestinationAfterEmbededFlow:
-                "flowSpecificDestinationAfterEmbededFlow"
-            }
-        }
-
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-    }
-}
-```
-**/
-
+ }
+ ```
+ */
 public protocol CoordinatorSceneFlowProvider {
     associatedtype RootView: View
     associatedtype DestinationViews: View
