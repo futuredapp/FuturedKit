@@ -8,26 +8,8 @@ import SwiftUI
 import FuturedArchitecture
 
 /**
- A typealias representing navigable destinations in a reusable scene flow.
+ A protocol providing an interface for reusable scene flow providers. *Reusable scene flow provider* is part of a scene flow, which can be used as a part of more *Flow Coordinators*. The shared section of the flow is taken out of the *Flow Coordinator* and placed into a class conforming to `CoordinatorSceneFlowProvider`.
 
- # Notes: #
- 1. If the scenes defined in the provider can continue with other scenes, define an end destination.
-    - This end destination should trigger a scene display outside of the scene provider.
- 2. Other destinations will be used to display scenes defined within the scene provider.
-
- # Example #
- ```
- protocol TemplateFlowDestination: CoordinatorSceneFlowDestination {
-    static var destination: Self { get }
-    static var end: Self { get }
- }
- ```
- */
-public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equatable
-
-
-/**
- A protocol providing an interface for reusable scene flow providers.
  Protocol defines necessary (`navigateTo`, `pop`) and optional navigation functions.
  Optional functions cater to specific navigational use cases like presenting/dismissing modal screen, and popping to destinations.
 
@@ -36,21 +18,19 @@ public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equ
  # Notes: #
  1. Declare the scene flow provider as a lazy var property in the coordinator.
  2. Coordinator destinations should have an enum that encapsulates flow provider destinations.
- - `case embededFlow(destination: (any TemplateFlowDestination)?)`
- 3. To display the first scene of a scene provider, navigate to the embedded flow with nil.
- - `instance?.navigate(to: .embededFlow(destination: nil))`
+    - `case embededFlow(destination: TemplateSceneFlowProvider.Destination)`
 
  # Example #
  The scene provider is defined in the coordinator as follows:
  ```
- private lazy var templateSceneProvider: TemplateSceneFlowProvider = {
+ private lazy var templateSceneFlowProvider: TemplateSceneFlowProvider = {
     TemplateSceneFlowProvider(
         container: container,
         navigateTo: { [weak self] destination in
             if destination == .end {
                 self?.navigate(to: .flowSpecificDestinationAfterEmbededFlow)
             } else {
-                self?.navigate(to: destination)
+                self?.navigate(to: .embeded(destination: destination))
             }
         }, pop: { [weak self] in
             self?.pop()
@@ -58,25 +38,21 @@ public typealias CoordinatorSceneFlowDestination = Hashable & Identifiable & Equ
     )
  }()
  ```
- To create a scene from the SceneFlowProvider:
+ Then scenes can be provided in flow coordinator like:
  ```
- @ViewBuilder
- private func embededFlowScenes(destination: (any TemplateFlowDestination)?) -> some View {
-    if let destination = destination as? TemplateSceneFlowProvider.Destination {
-        templateSceneProvider.scene(for: destination)
-    } else {
-        TemplateSceneFlowProvider.rootView(with: templateSceneProvider)
+ func scene(for destination: Destination) -> some View {
+    switch destination {
+    case let .embededFlow(destination):
+        templateSceneFlowProvider.scene(for: destination)
+    case .flowSpecificDestinationAfterEmbededFlow:
+        SomeComponent(model: ...
     }
  }
  ```
  */
 public protocol CoordinatorSceneFlowProvider {
     associatedtype Destination: Hashable & Identifiable
-    associatedtype RootView: View
     associatedtype DestinationViews: View
-
-    @ViewBuilder
-    static func rootView(with instance: Self) -> RootView
 
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews

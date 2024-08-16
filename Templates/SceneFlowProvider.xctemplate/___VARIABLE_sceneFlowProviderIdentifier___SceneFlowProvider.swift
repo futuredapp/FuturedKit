@@ -5,12 +5,6 @@ import FuturedArchitecture
 import FuturedHelpers
 import SwiftUI
 
-protocol ___VARIABLE_sceneFlowProviderIdentifier___FlowDestination: CoordinatorSceneFlowDestination {
-    static var destination: Self { get }
-    static var end: Self { get }
-}
-
-
 final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: CoordinatorSceneFlowProvider {
     let navigateTo: (Destination) -> Void
     let pop: () -> Void
@@ -31,15 +25,11 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
         self.pop = pop
     }
 
-    static func rootView(with instance: ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider) -> some View {
-        EmptyView()
-    }
-
     func scene(for destination: Destination) -> some View {
         switch destination {
-        case .destination:
+        case .someDestination:
             EmptyView()
-        case .end:
+        case .otherDestination:
             EmptyView()
         }
     }
@@ -47,8 +37,8 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
 
 extension ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider {
     @EnumIdentable
-    enum Destination: ___VARIABLE_sceneFlowProviderIdentifier___FlowDestination {
-        case destination
-        case end
+    enum Destination: Hashable, Identifiable {
+        case someDestination
+        case otherDestination
     }
 }
