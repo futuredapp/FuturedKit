@@ -6,15 +6,18 @@
 
 import SwiftUI
 
-/** A protocol to represent navigable destinations in a reusable scene flow
+/**
+ A protocol to represent navigable destinations in a reusable scene flow
+
+ # Example #
  ```
  protocol TemplateFlowDestination: CoordinatorSceneFlowDestination {
     static var destination: Self { get }
     static var end: Self { get }
  }
  ```
- **/
-protocol CoordinatorSceneFlowDestination: Hashable, Identifiable, Equatable {}
+ */
+public protocol CoordinatorSceneFlowDestination: Hashable, Identifiable, Equatable {}
 
 /**
  A protocol defining an interface for reusable scene flow providers.
@@ -152,7 +155,7 @@ final class TemplateCoordinator: NavigationStackCoordinator {
 ```
 **/
 
-protocol CoordinatorSceneFlowProvider {
+public protocol CoordinatorSceneFlowProvider {
     associatedtype RootView: View
     associatedtype DestinationViews: View
     associatedtype Destination: Hashable & Identifiable
@@ -174,7 +177,7 @@ protocol CoordinatorSceneFlowProvider {
     var onShowError: ((Error) -> Void)? { get }
 }
 
-extension CoordinatorSceneFlowProvider {
+public extension CoordinatorSceneFlowProvider {
     func navigate(to destination: Destination) {
         onNavigateToDestination(destination)
     }
