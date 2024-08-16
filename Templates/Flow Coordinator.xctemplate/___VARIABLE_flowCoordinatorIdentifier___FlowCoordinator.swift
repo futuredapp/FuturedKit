@@ -31,7 +31,7 @@ final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationS
 
 extension ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator {
     @EnumIdentable
-    enum Destination: String, Hashable, Identifiable {
+    enum Destination: Hashable, Identifiable {
         case destination
     }
 }

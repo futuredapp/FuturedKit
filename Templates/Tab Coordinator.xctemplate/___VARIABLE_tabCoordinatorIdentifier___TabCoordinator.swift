@@ -47,7 +47,7 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
 
 extension ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator {
     @EnumIdentable
-    enum Destination: String, Hashable, Identifiable {
+    enum Destination: Hashable, Identifiable {
         case destination
     }
 }

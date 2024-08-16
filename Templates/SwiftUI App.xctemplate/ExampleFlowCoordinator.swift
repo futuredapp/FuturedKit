@@ -39,7 +39,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 
 extension ExampleFlowCoordinator {
     @EnumIdentable
-    enum Destination: String, Hashable, Identifiable {
+    enum Destination: Hashable, Identifiable {
         case destination
     }
 }
