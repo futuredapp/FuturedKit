@@ -31,6 +31,8 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
             EmptyView()
         case .otherDestination:
             EmptyView()
+        // case .end:
+        //     EmptyView()
         }
     }
 }
@@ -40,5 +42,8 @@ extension ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider {
     enum Destination: Hashable, Identifiable {
         case someDestination
         case otherDestination
+        // Uncomment 'end' case if the coordinator may present additional scenes following those defined by the flow provider.
+        // The 'end' scene acts as an indicator for the coordinator to take over scene presentation.
+        // case end
     }
 }
