@@ -11,6 +11,7 @@ public protocol Coordinator: ObservableObject {
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
+    @MainActor
     var modalCover: ModalCoverModel<Destination>? { get set }
 
     @ViewBuilder
@@ -46,10 +47,12 @@ public extension Coordinator {
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
 
+    @MainActor
     var selectedTab: Tab { get set }
 }
 
 public protocol NavigationStackCoordinator: Coordinator {
+    @MainActor
     var path: [Destination] { get set }
 }
 
