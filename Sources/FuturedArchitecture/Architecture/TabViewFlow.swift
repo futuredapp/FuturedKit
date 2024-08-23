@@ -1,9 +1,16 @@
 import SwiftUI
 
+/// The `TabViewFlow` encapsulates the ``SwiftUI.TabView`` and binds it to the
+/// variables and callbacks of the ``TabCoordinator`` which is retains as a ``SwiftUI.StateObject``.
+/// - Experiment: This API is in preview and subjet to change.
 public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
+    /// - Parameters:
+    ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
+    ///   - content: The definition of tabs held by this TabView should be placed into this ViewBuilder. You are required to use instances of `Tab`
+    ///   type as tags of the views. For an example refer to the template.
     public init(coordinator: @autoclosure @escaping () -> Coordinator, @ViewBuilder content: @escaping () -> Content) {
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
