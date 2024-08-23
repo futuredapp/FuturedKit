@@ -11,6 +11,7 @@ public protocol Coordinator: ObservableObject {
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
+    @MainActor
     var modalCover: ModalCoverModel<Destination>? { get set }
 
     @ViewBuilder
@@ -19,7 +20,7 @@ public protocol Coordinator: ObservableObject {
 }
 
 public extension Coordinator {
-    func present(modal destination: Destination, type: ModalCoverModel<Destination>.Style) {
+    func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
             Task { @MainActor in
@@ -46,10 +47,12 @@ public extension Coordinator {
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
 
+    @MainActor
     var selectedTab: Tab { get set }
 }
 
 public protocol NavigationStackCoordinator: Coordinator {
+    @MainActor
     var path: [Destination] { get set }
 }
 
