@@ -20,7 +20,7 @@ public protocol Coordinator: ObservableObject {
 }
 
 public extension Coordinator {
-    func present(modal destination: Destination, type: ModalCoverModel<Destination>.Style) {
+    func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
             Task { @MainActor in

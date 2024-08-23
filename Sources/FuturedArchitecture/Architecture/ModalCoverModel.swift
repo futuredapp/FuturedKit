@@ -7,17 +7,17 @@
 
 import Foundation
 
+public enum ModalCoverModelStyle {
+    case sheet
+    #if !os(macOS)
+    case fullscreenCover
+    #endif
+}
+
 public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiable {
-    let destination: Destination
-    let style: Style
-
-    public enum Style {
-        case sheet
-        #if !os(macOS)
-        case fullscreenCover
-        #endif
-    }
-
+    public let destination: Destination
+    public let style: ModalCoverModelStyle
+    
     public var id: Destination.ID {
         destination.id
     }
