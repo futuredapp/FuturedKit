@@ -60,7 +60,7 @@ public protocol CoordinatorSceneFlowProvider {
     var navigateTo: (Destination) -> Void { get }
     var pop: () -> Void { get }
 
-    var present: ((Destination, ModalCoverModel<Destination>.Style) -> Void)? { get }
+    var present: ((Destination, ModalCoverModelStyle) -> Void)? { get }
     var dismissModal: (() -> Void)? { get }
     var onModalDismiss: (() -> Void)? { get }
     var popTo: ((Destination?) -> Void)? { get }
