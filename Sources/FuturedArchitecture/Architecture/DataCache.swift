@@ -6,7 +6,7 @@ import Foundation
 /// An Application should contain one shared application-wide cache, but each
 /// coordinator may also create a private data cache.
 ///
-/// The data from data chache should be taken as a subscription and modified
+/// The data from data cache should be taken as a subscription and modified
 /// only via provided `update` methods. As a general rule, value types should
 /// be used as a `Model`.
 ///

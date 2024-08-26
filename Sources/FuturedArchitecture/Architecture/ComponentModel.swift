@@ -1,8 +1,8 @@
 import Foundation
 
-/// `ComponentModel` is an analogy to `ViewModel`. Each *compoenent model* should have
+/// `ComponentModel` is an analogy to `ViewModel`. Each *component model* should have
 /// it's own protocol which uses the `ComponentModel` protocol as it's requirement. This allows us
-/// to create a Mock implementations of compoenent models and allow for simpler and more scalable
+/// to create a Mock implementations of component models and allow for simpler and more scalable
 /// SwiftUI Previews.
 ///
 /// As is eluded to by `ComponentModel`, each component model has two main competencies:
