@@ -1,6 +1,6 @@
 import Foundation
 
-/// `DataCache` is intended to store application state which may be used by
+/// `DataCache` is intended to store state which may be used by
 /// more than one *component* and/or fetched from remote.
 ///
 /// An Application should contain one shared application-wide cache, but each
