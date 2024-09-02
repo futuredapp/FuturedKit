@@ -1,9 +1,15 @@
 import SwiftUI
 
+/// The `NavigationStackFlow` encapsulates the ``SwiftUI.NavigationStack`` and binds it to the
+/// variables and callbacks of the ``NavigationStackCoordinator`` which is retains as a ``SwiftUI.StateObject``.
 public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Content: View>: View {
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
+    /// - Parameters:
+    ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
+    ///   - content: The root view of this navigation stack. The ``navigationDestination(for:destination:)`` modifier
+    ///   is applied to this content.
     public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @escaping () -> Content) {
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content

@@ -7,6 +7,10 @@
 
 import Foundation
 
+/// Style of the modally presented view. 
+///
+/// It is intended to be used with ``ModalCoverModel``. Style has been placed to
+/// the global scope, since the Model is generic.
 public enum ModalCoverModelStyle {
     case sheet
     #if !os(macOS)
@@ -14,6 +18,7 @@ public enum ModalCoverModelStyle {
     #endif
 }
 
+/// This struct is a model associating presentation style with a destination on a specific ``Coordinator``.
 public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiable {
     public let destination: Destination
     public let style: ModalCoverModelStyle
