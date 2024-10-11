@@ -19,11 +19,22 @@ public enum ModalCoverModelStyle {
 }
 
 /// This struct is a model associating presentation style with a destination on a specific ``Coordinator``.
-public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiable {
+public struct ModalCoverModel<Destination: Hashable & Identifiable>: QueueAction {
     public let destination: Destination
     public let style: ModalCoverModelStyle
-    
+    public let priority: QueueActionPriority
+
     public var id: Destination.ID {
         destination.id
+    }
+
+    public init(
+        destination: Destination,
+        style: ModalCoverModelStyle,
+        priority: QueueActionPriority = .normal
+    ) {
+        self.destination = destination
+        self.style = style
+        self.priority = priority
     }
 }
