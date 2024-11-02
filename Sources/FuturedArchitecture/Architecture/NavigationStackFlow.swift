@@ -9,31 +9,62 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     /// Use in case when modal views presented by this coordinator should have detents.
     @State private var modalDetents: Set<PresentationDetent>?
 
+    /// Use in case when whole navigation stack should have detents.
+    @State private var navigationDetents: Set<PresentationDetent>?
+
+    private let detents: Set<SheetDetent>?
+
     /// - Parameters:
+    ///   - detents: The set of detents which should be applied to the whole navigation stack.
     ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
     ///   - content: The root view of this navigation stack. The ``navigationDestination(for:destination:)`` modifier
     ///   is applied to this content.
-    public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @MainActor @escaping () -> Content) {
+    public init(
+        detents: Set<SheetDetent>? = nil,
+        coordinator: @autoclosure @escaping () -> Coordinator,
+        content: @MainActor @escaping () -> Content
+    ) {
+        self.detents = detents
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
     }
 
-    #if os(macOS)
     public var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
+        Group {
+            if let detents {
+                body(with: detents)
+            } else {
+                bodyWithoutSupportOfDetents
+            }
         }
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: modalScene(for:))
-    }
-    #else
-    public var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
-        }
-        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: modalScene(for:))
+        #if !os(macOS)
         .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: modalScene(for:))
+        #endif
     }
-    #endif
+
+    private var bodyWithoutSupportOfDetents: some View {
+        NavigationStack(path: $coordinator.path) {
+            content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
+        }
+    }
+
+    private func body(with detents: Set<SheetDetent>) -> some View {
+        NavigationStack(path: $coordinator.path) {
+            content()
+                .readSize { size in
+                    navigationDetents = Set(detents.map { $0.detent(size: size) } )
+                }
+                .navigationDestination(for: Coordinator.Destination.self) { destination in
+                    coordinator.scene(for: destination)
+                        .readSize { size in
+                            // TODO: When detents contains .height there is a weird animation
+                            navigationDetents = Set(detents.map { $0.detent(size: size) } )
+                        }
+                }
+        }
+        .presentationDetents(navigationDetents ?? [])
+    }
 
     @ViewBuilder
     private func modalScene(for model: ModalCoverModel<Coordinator.Destination>) -> some View {
