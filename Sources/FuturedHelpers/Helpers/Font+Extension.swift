@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import SwiftUI
 
 extension Font.TextStyle {
@@ -88,3 +90,5 @@ extension Font.Width {
         }
     }
 }
+
+#endif

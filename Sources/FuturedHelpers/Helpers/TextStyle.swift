@@ -1,3 +1,5 @@
+#if canImport(UIKit)
+
 import SwiftUI
 
 // MARK: - TextStyle
@@ -256,3 +258,5 @@ extension NSAttributedString {
         )
     }
 }
+
+#endif
