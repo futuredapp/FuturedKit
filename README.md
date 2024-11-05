@@ -19,6 +19,7 @@ The repository uses [DocC](https://www.swift.org/documentation/docc/) for develo
 This target contains non-mandatory extension to the Architecture and additional types and Views which
 are commonly used.
 
+- ``TextStyle`` (See source documentation)
 - ``CameraImagePicker`` (See source documentation)
 - ``GalleryImagePicker`` (See source documentation)
 
