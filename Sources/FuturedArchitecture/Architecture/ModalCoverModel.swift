@@ -26,4 +26,9 @@ public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiabl
     public var id: Destination.ID {
         destination.id
     }
+
+    public init(destination: Destination, style: ModalCoverModelStyle) {
+        self.destination = destination
+        self.style = style
+    }
 }
