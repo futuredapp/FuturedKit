@@ -213,6 +213,17 @@ extension View {
             .textCase(style.textCase)
             .padding(.vertical, style.lineSpacing / 2)
     }
+    
+    /// Applies the specified text style to the view with a custom foreground color.
+    /// - Parameters:
+    /// - style: The text style to apply to the view.
+    /// - foregroundColor: The foreground color to apply to the view.
+    /// - Returns: A view that applies the specified text style with the custom foreground color.
+    public func textStyle(_ style: TextStyle, foregroundColor: Color) -> some View {
+        self
+            .textStyle(style)
+            .foregroundColor(foregroundColor)
+    }
 }
 
 extension Text {
@@ -227,6 +238,25 @@ extension Text {
             .kerning(style.kerning)
             .underline(style.textDecoration == .underline)
             .strikethrough(style.textDecoration == .strikethrough)
+    }
+    
+    /// Applies the specified text style to the text with a custom foreground color.
+    /// Use this modifier when you need to apply a text style to a `Text`, rather than to a generic View.
+    /// - Parameters:
+    /// - style: The text style to apply to the text.
+    /// - foregroundColor: The foreground color to apply to the text
+    /// - Returns: A text that applies the specified text style with the custom foreground color.
+    /// - Note: This modifier does not apply line spacing, text case, or vertical padding based on line height.
+    public func textStyleText(_ style: TextStyle, foregroundColor: Color) -> Text {
+        if #available(iOS 17.0, *) {
+            self
+                .textStyleText(style)
+                .foregroundStyle(foregroundColor)
+        } else {
+            self
+                .textStyleText(style)
+                .foregroundColor(foregroundColor)
+        }
     }
 }
 
