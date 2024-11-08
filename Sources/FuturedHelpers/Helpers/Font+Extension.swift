@@ -48,7 +48,7 @@ extension Font.TextStyle {
 }
 
 extension Font.Weight {
-    /// The UIKit weight to use for fonts.
+    /// The UIKit weight that represents standard typeface style.
     public var uiFontWeight: UIFont.Weight {
         switch self {
         case .ultraLight:
@@ -87,6 +87,24 @@ extension Font.Width {
             .standard
         default:
             .standard
+        }
+    }
+}
+
+extension Font.Design {
+    /// The UIKit design that describes the system-defined typeface designs.
+    public var uiDesign: UIFontDescriptor.SystemDesign {
+        switch self {
+        case .default:
+            .default
+        case .monospaced:
+            .monospaced
+        case .rounded:
+            .rounded
+        case .serif:
+            .serif
+        @unknown default:
+            .default
         }
     }
 }

@@ -45,8 +45,8 @@ public struct TextStyle {
         /// - Parameters:
         ///  - weight: The weight of the system font.
         ///  - width: The width of the system font. Default is `.standard`.
-        case system(weight: Font.Weight, width: Font.Width = .standard)
-    }
+        ///  - design: The design of the system font. Default is `.default`.
+        case system(weight: Font.Weight, width: Font.Width = .standard, design: Font.Design = .default)    }
     
     /// An enumeration that represents a type of font scaling for a text style.
     public enum FontScaling {
@@ -125,32 +125,37 @@ public struct TextStyle {
     /// The font for the text style.
     public var font: Font {
         switch fontType {
-        case .custom(let name):
+        case let .custom(name):
             switch scaling {
             case .default:
                 .custom(name, size: size)
             case .fixedSize:
                 .custom(name, fixedSize: size)
-            case .relativeTo(let textStyle):
+            case let .relativeTo(textStyle):
                 .custom(name, size: size, relativeTo: textStyle)
             }
-        case .system(let weight, let width):
-            .system(size: scaling.fontMetrics?.scaledValue(for: size) ?? size, weight: weight).width(width)
+        case let .system(weight, width, design):
+                .system(size: scaling.fontMetrics?.scaledValue(for: size) ?? size, weight: weight, design: design).width(width)
         }
     }
 
     /// The `UIFont` for the text style.
     public var uiFont: UIFont {
         switch fontType {
-        case .custom(let name):
+        case let .custom(name):
             let font = UIFont(name: name, size: size) ?? .systemFont(ofSize: size)
             return scaling.fontMetrics?.scaledFont(for: font) ?? font
-        case .system(let weight, let width):
-            return .systemFont(
+        case let .system(weight, width, design):
+            let font = UIFont.systemFont(
                 ofSize: scaling.fontMetrics?.scaledValue(for: size) ?? size,
                 weight: weight.uiFontWeight,
                 width: width.uiFontWidth
             )
+            if let descriptor = font.fontDescriptor.withDesign(design.uiDesign) {
+                return .init(descriptor: descriptor, size: size)
+            } else {
+                return font
+            }
         }
     }
     
