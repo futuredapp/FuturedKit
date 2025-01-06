@@ -12,14 +12,17 @@ import Foundation
 public enum SheetDetent: Hashable {
     case medium
     case large
+    case height
     case fraction(CGFloat)
 
-    func detent() -> PresentationDetent {
+    func detent(size: CGSize) -> PresentationDetent {
         switch self {
         case .medium:
             return .medium
         case .large:
             return .large
+        case .height:
+            return .height(size.height)
         case let .fraction(fraction):
             return .fraction(fraction)
         }
