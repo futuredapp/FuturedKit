@@ -11,7 +11,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
     ///   - content: The definition of tabs held by this TabView should be placed into this ViewBuilder. You are required to use instances of `Tab`
     ///   type as tags of the views. For an example refer to the template.
-    public init(coordinator: @autoclosure @escaping () -> Coordinator, @ViewBuilder content: @escaping () -> Content) {
+    public init(coordinator: @autoclosure @escaping () -> Coordinator, @ViewBuilder content: @MainActor @escaping () -> Content) {
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
     }
