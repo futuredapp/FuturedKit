@@ -30,7 +30,8 @@ let package = Package(
         .target(
             name: "FuturedArchitecture",
             dependencies: [
-                .product(name: "FuturedMacros", package: "futured-macros")
+                .product(name: "EnumIdentable", package: "futured-macros"),
+                .product(name: "DataCache", package: "futured-macros"),
             ]
         ),
         .target(
