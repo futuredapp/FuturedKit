@@ -6,9 +6,6 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
-    /// Use in case when modal views presented by this coordinator should have detents.
-    @State private var modalDetents: Set<PresentationDetent>?
-
     /// Use in case when whole navigation stack should have detents.
     @State private var navigationDetents: Set<PresentationDetent>?
 
@@ -37,9 +34,9 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
                 bodyWithoutSupportOfDetents
             }
         }
-        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: modalScene(for:))
+        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         #if !os(macOS)
-        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: modalScene(for:))
+        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         #endif
     }
 
@@ -66,31 +63,20 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         .presentationDetents(navigationDetents ?? [])
     }
 
-    @ViewBuilder
-    private func modalScene(for model: ModalCoverModel<Coordinator.Destination>) -> some View {
-        if model.style.hasDetents {
-            coordinator.scene(for: model.destination)
-                .readSize { modalDetents = model.style.detents(size: $0) }
-                .presentationDetents(modalDetents ?? [])
-        } else {
-            coordinator.scene(for: model.destination)
-        }
-    }
-
-    private var sheetBinding: Binding<ModalCoverModel<Coordinator.Destination>?> {
+    private var sheetBinding: Binding<Coordinator.Destination?> {
         .init {
-            coordinator.modalCover?.style.isSheet == true ? coordinator.modalCover : nil
-        } set: { _ in
-            coordinator.modalCover = nil
+            coordinator.modalCover?.style == .sheet ? coordinator.modalCover?.destination : nil
+        } set: { destination in
+            coordinator.modalCover = destination.map { .init(destination: $0, style: .sheet) }
         }
     }
 
     #if !os(macOS)
-    private var fullscreenCoverBinding: Binding<ModalCoverModel<Coordinator.Destination>?> {
+    private var fullscreenCoverBinding: Binding<Coordinator.Destination?> {
         .init {
-            coordinator.modalCover?.style.isSheet == false ? coordinator.modalCover : nil
-        } set: { _ in
-            coordinator.modalCover = nil
+            coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
+        } set: { destination in
+            coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
         }
     }
     #endif

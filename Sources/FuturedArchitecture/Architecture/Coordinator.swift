@@ -49,9 +49,9 @@ public extension Coordinator {
     ///   - type: Kind of modal presentation.
     func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
-        case let .sheet(detents):
+        case .sheet:
             Task { @MainActor in
-                self.modalCover = .init(destination: destination, style: .sheet(detents: detents))
+                self.modalCover = .init(destination: destination, style: .sheet)
             }
         #if !os(macOS)
         case .fullscreenCover:
