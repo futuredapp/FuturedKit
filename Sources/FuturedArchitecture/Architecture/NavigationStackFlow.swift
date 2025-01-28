@@ -10,7 +10,7 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
     ///   - content: The root view of this navigation stack. The ``navigationDestination(for:destination:)`` modifier
     ///   is applied to this content.
-    public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @escaping () -> Content) {
+    public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @MainActor @escaping () -> Content) {
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
     }
