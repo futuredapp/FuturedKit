@@ -50,3 +50,15 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     }
     #endif
 }
+
+extension View {
+    func readSize(_ action: @escaping (CGSize) -> Void) -> some View {
+        background(
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { action(proxy.size) }
+                    .onChange(of: proxy.size) { action($0) }
+            }
+        )
+    }
+}
