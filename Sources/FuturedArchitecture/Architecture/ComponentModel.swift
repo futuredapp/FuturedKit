@@ -27,5 +27,5 @@ public protocol ComponentModel: ObservableObject {
     /// The return type if this closure is `Void` intentionally. If bidirectional communication is
     /// desired, either pass closure to the *coordinator* using the event, or use other
     /// recommended pattern of data flow.
-    @MainActor var onEvent: (Event) -> Void { get }
+    var onEvent: @MainActor (Event) -> Void { get }
 }
