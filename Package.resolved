@@ -23,8 +23,13 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/futuredapp/futured-macros",
       "state" : {
+<<<<<<< Updated upstream
         "revision" : "ef659dff70d16d27cbe091d365e561c4087e61f5",
         "version" : "0.1.0"
+=======
+        "branch" : "experiment/data-cache-as-macro",
+        "revision" : "eadda8c770776f30f40c5b6759b0aa10d69bcc50"
+>>>>>>> Stashed changes
       }
     },
     {

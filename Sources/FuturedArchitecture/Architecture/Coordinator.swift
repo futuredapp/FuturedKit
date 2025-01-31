@@ -23,6 +23,7 @@ public protocol Coordinator: ObservableObject {
     /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
     /// - Parameter instance: An instance of `Coordinator` which will be retained by the *container*.
     /// - Returns: The container view.
+    @MainActor
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
@@ -33,6 +34,7 @@ public protocol Coordinator: ObservableObject {
     
     /// This function provides an instance of a `View` (commonly a *Component*) for each possible state of the
     /// container (the destination).
+    @MainActor
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
     
@@ -47,26 +49,22 @@ public extension Coordinator {
     ///   - destination: The description of the desired view passed to the ``scene(for:)`` function
     ///   of the *coordinator*.
     ///   - type: Kind of modal presentation.
+    @MainActor
     func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
-            Task { @MainActor in
-                self.modalCover = .init(destination: destination, style: .sheet)
-            }
+            self.modalCover = .init(destination: destination, style: .sheet)
         #if !os(macOS)
         case .fullscreenCover:
-            Task { @MainActor in
-                self.modalCover = .init(destination: destination, style: .fullscreenCover)
-            }
+            self.modalCover = .init(destination: destination, style: .fullscreenCover)
         #endif
         }
     }
 
     /// Convenience method for dismissing a modal.
+    @MainActor
     func dismissModal() {
-        Task { @MainActor in
-            self.modalCover = nil
-        }
+        self.modalCover = nil
     }
 
     func onModalDismiss() {}
@@ -97,17 +95,15 @@ public protocol NavigationStackCoordinator: Coordinator {
 
 public extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
+    @MainActor
     func navigate(to destination: Destination) {
-        Task { @MainActor in
-            self.path.append(destination)
-        }
+        self.path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
+    @MainActor
     func pop() {
-        Task { @MainActor in
-            self.path.removeLast()
-        }
+        self.path.removeLast()
     }
 
     /// Convenience function used to remove all views from the stack, until the provided destination.
@@ -116,10 +112,9 @@ public extension NavigationStackCoordinator {
     /// - Experiment: This API is in preview and subject to change.
     /// - Bug: @mikolasstuchlik thinks, that dismissing *all* views when destination is not found is
     /// confusing and might be source of bugs.
+    @MainActor
     func pop(to destination: Destination?) {
-        Task { @MainActor in
-            let index = destination.flatMap(self.path.lastIndex(of:)) ?? self.path.startIndex
-            self.path = Array(path[path.startIndex...index])
-        }
+        let index = destination.flatMap(self.path.lastIndex(of:)) ?? self.path.startIndex
+        self.path = Array(path[path.startIndex...index])
     }
 }
