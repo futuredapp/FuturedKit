@@ -14,7 +14,7 @@ public protocol Coordinator: ObservableObject {
     associatedtype RootView: View
     /// Views which might be presented by the container based on an instance of `Destination`.
     associatedtype DestinationViews: View
-    
+
     /// `rootView` returns the coordinator's main view.
     /// - Note: It is common pattern to provide a default "destination" view as the body of the *container* instead of
     /// ``SwiftUI.EmptyView``. If you do so, remeber to always capture the `instance` of the *coordinator* weakly!
@@ -23,6 +23,7 @@ public protocol Coordinator: ObservableObject {
     /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
     /// - Parameter instance: An instance of `Coordinator` which will be retained by the *container*.
     /// - Returns: The container view.
+    @MainActor
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
@@ -30,12 +31,13 @@ public protocol Coordinator: ObservableObject {
     @MainActor
     var modalCover: ModalCoverModel<Destination>? { get set }
 
-    
+
     /// This function provides an instance of a `View` (commonly a *Component*) for each possible state of the
     /// container (the destination).
+    @MainActor
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
-    
+
     /// This is a delegate function called when a modal view presented by the *container* is dismissed.
     /// - Note: Default empty implementation is provided.
     func onModalDismiss()
@@ -47,26 +49,22 @@ public extension Coordinator {
     ///   - destination: The description of the desired view passed to the ``scene(for:)`` function
     ///   of the *coordinator*.
     ///   - type: Kind of modal presentation.
+    @MainActor
     func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
-            Task { @MainActor in
-                self.modalCover = .init(destination: destination, style: .sheet)
-            }
+            self.modalCover = .init(destination: destination, style: .sheet)
         #if !os(macOS)
         case .fullscreenCover:
-            Task { @MainActor in
-                self.modalCover = .init(destination: destination, style: .fullscreenCover)
-            }
+            self.modalCover = .init(destination: destination, style: .fullscreenCover)
         #endif
         }
     }
 
     /// Convenience method for dismissing a modal.
+    @MainActor
     func dismissModal() {
-        Task { @MainActor in
-            self.modalCover = nil
-        }
+        self.modalCover = nil
     }
 
     func onModalDismiss() {}
@@ -85,6 +83,13 @@ public protocol TabCoordinator: Coordinator {
     var selectedTab: Tab { get set }
 }
 
+/// `VariantCoordinator` is essentially the same as `TabCoordinator` in a sence, that
+/// it presents one of multiple possible views. The difference is, that a `Scene` gets destroyed upon
+/// being switched to different scene. An example of intended usage might be switching between different
+/// App configurations after launch without modals. This *coordinator* is ment to have
+/// ``VariantViewFlow`` as the Root view.
+public protocol VariantCoordinator: TabCoordinator {}
+
 /// `NavigationStackCoordinator` provides additional requirements for use with ``SwiftUI.NavigationStack``.
 /// This *coordinator* is ment have ``NavigationStackFlow`` as the Root view.
 ///
@@ -97,29 +102,38 @@ public protocol NavigationStackCoordinator: Coordinator {
 
 public extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
+    @MainActor
     func navigate(to destination: Destination) {
-        Task { @MainActor in
-            self.path.append(destination)
-        }
+        self.path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
+    @MainActor
     func pop() {
-        Task { @MainActor in
-            self.path.removeLast()
-        }
+        self.path.removeLast()
     }
 
     /// Convenience function used to remove all views from the stack, until the provided destination.
     /// - Parameter destination: Destination to be reached. If nil is passed, or such destionation
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
-    /// - Bug: @mikolasstuchlik thinks, that dismissing *all* views when destination is not found is
-    /// confusing and might be source of bugs.
-    func pop(to destination: Destination?) {
-        Task { @MainActor in
-            let index = destination.flatMap(self.path.lastIndex(of:)) ?? self.path.startIndex
-            self.path = Array(path[path.startIndex...index])
+    @MainActor
+    func pop(to destination: Destination) {
+        guard let index = self.path.lastIndex(of: destination) else {
+            assertionFailure("Destination not found on the stack")
+            return
         }
+        self.path = Array(path[path.startIndex...index])
+    }
+
+    @MainActor
+    func popToRoot() {
+        path = []
+    }
+
+    @MainActor
+    func reset() {
+        path = []
+        modalCover = nil
     }
 }
