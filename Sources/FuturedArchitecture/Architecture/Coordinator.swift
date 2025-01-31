@@ -83,6 +83,13 @@ public protocol TabCoordinator: Coordinator {
     var selectedTab: Tab { get set }
 }
 
+/// `VariantCoordinator` is essentially the same as `TabCoordinator` in a sence, that
+/// it presents one of multiple possible views. The difference is, that a `Scene` gets destroyed upon
+/// being switched to different scene. An example of intended usage might be switching between different
+/// App configurations after launch without modals. This *coordinator* is ment to have
+/// ``VariantViewFlow`` as the Root view.
+public protocol VariantCoordinator: TabCoordinator {}
+
 /// `NavigationStackCoordinator` provides additional requirements for use with ``SwiftUI.NavigationStack``.
 /// This *coordinator* is ment have ``NavigationStackFlow`` as the Root view.
 ///
