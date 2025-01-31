@@ -14,7 +14,7 @@ public protocol Coordinator: ObservableObject {
     associatedtype RootView: View
     /// Views which might be presented by the container based on an instance of `Destination`.
     associatedtype DestinationViews: View
-    
+
     /// `rootView` returns the coordinator's main view.
     /// - Note: It is common pattern to provide a default "destination" view as the body of the *container* instead of
     /// ``SwiftUI.EmptyView``. If you do so, remeber to always capture the `instance` of the *coordinator* weakly!
@@ -31,13 +31,13 @@ public protocol Coordinator: ObservableObject {
     @MainActor
     var modalCover: ModalCoverModel<Destination>? { get set }
 
-    
+
     /// This function provides an instance of a `View` (commonly a *Component*) for each possible state of the
     /// container (the destination).
     @MainActor
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
-    
+
     /// This is a delegate function called when a modal view presented by the *container* is dismissed.
     /// - Note: Default empty implementation is provided.
     func onModalDismiss()
@@ -110,11 +110,23 @@ public extension NavigationStackCoordinator {
     /// - Parameter destination: Destination to be reached. If nil is passed, or such destionation
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
-    /// - Bug: @mikolasstuchlik thinks, that dismissing *all* views when destination is not found is
-    /// confusing and might be source of bugs.
     @MainActor
-    func pop(to destination: Destination?) {
-        let index = destination.flatMap(self.path.lastIndex(of:)) ?? self.path.startIndex
+    func pop(to destination: Destination) {
+        guard let index = self.path.lastIndex(of: destination) else {
+            assertionFailure("Destination not found on the stack")
+            return
+        }
         self.path = Array(path[path.startIndex...index])
+    }
+
+    @MainActor
+    func popToRoot() {
+        path = []
+    }
+
+    @MainActor
+    func reset() {
+        path = []
+        modalCover = nil
     }
 }
