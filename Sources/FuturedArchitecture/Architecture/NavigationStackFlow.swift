@@ -6,31 +6,34 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
+    /// Use in case when whole navigation stack should have detents.
+    @State private var navigationDetents: Set<PresentationDetent>?
+
     /// - Parameters:
+    ///   - detents: The set of detents which should be applied to the whole navigation stack.
     ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
     ///   - content: The root view of this navigation stack. The ``navigationDestination(for:destination:)`` modifier
     ///   is applied to this content.
-    public init(coordinator: @autoclosure @escaping () -> Coordinator, content: @MainActor @escaping () -> Content) {
+    public init(
+        detents: Set<SheetDetent>? = nil,
+        coordinator: @autoclosure @escaping () -> Coordinator,
+        content: @MainActor @escaping () -> Content
+    ) {
+        self.navigationDetents = detents == nil ? nil : Set(detents!.map { $0.detent() })
         self._coordinator = StateObject(wrappedValue: coordinator())
         self.content = content
     }
 
-    #if os(macOS)
     public var body: some View {
         NavigationStack(path: $coordinator.path) {
             content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
         }
+        .presentationDetents(navigationDetents ?? [])
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-    }
-    #else
-    public var body: some View {
-        NavigationStack(path: $coordinator.path) {
-            content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
-        }
-        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        #if !os(macOS)
         .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        #endif
     }
-    #endif
 
     private var sheetBinding: Binding<Coordinator.Destination?> {
         .init {
