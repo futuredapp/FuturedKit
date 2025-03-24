@@ -1,14 +1,9 @@
-TEMPLATE_NAMES = 'FuturedArchitecture'
-TEMPLATE_DIR = $(HOME)/Library/Developer/Xcode/Templates/
+TEMPLATE_DIR = $(HOME)/Library/Developer/Xcode/Templates/FuturedArchitecture
 
 install:
-	for name in $(TEMPLATE_NAMES) ; do \
-		mkdir -p $(TEMPLATE_DIR)$$name ; \
-		cd $$name ; \
-		cp -R *.xctemplate $(TEMPLATE_DIR)$$name ; \
-		cd .. ; \
-	done
+	mkdir -p $(TEMPLATE_DIR)
+	cp -R *.xctemplate $(TEMPLATE_DIR)/
 	echo "\033[0;32mInstallation was successful!\033[0m"
 
-.PHONY = install
+.PHONY: install
 .SILENT: install
