@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The `TabViewFlow` encapsulates the ``SwiftUI.TabView`` and binds it to the
 /// variables and callbacks of the ``TabCoordinator`` which is retains as a ``SwiftUI.StateObject``.
-/// - Experiment: This API is in preview and subjet to change.
+/// - Experiment: This API is in preview and subject to change.
 public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     @StateObject private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content

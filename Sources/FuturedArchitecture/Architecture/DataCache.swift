@@ -10,8 +10,8 @@ import Foundation
 /// only via provided `update` methods. As a general rule, value types should
 /// be used as a `Model`.
 ///
-/// - Experiment: This API is in preview and subjet to change.
-/// - ToDo: How the `DataCache` may interact with persistance such as
+/// - Experiment: This API is in preview and subject to change.
+/// - ToDo: How the `DataCache` may interact with persistence such as
 /// `CoreData` or `SwiftData` is an open question and subject of further
 /// research.
 public actor DataCache<Model: Equatable> {
@@ -34,7 +34,7 @@ public actor DataCache<Model: Equatable> {
     /// Atomically update one variable.
     ///
     /// - ToDo: Investigate whether we can use variadic generics to improve the API.
-    /// No change is emmited when the value is the same.
+    /// No change is emitted when the value is the same.
     @inlinable
     public func update<T: Equatable>(_ keyPath: WritableKeyPath<Model, T>, with value: T) {
         guard value != self.value[keyPath: keyPath] else { return }

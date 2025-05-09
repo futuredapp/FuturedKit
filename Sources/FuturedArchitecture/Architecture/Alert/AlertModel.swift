@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// ## Overview
 ///
-/// It wrappes the native `alert(_:isPresented:presenting:actions:message:)`, but you show an alert in different way by using the `defaultAlert(model:)` view modifier,
+/// It wraps the native `alert(_:isPresented:presenting:actions:message:)`, but you show an alert in different way by using the `defaultAlert(model:)` view modifier,
 /// which then appears whenever the bound `model` value is not `nil` value.
 /// Alert model contains two actions: `primaryAction` and `secondaryAction`, which are then represented as SwiftUI Button
 /// If both values are nil, system presents alert with standard "OK" button and given `title` and `message`

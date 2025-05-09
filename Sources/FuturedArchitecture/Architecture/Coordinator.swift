@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// This architecture is modelled around the concept of *Flow Coordinators*. You might think about
+/// This architecture is modeled around the concept of *Flow Coordinators*. You might think about
 /// *flow coordinator* as a "view model for container view." For example, whereas data model of
 /// a Table View is stored in a *component model*, data model of ``SwiftUI.TabView`` and ``SwiftUI.NavigationStack``
 /// is stored in an instance conforming to `Coordinator`.
 ///
 /// This base `protocol` contains set of common requirements for all coordinators. Other protocols
-/// tailored to specific Containers are provided aswell.
+/// tailored to specific Containers are provided as well.
 public protocol Coordinator: ObservableObject {
     /// Type used to represent the state of the container, i.e. which child-components should be presented.
     associatedtype Destination: Hashable & Identifiable
@@ -17,7 +17,7 @@ public protocol Coordinator: ObservableObject {
 
     /// `rootView` returns the coordinator's main view.
     /// - Note: It is common pattern to provide a default "destination" view as the body of the *container* instead of
-    /// ``SwiftUI.EmptyView``. If you do so, remeber to always capture the `instance` of the *coordinator* weakly!
+    /// ``SwiftUI.EmptyView``. If you do so, remember to always capture the `instance` of the *coordinator* weakly!
     /// - Warning: Maintain its purity by defining only the view, without added logic or modifiers.
     /// If logic or modifiers are needed, encapsulate them in a separate view that can accommodate necessary dependencies.
     /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
@@ -74,8 +74,8 @@ public extension Coordinator {
 
 /// `TabCoordinator` provides additional requirements for the use with ``SwiftUI.TabView``.
 /// This *coordinator* is ment to have ``TabViewFlow`` as the Root view.
-/// - Experiment: This API is in preview and subjet to change.
-/// - Todo: ``SwiftUI.TabView`` requires internal state, which is forbiddden as per
+/// - Experiment: This API is in preview and subject to change.
+/// - Todo: ``SwiftUI.TabView`` requires internal state, which is forbidden as per
 /// documentation of ``Coordinator.rootView(with:)``. Also, the API introduces `Tab` type
 /// which is essentially duplication of `Destination`. Consider, how the API limits the use of tabs.
 public protocol TabCoordinator: Coordinator {
@@ -90,7 +90,7 @@ public protocol TabCoordinator: Coordinator {
 ///
 /// - ToDo: Create a template for this coordinator.
 public protocol NavigationStackCoordinator: Coordinator {
-    /// Property modelling the Views currently placed on stack.
+    /// Property modeling the Views currently placed on stack.
     @MainActor
     var path: [Destination] { get set }
 }
@@ -111,7 +111,7 @@ public extension NavigationStackCoordinator {
     }
 
     /// Convenience function used to remove all views from the stack, until the provided destination.
-    /// - Parameter destination: Destination to be reached. If nil is passed, or such destionation
+    /// - Parameter destination: Destination to be reached. If nil is passed, or such destination
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
     func pop(to destination: Destination) {
