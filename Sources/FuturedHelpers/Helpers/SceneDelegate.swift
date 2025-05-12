@@ -36,7 +36,7 @@ extension View {
     /// - Parameter sceneDelegate: The SceneDelegate to set.
     /// - Description:
     /// In the main app root view call this modifier and pass the SceneDelegate. You need to specify the AppSceneDelegate which conforms to the UIWindowSceneDelegate.
-    /// This is necessary because the SceneDelegate is accessible in SwiftUI only via EnviromentObject.
+    /// This is necessary because the SceneDelegate is accessible in SwiftUI only via EnvironmentObject.
     public func set<T: AppSceneDelegate>(appSceneDelegateClass: T.Type, sceneDelegate: SceneDelegate) -> some View {
         modifier(SceneDelegateWrapperViewModifier<T>(delegate: sceneDelegate))
     }
