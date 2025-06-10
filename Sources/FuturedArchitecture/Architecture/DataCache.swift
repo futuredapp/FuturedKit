@@ -40,4 +40,32 @@ public actor DataCache<Model: Equatable> {
         guard value != self.value[keyPath: keyPath] else { return }
         self.value[keyPath: keyPath] = value
     }
+
+    /// Populate one variable of Collection type.
+    ///  - Description: The method will append new elements to the existing collection. The elements which are already in the collection as well as in the new collection will be updated. No change is emmited when the new collection is empty.
+    @inlinable
+    public func populate<T: Collection>(_ keyPath: WritableKeyPath<Model, T>, with collection: T) where T.Element: Equatable {
+        guard !collection.isEmpty else { return }
+        var values = self.value[keyPath: keyPath].filter { !collection.contains($0) }
+        values.append(contentsOf: collection)
+        guard let values = values as? T else {
+            assertionFailure("Cannot convert back to generic")
+            return
+        }
+        self.value[keyPath: keyPath] = values
+    }
+
+    /// Populate one optional variable of Collection type.
+    /// - Description: The method will append new elements to the existing collection. The elements which are already in the collection as well as in the new collection will be updated. No change is emmited when the new collection is empty.
+    @inlinable
+    public func populate<T: Collection>(_ keyPath: WritableKeyPath<Model, T?>, with collection: T) where T.Element: Equatable {
+        guard !collection.isEmpty else { return }
+        var values = self.value[keyPath: keyPath]?.filter { !collection.contains($0) } ?? []
+        values.append(contentsOf: collection)
+        guard let values = values as? T else {
+            assertionFailure("Cannot convert back to generic")
+            return
+        }
+        self.value[keyPath: keyPath] = values
+    }
 }
