@@ -6,7 +6,7 @@ The FuturedKit Architecture is a flow-coordinator, component, component model ba
 
 This architecture uses some concepts which may be familiar, but we decided to modify the usual naming (mainly due to naming conflits with existing APIs).
 
-![overview](archoverview)
+![overview](Images/archoverview.svg)
 
 ### Scene
 
