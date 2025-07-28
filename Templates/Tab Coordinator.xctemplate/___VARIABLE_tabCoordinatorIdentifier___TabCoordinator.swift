@@ -21,7 +21,7 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
         self.selectedTab = selectedTab
     }
 
-    @MainActor @ViewBuilder
+    @ViewBuilder
     static func rootView(with instance: ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator) -> some View {
         TabViewFlow(coordinator: instance) {
             Text("First Tab")
