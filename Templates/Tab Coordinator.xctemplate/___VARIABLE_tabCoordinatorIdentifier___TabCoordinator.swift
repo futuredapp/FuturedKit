@@ -15,12 +15,13 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
     @Published var selectedTab: Tab
     @Published var modalCover: ModalCoverModel<Destination>?
 
+    @MainActor
     init(container: Container, selectedTab: Tab) {
         self.container = container
         self.selectedTab = selectedTab
     }
 
-    @ViewBuilder
+    @MainActor @ViewBuilder
     static func rootView(with instance: ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator) -> some View {
         TabViewFlow(coordinator: instance) {
             Text("First Tab")
@@ -47,7 +48,7 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
 
 extension ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator {
     @EnumIdentable
-    enum Destination: Hashable, Identifiable {
+    enum Destination {
         case destination
     }
 }
