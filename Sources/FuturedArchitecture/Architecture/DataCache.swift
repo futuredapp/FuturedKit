@@ -14,7 +14,7 @@ import Foundation
 /// - ToDo: How the `DataCache` may interact with persistence such as
 /// `CoreData` or `SwiftData` is an open question and subject of further
 /// research.
-public actor DataCache<Model: Equatable> {
+public actor ActorDataCache<Model: Equatable> {
     /// The data held by this data cache.
     @inlinable
     @Published public private(set) var value: Model
