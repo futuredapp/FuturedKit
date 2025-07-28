@@ -4,7 +4,7 @@ import FuturedArchitecture
 
 protocol ExampleComponentModelProtocol: ComponentModel {
     func onAppear() async
-    func onTouchUpInside()
+    @MainActor func onTouchUpInside()
 }
 
 final class ExampleComponentModel: ExampleComponentModelProtocol {
@@ -27,9 +27,7 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
     }
 
     func onTouchUpInside() {
-        Task {
-            await onEvent(.touchEvent)
-        }
+        onEvent(.touchEvent)
     }
 }
 
