@@ -39,7 +39,7 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
 
 extension ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider {
     @EnumIdentable
-    enum Destination: Hashable, Identifiable {
+    enum Destination {
         case someDestination
         case otherDestination
         // Uncomment 'end' case if the coordinator may present additional scenes following those defined by the flow provider.
