@@ -26,6 +26,7 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
         // Fetch fresh data
     }
 
+    @MainActor
     func onTouchUpInside() {
         onEvent(.touchEvent)
     }
