@@ -14,6 +14,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
         self.container = container
     }
 
+    @MainActor
     static func rootView(with instance: ExampleFlowCoordinator) -> some View {
         NavigationStackFlow(coordinator: instance) {
             ExampleComponent(
@@ -28,7 +29,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
         }
     }
 
-    @ViewBuilder
+    @MainActor @ViewBuilder
     func scene(for destination: Destination) -> some View {
         switch destination {
         case .destination:
@@ -39,7 +40,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 
 extension ExampleFlowCoordinator {
     @EnumIdentable
-    enum Destination: Hashable, Identifiable {
+    enum Destination {
         case destination
     }
 }

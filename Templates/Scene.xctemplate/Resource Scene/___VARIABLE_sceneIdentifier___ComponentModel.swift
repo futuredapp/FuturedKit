@@ -9,7 +9,7 @@ protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
 
 final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
 
-    let onEvent: (Event) -> Void
+    let onEvent: @MainActor (Event) -> Void
 
     private let dataCache: DataCache<DataCacheModel>
     private let resource: ___VARIABLE_sceneIdentifier___Resource
@@ -38,7 +38,7 @@ extension ___VARIABLE_sceneIdentifier___ComponentModel {
 final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
-    var onEvent: (Event) -> Void = { _ in }
+    var onEvent: @MainActor (Event) -> Void = { _ in }
 
     func onAppear() async {}
 }

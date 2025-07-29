@@ -4,12 +4,12 @@ import FuturedArchitecture
 
 protocol ExampleComponentModelProtocol: ComponentModel {
     func onAppear() async
-    func onTouchUpInside()
+    @MainActor func onTouchUpInside()
 }
 
 final class ExampleComponentModel: ExampleComponentModelProtocol {
 
-    let onEvent: (Event) -> Void
+    let onEvent: @MainActor (Event) -> Void
 
     private let dataCache: DataCache<DataCacheModel>
 
@@ -26,6 +26,7 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
         // Fetch fresh data
     }
 
+    @MainActor
     func onTouchUpInside() {
         onEvent(.touchEvent)
     }
@@ -41,7 +42,7 @@ extension ExampleComponentModel {
 final class ExampleComponentModelMock: ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
-    var onEvent: (Event) -> Void = { _ in }
+    var onEvent: @MainActor (Event) -> Void = { _ in }
 
     func onAppear() async { }
 

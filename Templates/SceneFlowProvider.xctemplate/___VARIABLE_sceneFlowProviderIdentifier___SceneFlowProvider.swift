@@ -8,7 +8,7 @@ import SwiftUI
 final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: CoordinatorSceneFlowProvider {
     let navigateTo: (Destination) -> Void
     let pop: () -> Void
-    let present: ((Destination, ModalCoverModel<Destination>.Style) -> Void)? = nil
+    let present: ((Destination, ModalCoverModelStyle) -> Void)? = nil
     let dismissModal: (() -> Void)? = nil
     let onModalDismiss: (() -> Void)? = nil
     let popTo: ((Destination?) -> Void)? = nil
@@ -39,7 +39,7 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
 
 extension ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider {
     @EnumIdentable
-    enum Destination: Hashable, Identifiable {
+    enum Destination {
         case someDestination
         case otherDestination
         // Uncomment 'end' case if the coordinator may present additional scenes following those defined by the flow provider.
