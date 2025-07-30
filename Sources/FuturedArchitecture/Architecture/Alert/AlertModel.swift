@@ -62,12 +62,23 @@ public struct AlertModel: Identifiable {
         }
     }
 
+    public struct TextField {
+        let title: String
+        let text: Binding<String>
+
+        public init(title: String, text: Binding<String>) {
+            self.title = title
+            self.text = text
+        }
+    }
+
     public var id: String? {
         title + (message ?? "")
     }
 
     let title: String
     let message: String?
+    let textField: TextField?
     let primaryAction: ButtonAction?
     let secondaryAction: ButtonAction?
 
@@ -78,9 +89,16 @@ public struct AlertModel: Identifiable {
     ///   - primaryAction: The specification of the alert primary action.
     ///   - secondaryAction: The specification of the alert secondary action.
 
-    public init(title: String, message: String?, primaryAction: ButtonAction? = nil, secondaryAction: ButtonAction? = nil) {
+    public init(
+        title: String,
+        message: String?,
+        textField: TextField? = nil,
+        primaryAction: ButtonAction? = nil,
+        secondaryAction: ButtonAction? = nil
+    ) {
         self.title = title
         self.message = message
+        self.textField = textField
         self.primaryAction = primaryAction
         self.secondaryAction = secondaryAction
     }

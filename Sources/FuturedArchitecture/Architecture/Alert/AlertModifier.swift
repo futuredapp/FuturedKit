@@ -20,20 +20,22 @@ private struct AlertModifier: ViewModifier {
             ),
             presenting: model,
             actions: { model in
+                if let textField = model.textField {
+                    TextField(textField.title, text: textField.text)
+                }
                 if let primaryAction = model.primaryAction {
                     Button(
                         primaryAction.title,
                         role: primaryAction.buttonRole,
                         action: primaryAction.action
                     )
-
-                    if let secondaryAction = model.secondaryAction {
-                        Button(
-                            secondaryAction.title,
-                            role: secondaryAction.buttonRole,
-                            action: secondaryAction.action
-                        )
-                    }
+                }
+                if let secondaryAction = model.secondaryAction {
+                    Button(
+                        secondaryAction.title,
+                        role: secondaryAction.buttonRole,
+                        action: secondaryAction.action
+                    )
                 }
             },
             message: { model in
