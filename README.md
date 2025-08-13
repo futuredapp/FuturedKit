@@ -14,6 +14,8 @@ This target contains types and protocols supporting the architecture. See
 
 The repository uses [DocC](https://www.swift.org/documentation/docc/) for developer-friendly access to documentation.
 
+More high-level documentation can be found in the Futured Engineering Handbook [here](https://futuredapp.github.io/Engineering-Handbook/teams/ios/ios_architecture/).
+
 ### FuturedHelpers
 
 This target contains non-mandatory extension to the Architecture and additional types and Views which

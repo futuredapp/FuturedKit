@@ -1,13 +1,32 @@
 //
 //  ModalCoverModel.swift
-//  
+//
 //
 //  Created by Simon Sestak on 01/08/2024.
 //
 
+import SwiftUI
 import Foundation
 
-/// Style of the modally presented view. 
+
+public enum SheetDetent: Hashable {
+    case medium
+    case large
+    case fraction(CGFloat)
+
+    func detent() -> PresentationDetent {
+        switch self {
+        case .medium:
+            return .medium
+        case .large:
+            return .large
+        case let .fraction(fraction):
+            return .fraction(fraction)
+        }
+    }
+}
+
+/// Style of the modally presented view.
 ///
 /// It is intended to be used with ``ModalCoverModel``. Style has been placed to
 /// the global scope, since the Model is generic.

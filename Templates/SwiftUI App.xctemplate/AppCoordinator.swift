@@ -9,6 +9,7 @@ final class AppCoordinator: ObservableObject {
         self.container = container
     }
 
+    @MainActor
     var rootView: some View {
         ExampleFlowCoordinator.rootView(
             with: ExampleFlowCoordinator(container: container)
