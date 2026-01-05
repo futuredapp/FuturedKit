@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>DefaultCompletionName</key>
-	<string>Scene Flow Provider</string>
 	<key>Description</key>
 	<string>This generates a new Scene Flow Provider for populating SwiftUI Navigation Stack</string>
 	<key>Kind</key>
@@ -14,7 +12,7 @@
 			<key>Description</key>
 			<string>The name of the scene flow provider to create</string>
 			<key>Identifier</key>
-			<string>sceneFlowProviderName</string>
+			<string>productName</string>
 			<key>Name</key>
 			<string>New Scene Flow Provider Name:</string>
 			<key>NotPersisted</key>
@@ -26,7 +24,7 @@
 		</dict>
 		<dict>
 			<key>Default</key>
-			<string>___VARIABLE_sceneFlowProviderName:identifier___</string>
+			<string>___VARIABLE_productName:identifier___</string>
 			<key>Identifier</key>
 			<string>sceneFlowProviderIdentifier</string>
 			<key>Type</key>

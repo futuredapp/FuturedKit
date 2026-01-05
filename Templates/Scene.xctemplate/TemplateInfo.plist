@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>DefaultCompletionName</key>
-	<string>Scene</string>
 	<key>Description</key>
 	<string>This generates a new SwiftUI scene using Futured architecture. It consists of the Component (SwiftUI View) and its ComponentModel (ObservableObject)</string>
 	<key>Kind</key>
@@ -14,7 +12,7 @@
 			<key>Description</key>
 			<string>The name of the scene to create</string>
 			<key>Identifier</key>
-			<string>sceneName</string>
+			<string>productName</string>
 			<key>Name</key>
 			<string>New Scene Name:</string>
 			<key>NotPersisted</key>
@@ -26,7 +24,7 @@
 		</dict>
 		<dict>
 			<key>Default</key>
-			<string>___VARIABLE_sceneName:identifier___</string>
+			<string>___VARIABLE_productName:identifier___</string>
 			<key>Identifier</key>
 			<string>sceneIdentifier</string>
 			<key>Type</key>

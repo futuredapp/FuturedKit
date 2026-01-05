@@ -1,13 +1,13 @@
 //  ___FILEHEADER___
 
+import Combine
 import FuturedArchitecture
-import SwiftUI
 
 protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
     func onAppear() async
 }
 
-final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+final class ___VARIABLE_sceneIdentifier___ComponentModel: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
 
     let onEvent: @MainActor (Event) -> Void
 
@@ -17,7 +17,7 @@ final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdent
     init(
         dataCache: DataCache<DataCacheModel>,
         resource: ___VARIABLE_sceneIdentifier___Resource,
-        onEvent: @escaping (Event) -> Void
+        onEvent: @escaping @MainActor (Event) -> Void
     ) {
         self.dataCache = dataCache
         self.resource = resource
@@ -35,7 +35,7 @@ extension ___VARIABLE_sceneIdentifier___ComponentModel {
 }
 
 #if DEBUG
-final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+final class ___VARIABLE_sceneIdentifier___ComponentModelMock: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
     var onEvent: @MainActor (Event) -> Void = { _ in }
