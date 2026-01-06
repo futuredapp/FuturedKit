@@ -27,17 +27,32 @@
         <key>BundleIdentifier</key>
         <string>com.apple.dt.IDEKit</string>
     </dict>
+    <key>Components</key>
+    <array>
+        <dict>
+            <key>Identifier</key>
+            <string>com.apple.dt.unit.cocoaTouchUnitTestBundle</string>
+            <key>Name</key>
+            <string>___PACKAGENAME___Tests</string>
+        </dict>
+    </array>
 
 <!-- Project creation dialog options -->
     <key>Options</key>
-        <array>
-            <dict>
-                <key>Identifier</key>
-                <string>languageChoice</string>
-                <key>Override</key>
-                <string>Swift</string>
-            </dict>
-        </array>
+    <array>
+        <dict>
+            <key>Identifier</key>
+            <string>languageChoice</string>
+            <key>Override</key>
+            <string>Swift</string>
+        </dict>
+        <dict>
+            <key>Identifier</key>
+            <string>testingSystem</string>
+            <key>Default</key>
+            <string>Swift Testing</string>
+        </dict>
+    </array>
 
 <!-- Project and target configuration -->
     <key>Project</key>
