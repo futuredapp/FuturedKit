@@ -32,41 +32,6 @@
 	<key>Options</key>
 	<array>
 		<dict>
-			<key>Identifier</key>
-			<string>hasUnitAndUITests</string>
-			<key>Name</key>
-			<string>Include Tests</string>
-			<key>NotPersisted</key>
-			<false/>
-			<key>SortOrder</key>
-			<integer>300</integer>
-			<key>Type</key>
-			<string>checkbox</string>
-			<key>Default</key>
-			<string>true</string>
-			<key>Units</key>
-			<dict>
-				<key>true</key>
-				<dict>
-					<key>Components</key>
-					<array>
-						<dict>
-							<key>Identifier</key>
-							<string>com.apple.dt.unit.cocoaTouchApplicationUnitTestBundle</string>
-							<key>Name</key>
-							<string>___PACKAGENAME___Tests</string>
-						</dict>
-						<dict>
-							<key>Identifier</key>
-							<string>com.apple.dt.unit.cocoaTouchApplicationUITestBundle</string>
-							<key>Name</key>
-							<string>___PACKAGENAME___UITests</string>
-						</dict>
-					</array>
-				</dict>
-			</dict>
-		</dict>
-		<dict>
             <key>Identifier</key>
             <string>languageChoice</string>
             <key>Override</key>
