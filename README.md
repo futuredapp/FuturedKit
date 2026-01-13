@@ -33,9 +33,14 @@ When using Swift package manager install using or add following line to your dep
 .package(url: "https://github.com/futuredapp/FuturedKit.git", from: "1.0.0")
 ```
 
-The repository provides number of Templates for user convenience. You can install them using make:
+The repository provides number of Xcode Templates for user convenience.
+
+![FuturedArchitecture Template](Resources/futured_architecture.png)
+
+You can install them using make:
 
 ```bash
+git clone --depth=1 https://github.com/futuredapp/iOS-templates.git
 cd Templates
 make
 ```
