@@ -27,6 +27,15 @@
         <key>BundleIdentifier</key>
         <string>com.apple.dt.IDEKit</string>
     </dict>
+    <key>Components</key>
+    <array>
+        <dict>
+            <key>Identifier</key>
+            <string>com.apple.dt.unit.cocoaTouchApplicationUnitTestBundle</string>
+            <key>Name</key>
+            <string>___PACKAGENAME___Tests</string>
+        </dict>
+    </array>
 
 <!-- Project creation dialog options -->
     <key>Options</key>
@@ -39,29 +48,8 @@
         </dict>
         <dict>
             <key>Identifier</key>
-            <string>hasUnitTests</string>
-            <key>Default</key>
-            <string>true</string>
-            <key>Units</key>
-            <dict>
-                <key>true</key>
-                <dict>
-                    <key>Components</key>
-                    <array>
-                        <dict>
-                            <key>Identifier</key>
-                            <string>com.apple.dt.unit.cocoaTouchUnitTestBundle</string>
-                            <key>Name</key>
-                            <string>___PACKAGENAME___Tests</string>
-                        </dict>
-                    </array>
-                </dict>
-            </dict>
-        </dict>
-        <dict>
-            <key>Identifier</key>
             <string>testingSystem</string>
-            <key>Default</key>
+            <key>Override</key>
             <string>Swift Testing</string>
         </dict>
     </array>
@@ -120,13 +108,12 @@
                 <dict>
                     <key>PRODUCT_BUNDLE_IDENTIFIER</key>
                     <string>___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___PACKAGENAMEASRFC1034IDENTIFIER___.beta</string>
-                </dict> 
+                </dict>
             </dict>
         </dict>
     </array>
 
 <!-- Files -->
-
     <key>NameOfInitialFileForEditor</key>
     <string>___PACKAGENAME:identifier___App.swift</string>
 
