@@ -40,7 +40,7 @@ The repository provides number of Xcode Templates for user convenience.
 You can install them using make:
 
 ```bash
-git clone --depth=1 https://github.com/futuredapp/iOS-templates.git
+git clone --depth=1 https://github.com/futuredapp/FuturedKit.git
 cd Templates
 make
 ```
