@@ -1,5 +1,6 @@
 //  ___FILEHEADER___
 
+import Combine
 import FuturedArchitecture
 
 protocol ExampleComponentModelProtocol: ComponentModel {
@@ -7,7 +8,7 @@ protocol ExampleComponentModelProtocol: ComponentModel {
     @MainActor func onTouchUpInside()
 }
 
-final class ExampleComponentModel: ExampleComponentModelProtocol {
+final class ExampleComponentModel: @MainActor ExampleComponentModelProtocol {
 
     let onEvent: @MainActor (Event) -> Void
 
@@ -15,7 +16,7 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
 
     init(
         dataCache: DataCache<DataCacheModel>,
-        onEvent: @escaping (Event) -> Void
+        onEvent: @escaping @MainActor (Event) -> Void
     ) {
         self.dataCache = dataCache
         self.onEvent = onEvent
@@ -39,7 +40,7 @@ extension ExampleComponentModel {
 }
 
 #if DEBUG
-final class ExampleComponentModelMock: ExampleComponentModelProtocol {
+final class ExampleComponentModelMock: @MainActor ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
     var onEvent: @MainActor (Event) -> Void = { _ in }
