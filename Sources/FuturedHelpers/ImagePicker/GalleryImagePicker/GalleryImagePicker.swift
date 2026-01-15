@@ -72,11 +72,12 @@ public struct GalleryImagePicker: View {
 extension NSItemProvider {
     enum LoadImageError: Error {
         case castToImageFailed
+        case cannotLoadUIImage
     }
 
     func loadImage() async throws -> UIImage {
         guard canLoadObject(ofClass: UIImage.self) else {
-            throw NSError()
+            throw LoadImageError.cannotLoadUIImage
         }
 
         return try await withCheckedThrowingContinuation { continuation in

@@ -138,17 +138,17 @@ struct DataCacheTests {
         var iteratorB = streamB.makeAsyncIterator()
 
         // Each stream yields initial value independently.
-        let a0 = await iteratorA.next()
-        let b0 = await iteratorB.next()
-        #expect(a0 == 0)
-        #expect(b0 == 0)
+        let valueA0 = await iteratorA.next()
+        let valueB0 = await iteratorB.next()
+        #expect(valueA0 == 0)
+        #expect(valueB0 == 0)
 
         // One update should be delivered to BOTH subscribers.
         await cache.update(with: 1)
 
-        let a1 = await iteratorA.next()
-        let b1 = await iteratorB.next()
-        #expect(a1 == 1)
-        #expect(b1 == 1)
+        let valueA1 = await iteratorA.next()
+        let valueB1 = await iteratorB.next()
+        #expect(valueA1 == 1)
+        #expect(valueB1 == 1)
     }
 }
