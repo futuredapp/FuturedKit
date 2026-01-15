@@ -88,7 +88,6 @@ public struct AlertModel: Identifiable {
     ///   - message: The message to display in the body of the alert.
     ///   - primaryAction: The specification of the alert primary action.
     ///   - secondaryAction: The specification of the alert secondary action.
-
     public init(
         title: String,
         message: String?,
