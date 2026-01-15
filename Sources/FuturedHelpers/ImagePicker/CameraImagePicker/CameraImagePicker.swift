@@ -8,11 +8,11 @@ import FuturedArchitecture
 ///
 /// ## Overview
 ///
-/// Camera image picker uses ``WrappedUIImagePicker`` and automatically shows the alert if 
+/// Camera image picker uses ``WrappedUIImagePicker`` and automatically shows the alert if
 /// camera permission status is unauthorized.
 /// After selection is the view automatically dismissed.
 public struct CameraImagePicker: View {
-    @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.dismiss) private var dismiss
     @Binding private var selection: UIImage?
     @State private var permissionAlertModel: AlertModel?
 
@@ -48,7 +48,7 @@ public struct CameraImagePicker: View {
     /// - Parameters:
     ///   - selection: The selected photo.
     ///   - cameraPermissionAlertConfiguration: The alert configuration for unauthorized permission status.
-    public init (
+    public init(
         selection: Binding<UIImage?>,
         cameraPermissionAlertConfiguration: CameraPermissionAlertConfiguration
     ) {
@@ -60,7 +60,7 @@ public struct CameraImagePicker: View {
         WrappedUIImagePicker(didFinishPickingMediaWithInfo: handlePickerResult) { viewController in
             viewController.sourceType = .camera
         }
-        .background(Color.black.edgesIgnoringSafeArea(.bottom))
+        .background(Color.black.ignoresSafeArea(edges: .bottom))
         .onAppear(perform: checkCameraAuthorizationStatus)
         .defaultAlert(model: $permissionAlertModel)
     }
@@ -72,7 +72,9 @@ public struct CameraImagePicker: View {
             primaryAction: AlertModel.ButtonAction(
                 title: cameraPermissionAlertConfiguration.dismissButtonTitle,
                 buttonRole: .cancel,
-                action: dismiss
+                action: {
+                    dismiss()
+                }
             ),
             secondaryAction: AlertModel.ButtonAction(
                 title: cameraPermissionAlertConfiguration.settingsButtonTitle,
@@ -82,10 +84,6 @@ public struct CameraImagePicker: View {
                 }
             )
         )
-    }
-
-    private func dismiss() {
-        presentationMode.wrappedValue.dismiss()
     }
 
     private func goToSettings() {
@@ -98,18 +96,21 @@ public struct CameraImagePicker: View {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             break
+
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { granted in
-                DispatchQueue.main.async {
-                    if !granted {
+                if !granted {
+                    Task { @MainActor in
                         permissionAlertModel = cameraPermissionAlert
                     }
                 }
             }
+
         case .denied, .restricted:
-            DispatchQueue.main.async {
-                self.permissionAlertModel = cameraPermissionAlert
+            Task { @MainActor in
+                permissionAlertModel = cameraPermissionAlert
             }
+
         @unknown default:
             assertionFailure("Unknown state")
         }
