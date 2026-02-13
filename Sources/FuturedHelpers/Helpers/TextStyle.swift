@@ -119,7 +119,7 @@ public struct TextStyle {
     
     /// The line spacing of the font for the text style.
     public var lineSpacing: CGFloat {
-        (scaling.fontMetrics?.scaledValue(for: lineHeight) ?? lineHeight) - (scaling.fontMetrics?.scaledValue(for: uiFont.lineHeight) ?? uiFont.lineHeight)
+        (scaling.fontMetrics?.scaledValue(for: lineHeight) ?? lineHeight) - uiFont.lineHeight
     }
 
     /// The font for the text style.
