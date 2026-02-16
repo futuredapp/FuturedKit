@@ -49,23 +49,27 @@ import SwiftUI
 ///
 /// The alert handles its own dismissal when the user taps one of the buttons in the alert,
 /// by setting the bound `model` value back to `nil`.
-public struct AlertModel: Identifiable {
-    public struct ButtonAction {
+public struct AlertModel: Identifiable, Sendable {
+    public struct ButtonAction: Sendable {
         let title: String
         let buttonRole: ButtonRole?
-        let action: () -> Void
+        let action: @MainActor @Sendable () -> Void
 
-        public init(title: String, buttonRole: ButtonRole? = nil, action: @escaping () -> Void) {
+        public init(title: String, buttonRole: ButtonRole? = nil, action: @MainActor @Sendable @escaping () -> Void) {
             self.title = title
             self.buttonRole = buttonRole
             self.action = action
         }
     }
 
-    public struct TextField {
+    /// TextField is used only within SwiftUI alert context on MainActor.
+    /// Marked as @unchecked Sendable because Binding is not Sendable but is safe
+    /// when used exclusively on MainActor.
+    public struct TextField: @unchecked Sendable {
         let title: String
         let text: Binding<String>
 
+        @MainActor
         public init(title: String, text: Binding<String>) {
             self.title = title
             self.text = text
