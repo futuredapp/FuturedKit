@@ -1,6 +1,6 @@
 # FuturedKit
 
-The FuturedKit Architecture is a flow-coordinator, component, component model based architecture. The architecture uses Combine and Swift Concurrency for state management. Originally, we wanted to use Swift Concurrency with Observable, but we needed to backport the architecture to iOS 16.
+The FuturedKit Architecture is a flow-coordinator, component, component model based architecture. The architecture uses Swift Concurrency and the `@Observable` macro for state management.
 
 ## Main concepts
 
@@ -12,11 +12,11 @@ This architecture uses some concepts which may be familiar, but we decided to mo
 
 *Scene* is the basic building block of the architecture and comprises of two main building blocks: `Component` and `ComponentModel`.
 
-- `Component` is a struct conforming to ``SwiftUI.View``. It has generic parameter `Model` which is used to represent the `ComponentModel` of this scene. The `model` is retained as an `ObservableObject`.
+- `Component` is a struct conforming to ``SwiftUI.View``. It has generic parameter `Model` which is used to represent the `ComponentModel` of this scene. The `model` is retained using `@State` property wrapper (since ComponentModels are `@Observable` classes).
 - `ComponentModel` consists of three parts: `ComponentModelProtocol`, `MockComponentModel` and the `ComponentModel` itself. We use this decomposition so we can create mocked component model for better SwiftUI Previews experience.
   - `ComponentModelProtocol` defines the properties required by the `Component`. It also defines functions, which the `Component` may call in response to an event, such as a button tap. All `ComponentModelProtocol` are required to extend the ``ComponentModel`` protocol.
   - `MockComponentModel` should be only used in debug builds (use `#if DEBUG`) and as compact as possible to allow for responsive SwiftUI Previews.
-  - `ComponentModel` is the implementation of `ComponentModelProtocol` and is responsible for storing the data, sending events to the ``Coordinator`` and subscribing to changes which may be relevant for this scene.
+  - `ComponentModel` is the implementation of `ComponentModelProtocol` and is responsible for storing the data, sending events to the ``Coordinator`` and subscribing to changes which may be relevant for this scene. ComponentModels should be annotated with `@Observable` macro.
 
 ### Flow Coordinator
 
@@ -33,11 +33,11 @@ Container is not defined as a type or a protocol, but is a part of the architect
 
 ### Data Cache
 
-``DataCache`` is an actor holding an equatable structure. It is responsible for managing the structure as a source of truth, serializing write operations and exposing the contents as a `Published` variable, so consuments can subscribe to changes. Data cache may be used to store data shared across the app or cache results of an API calls.
+``DataCache`` is an actor holding an equatable structure. It is responsible for managing the structure as a source of truth, serializing write operations and exposing the contents as an `AsyncStream`, so consumers can subscribe to changes. Data cache may be used to store data shared across the app or cache results of an API calls.
 
 Each application should have one global data cache stored in the `Container`. Individual Coordinators may have their own private Data Caches to coordinate data flows across child scenes.
 
-**Data stored in Data Cache should be directly the source of truth for views, or mapped using a subscription.**
+**Data stored in Data Cache should be directly the source of truth for views, either by subscribing to the AsyncStream or using ``DataCacheSnapshot`` for UI binding.**
 
 ### Flow Provider
 
@@ -45,7 +45,7 @@ Flow providers are optional part of the architecture. It may be used to encapsul
 
 ## Data Flows
 
-The idea behind data flows in the Architecture is fairly simple: use closures when talking to a parent, arguments when passing immutable data from parent to a child and multidelegates (such as Published properties) when data passed from parent to a child a subject to change. Below are described some suggestions on how to impement data flows for certain scenarios.
+The idea behind data flows in the Architecture is fairly simple: use closures when talking to a parent, arguments when passing immutable data from parent to a child and `@Observable` properties when data passed from parent to a child is subject to change. Below are described some suggestions on how to implement data flows for certain scenarios.
 
 ### Component <-> Component Model
 

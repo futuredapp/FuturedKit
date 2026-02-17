@@ -8,8 +8,6 @@ struct DataCacheSnapshotTests {
 
     @Test("Snapshot initializes from cache current value")
     func snapshotInitializesFromCache() async throws {
-        guard #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) else { return }
-
         let cache = DataCache(value: 1)
         let snapshot = await DataCacheSnapshot(cache: cache)
         let value = await Task { @MainActor in
@@ -20,8 +18,6 @@ struct DataCacheSnapshotTests {
 
     @Test("startObserving(skipInitial: true) updates snapshot on changes")
     func snapshotObservesChangesSkipInitial() async throws {
-        guard #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) else { return }
-
         let cache = DataCache(value: 1)
         let snapshot = await DataCacheSnapshot(cache: cache)
 
@@ -43,8 +39,6 @@ struct DataCacheSnapshotTests {
 
     @Test("startObserving(skipInitial: false) yields the current cache value immediately")
     func snapshotObservesInitialValueWhenSkipInitialIsFalse() async throws {
-        guard #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) else { return }
-
         let cache = DataCache(value: 1)
 
         // Use a sentinel value (999) so we can prove the initial stream emission happened.
@@ -70,8 +64,6 @@ struct DataCacheSnapshotTests {
 
     @Test("stopObserving prevents further updates")
     func snapshotStopObserving() async throws {
-        guard #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) else { return }
-
         let cache = DataCache(value: 1)
         let snapshot = await DataCacheSnapshot(cache: cache)
 
@@ -100,8 +92,6 @@ struct DataCacheSnapshotTests {
 
     @Test("Snapshot can be deallocated after stopping observation (no obvious retain cycle)")
     func snapshotDeallocatesAfterStopObserving() async throws {
-        guard #available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *) else { return }
-
         let cache = DataCache(value: 1)
         weak var weakSnapshot: DataCacheSnapshot<Int>?
 

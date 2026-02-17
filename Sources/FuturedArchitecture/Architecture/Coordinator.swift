@@ -8,7 +8,7 @@ import SwiftUI
 /// This base `protocol` contains set of common requirements for all coordinators. Other protocols
 /// tailored to specific Containers are provided as well.
 @MainActor
-public protocol Coordinator: ObservableObject {
+public protocol Coordinator: AnyObject {
     /// Type used to represent the state of the container, i.e. which child-components should be presented.
     associatedtype Destination: Hashable & Identifiable
     /// The root view of the coordinator is commonly the container itself.
@@ -21,7 +21,7 @@ public protocol Coordinator: ObservableObject {
     /// ``SwiftUI.EmptyView``. If you do so, remember to always capture the `instance` of the *coordinator* weakly!
     /// - Warning: Maintain its purity by defining only the view, without added logic or modifiers.
     /// If logic or modifiers are needed, encapsulate them in a separate view that can accommodate necessary dependencies.
-    /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
+    /// Skipping this recommendation may prevent UI updates when changing observed properties, as `rootView` is static.
     /// - Parameter instance: An instance of `Coordinator` which will be retained by the *container*.
     /// - Returns: The container view.
     @ViewBuilder
@@ -71,7 +71,6 @@ public extension Coordinator {
 /// - Todo: ``SwiftUI.TabView`` requires internal state, which is forbidden as per
 /// documentation of ``Coordinator.rootView(with:)``. Also, the API introduces `Tab` type
 /// which is essentially duplication of `Destination`. Consider, how the API limits the use of tabs.
-@MainActor
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
     var selectedTab: Tab { get set }
@@ -81,7 +80,6 @@ public protocol TabCoordinator: Coordinator {
 /// This *coordinator* is ment have ``NavigationStackFlow`` as the Root view.
 ///
 /// - ToDo: Create a template for this coordinator.
-@MainActor
 public protocol NavigationStackCoordinator: Coordinator {
     /// Property modeling the Views currently placed on stack.
     var path: [Destination] { get set }

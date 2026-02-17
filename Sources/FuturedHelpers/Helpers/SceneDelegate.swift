@@ -8,7 +8,11 @@
 import SwiftUI
 
 #if !os(macOS)
-public protocol AppSceneDelegate: AnyObject, UIWindowSceneDelegate, ObservableObject {
+/// Protocol for the app's scene delegate that can be observed via SwiftUI's environment.
+///
+/// Conform your `UIWindowSceneDelegate` to this protocol and annotate it with `@Observable`.
+/// Then inject it into the environment using `.environment()` modifier.
+public protocol AppSceneDelegate: AnyObject, UIWindowSceneDelegate, Observable {
     var delegate: SceneDelegate? { get set }
 }
 
@@ -17,28 +21,28 @@ public protocol SceneDelegate: AnyObject {
     func sceneWillEnterForeground(_ scene: UIScene)
 }
 
-private struct SceneDelegateWrapperViewModifier<ApSceneDelegate: AppSceneDelegate>: ViewModifier {
-    @EnvironmentObject private var sceneDelegate: ApSceneDelegate
+private struct SceneDelegateWrapperViewModifier<Delegate: AppSceneDelegate>: ViewModifier {
+    @Environment(Delegate.self) private var appSceneDelegate: Delegate?
 
-    let delegate: SceneDelegate?
+    let sceneDelegate: SceneDelegate?
 
     func body(content: Content) -> some View {
         content
             .onAppear {
-                sceneDelegate.delegate = delegate
+                appSceneDelegate?.delegate = sceneDelegate
             }
     }
 }
 
 extension View {
     /// Sets the SceneDelegate for the application.
-    /// - Parameter appSceneDelegateClass: The call which conforms to the UIWindowSceneDelegate.
+    /// - Parameter appSceneDelegateClass: The class which conforms to the UIWindowSceneDelegate.
     /// - Parameter sceneDelegate: The SceneDelegate to set.
     /// - Description:
     /// In the main app root view call this modifier and pass the SceneDelegate. You need to specify the AppSceneDelegate which conforms to the UIWindowSceneDelegate.
-    /// This is necessary because the SceneDelegate is accessible in SwiftUI only via EnvironmentObject.
+    /// The AppSceneDelegate must be injected into the environment using `.environment()` modifier.
     public func set<T: AppSceneDelegate>(appSceneDelegateClass: T.Type, sceneDelegate: SceneDelegate) -> some View {
-        modifier(SceneDelegateWrapperViewModifier<T>(delegate: sceneDelegate))
+        modifier(SceneDelegateWrapperViewModifier<T>(sceneDelegate: sceneDelegate))
     }
 }
 #endif

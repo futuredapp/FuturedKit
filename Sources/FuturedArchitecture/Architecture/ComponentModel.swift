@@ -17,7 +17,7 @@ import Foundation
 /// Each *Component* (i.e. View) should have own *component model*. Each instance of component
 /// model has to be referenced by no more than 1 *coordinator.*
 @MainActor
-public protocol ComponentModel: ObservableObject {
+public protocol ComponentModel: AnyObject {
 
     /// Type used to pass events to the *coordinator*. `enum` is used in most cases, but not required.
     associatedtype Event

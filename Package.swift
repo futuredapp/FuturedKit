@@ -6,10 +6,10 @@ import CompilerPluginSupport
 let package = Package(
     name: "FuturedKit",
     platforms: [
-        .iOS(.v16),
-        .macOS(.v13),
-        .watchOS(.v9),
-        .tvOS(.v16)
+        .iOS(.v17),
+        .macOS(.v14),
+        .watchOS(.v10),
+        .tvOS(.v17)
     ],
     products: [
         .library(

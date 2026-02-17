@@ -157,7 +157,6 @@ import Observation
 /// - Important: The source of truth remains the actor `DataCache`. This snapshot must be kept in sync by calling
 /// `startObserving()` (typically once in `onAppear`, `init`, or a task).
 @MainActor
-@available(iOS 17.0, macOS 14.0, watchOS 10.0, tvOS 17.0, *)
 @Observable
 public final class DataCacheSnapshot<Model: Equatable & Sendable> {
 

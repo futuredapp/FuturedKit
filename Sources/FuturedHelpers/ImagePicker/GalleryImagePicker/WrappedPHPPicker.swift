@@ -3,7 +3,7 @@
 import PhotosUI
 import SwiftUI
 
-/// Wrapped `PHPickerViewController`. If you need gallery picker for iOS 13 you can use `WrappedUIImagePicker`.
+/// Wrapped `PHPickerViewController`.
 public struct WrappedPHPicker: UIViewControllerRepresentable {
     private let configuration: PHPickerConfiguration
     private let didFinishPicking: ([PHPickerResult]) -> Void

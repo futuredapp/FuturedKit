@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// The `NavigationStackFlow` encapsulates the ``SwiftUI.NavigationStack`` and binds it to the
-/// variables and callbacks of the ``NavigationStackCoordinator`` which is retains as a ``SwiftUI.StateObject``.
+/// variables and callbacks of the ``NavigationStackCoordinator`` which it retains as a ``SwiftUI.State``.
 public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Content: View>: View {
-    @StateObject private var coordinator: Coordinator
+    @State private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
 
     /// Use in case when whole navigation stack should have detents.
@@ -11,16 +11,16 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
 
     /// - Parameters:
     ///   - detents: The set of detents which should be applied to the whole navigation stack.
-    ///   - coordinator: The instance of the coordinator used as the model and retained as the ``SwiftUI.StateObject``
+    ///   - coordinator: The instance of the coordinator used as the model and retained as ``SwiftUI.State``
     ///   - content: The root view of this navigation stack. The ``navigationDestination(for:destination:)`` modifier
     ///   is applied to this content.
     public init(
         detents: Set<SheetDetent>? = nil,
-        coordinator: @autoclosure @escaping () -> Coordinator,
+        coordinator: Coordinator,
         content: @MainActor @escaping () -> Content
     ) {
         self.navigationDetents = detents == nil ? nil : Set(detents!.map { $0.detent() })
-        self._coordinator = StateObject(wrappedValue: coordinator())
+        self._coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
 
