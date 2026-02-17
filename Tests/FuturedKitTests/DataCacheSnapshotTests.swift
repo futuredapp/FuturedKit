@@ -1,6 +1,4 @@
-#if canImport(Observation)
 import FuturedArchitecture
-import Observation
 import Testing
 
 @Suite("DataCacheSnapshot")
@@ -175,5 +173,3 @@ struct DataCacheSnapshotTests {
         }.value
     }
 }
-
-#endif
