@@ -9,7 +9,7 @@ protocol ExampleComponentModelProtocol: ComponentModel {
 }
 
 @Observable
-final class ExampleComponentModel: @MainActor ExampleComponentModelProtocol {
+final class ExampleComponentModel: ExampleComponentModelProtocol {
 
     let onEvent: (Event) -> Void
 
@@ -41,7 +41,7 @@ extension ExampleComponentModel {
 
 #if DEBUG
 @Observable
-final class ExampleComponentModelMock: @MainActor ExampleComponentModelProtocol {
+final class ExampleComponentModelMock: ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
     var onEvent: (Event) -> Void = { _ in }

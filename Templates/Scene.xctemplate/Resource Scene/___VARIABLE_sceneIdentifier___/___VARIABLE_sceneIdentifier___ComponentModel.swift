@@ -8,7 +8,7 @@ protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
 }
 
 @Observable
-final class ___VARIABLE_sceneIdentifier___ComponentModel: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
 
     let onEvent: (Event) -> Void
 
@@ -37,7 +37,7 @@ extension ___VARIABLE_sceneIdentifier___ComponentModel {
 
 #if DEBUG
 @Observable
-final class ___VARIABLE_sceneIdentifier___ComponentModelMock: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
     var onEvent: (Event) -> Void = { _ in }
