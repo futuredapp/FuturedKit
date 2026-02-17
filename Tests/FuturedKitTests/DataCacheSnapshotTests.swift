@@ -107,6 +107,73 @@ struct DataCacheSnapshotTests {
         try? await Task.sleep(for: .seconds(0.1))
         #expect(weakSnapshot == nil)
     }
+
+    @Test("startObserving can be called multiple times (restarts observation)")
+    func snapshotRestartObserving() async throws {
+        let cache = DataCache(value: 1)
+        let snapshot = await DataCacheSnapshot(cache: cache)
+
+        // Start observing first time
+        await Task { @MainActor in
+            await snapshot.startObserving(skipInitial: true)
+        }.value
+
+        await cache.update(with: 2)
+        try? await Task.sleep(for: .seconds(0.1))
+
+        let firstValue = await Task { @MainActor in
+            snapshot.value
+        }.value
+        #expect(firstValue == 2)
+
+        // Restart observing
+        await Task { @MainActor in
+            await snapshot.startObserving(skipInitial: true)
+        }.value
+
+        await cache.update(with: 3)
+        try? await Task.sleep(for: .seconds(0.1))
+
+        let secondValue = await Task { @MainActor in
+            snapshot.value
+        }.value
+        #expect(secondValue == 3)
+
+        await Task { @MainActor in
+            snapshot.stopObserving()
+        }.value
+    }
+
+    @Test("Snapshot with initialValue constructor uses provided value before observing")
+    func snapshotWithInitialValueConstructor() async throws {
+        let cache = DataCache(value: 100)
+
+        let snapshot = await Task { @MainActor in
+            DataCacheSnapshot(cache: cache, initialValue: 42)
+        }.value
+
+        // Before observing, should have the initial value we provided
+        let initialValue = await Task { @MainActor in
+            snapshot.value
+        }.value
+        #expect(initialValue == 42)
+
+        // After starting observation with skipInitial: false, should update to cache value
+        await Task { @MainActor in
+            await snapshot.startObserving(skipInitial: false)
+        }.value
+
+        try? await Task.sleep(for: .seconds(0.1))
+
+        let updatedValue = await Task { @MainActor in
+            snapshot.value
+        }.value
+        #expect(updatedValue == 100)
+
+        await Task { @MainActor in
+            snapshot.stopObserving()
+        }.value
+    }
 }
 
 #endif

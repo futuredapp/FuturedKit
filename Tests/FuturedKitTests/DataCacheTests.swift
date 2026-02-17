@@ -151,4 +151,79 @@ struct DataCacheTests {
         #expect(valueA1 == 1)
         #expect(valueB1 == 1)
     }
+
+    @Test("Concurrent updates are serialized by actor isolation")
+    func concurrentUpdatesAreSerialized() async throws {
+        let cache = DataCache(value: 0)
+
+        // Launch multiple concurrent updates
+        await withTaskGroup(of: Void.self) { group in
+            for i in 1...100 {
+                group.addTask {
+                    await cache.update(with: i)
+                }
+            }
+        }
+
+        // The final value should be one of the updates (actor serializes access)
+        let finalValue = await cache.value
+        #expect(finalValue >= 1 && finalValue <= 100)
+    }
+
+    @Test("Concurrent keyPath updates maintain consistency")
+    func concurrentKeyPathUpdatesAreConsistent() async throws {
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
+
+        // Launch concurrent updates to the count property
+        await withTaskGroup(of: Void.self) { group in
+            for i in 1...50 {
+                group.addTask {
+                    await cache.update(\.count, with: i)
+                }
+            }
+        }
+
+        // The final count should be one of the updates
+        let finalModel = await cache.value
+        #expect(finalModel.count >= 1 && finalModel.count <= 50)
+    }
+
+    @Test("Stream termination removes subscriber from cache")
+    func streamTerminationRemovesSubscriber() async throws {
+        let cache = DataCache(value: 0)
+
+        // Create and immediately discard a stream
+        do {
+            let stream = await cache.values(skipInitial: false)
+            var iterator = stream.makeAsyncIterator()
+            _ = await iterator.next()
+            // Stream goes out of scope here
+        }
+
+        // Give time for cleanup
+        try? await Task.sleep(for: .seconds(0.1))
+
+        // Cache should still work fine with new subscribers
+        let newStream = await cache.values(skipInitial: false)
+        var newIterator = newStream.makeAsyncIterator()
+        let value = await newIterator.next()
+        #expect(value == 0)
+    }
+
+    @Test("populate merges and updates existing elements")
+    func populateMergesAndUpdatesExisting() async throws {
+        let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
+
+        // Populate with items that include an existing element (2) and new ones (4, 5)
+        await cache.populate(\.items, with: [2, 4, 5])
+
+        let result = await cache.value.items
+        // Should contain: 1, 3 (existing not in new), 2, 4, 5 (from new)
+        #expect(result.contains(1))
+        #expect(result.contains(2))
+        #expect(result.contains(3))
+        #expect(result.contains(4))
+        #expect(result.contains(5))
+        #expect(result.count == 5)
+    }
 }
