@@ -152,9 +152,6 @@ public actor DataCache<Model: Equatable & Sendable> {
     }
 }
 
-#if canImport(Observation)
-import Observation
-
 /// A UI-friendly snapshot of `DataCache` that provides synchronous reads on the main actor.
 ///
 /// This is intended for SwiftUI / component models that want to bind to a value without sprinkling `await`
@@ -229,4 +226,3 @@ public final class DataCacheSnapshot<Model: Equatable & Sendable> {
         deinit { task?.cancel() }
     }
 }
-#endif
