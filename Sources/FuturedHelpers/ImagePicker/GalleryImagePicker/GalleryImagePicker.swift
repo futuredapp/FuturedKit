@@ -59,8 +59,9 @@ public struct GalleryImagePicker: View {
 
             for result in results {
                 let provider = result.itemProvider
-                let image = try await provider.loadImage()
-                images.append(image)
+                if let image = try? await provider.loadImage() {
+                    images.append(image)
+                }
             }
             await MainActor.run {
                 selection = images

@@ -91,28 +91,34 @@ public actor DataCache<Model: Equatable & Sendable> {
 
     /// Populate one variable of Collection type.
     /// - Description: The method will append new elements to the existing collection. The elements which are already
-    /// in the collection as well as in the new collection will be updated. No change is emmited when the new collection is empty.
+    /// in the collection as well as in the new collection will be updated. No change is emitted when the new collection is empty
+    /// or when the merged result is the same as the current value.
     public func populate<T>(
         _ keyPath: WritableKeyPath<Model, T>,
         with newItems: T
     ) where T: RangeReplaceableCollection, T.Element: Equatable {
         guard !newItems.isEmpty else { return }
         let current = self.value[keyPath: keyPath]
-        self.value[keyPath: keyPath] = mergedCollection(current: current, newItems: newItems)
+        let merged = mergedCollection(current: current, newItems: newItems)
+        guard !current.elementsEqual(merged) else { return }
+        self.value[keyPath: keyPath] = merged
         broadcast(self.value)
     }
 
     /// Populate one optional variable of Collection type.
     ///
     /// - Description: The method will append new elements to the existing collection. The elements which are already
-    /// in the collection as well as in the new collection will be updated. No change is emmited when the new collection is empty.
+    /// in the collection as well as in the new collection will be updated. No change is emitted when the new collection is empty
+    /// or when the merged result is the same as the current value.
     public func populate<T>(
         _ keyPath: WritableKeyPath<Model, T?>,
         with newItems: T
     ) where T: RangeReplaceableCollection, T.Element: Equatable {
         guard !newItems.isEmpty else { return }
         let current = self.value[keyPath: keyPath] ?? T()
-        self.value[keyPath: keyPath] = mergedCollection(current: current, newItems: newItems)
+        let merged = mergedCollection(current: current, newItems: newItems)
+        guard !current.elementsEqual(merged) else { return }
+        self.value[keyPath: keyPath] = merged
         broadcast(self.value)
     }
 
@@ -156,6 +162,10 @@ import Observation
 ///
 /// - Important: The source of truth remains the actor `DataCache`. This snapshot must be kept in sync by calling
 /// `startObserving()` (typically once in `onAppear`, `init`, or a task).
+///
+/// - Note: When using the `async init` followed by `startObserving(skipInitial: true)`, there is a small window
+/// where cache updates may be missed. If this matters, use `startObserving(skipInitial: false)` to replay the
+/// current cache value upon subscription.
 @MainActor
 @Observable
 public final class DataCacheSnapshot<Model: Equatable & Sendable> {

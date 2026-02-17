@@ -210,6 +210,69 @@ struct DataCacheTests {
         #expect(value == 0)
     }
 
+    @Test("update(keyPath:with:) does not emit when value is unchanged")
+    func updateKeyPathDoesNotEmitOnSameValue() async throws {
+        let cache = DataCache(value: Model(count: 5, items: [], optionalItems: nil))
+
+        let stream = await cache.values(skipInitial: false)
+        var iterator = stream.makeAsyncIterator()
+
+        // Consume initial
+        _ = await iterator.next()
+
+        // Same value should not emit
+        await cache.update(\.count, with: 5)
+
+        // Different value should emit next
+        await cache.update(\.count, with: 10)
+
+        let next = await iterator.next()
+        let unwrapped = try #require(next)
+        #expect(unwrapped.count == 10)
+    }
+
+    @Test("populate does not emit when merged result is identical to current value")
+    func populateDoesNotEmitWhenUnchanged() async throws {
+        let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
+
+        let stream = await cache.values(skipInitial: false)
+        var iterator = stream.makeAsyncIterator()
+
+        // Consume initial
+        _ = await iterator.next()
+
+        // Populating with the same items in the same order produces identical result — should not emit.
+        await cache.populate(\.items, with: [1, 2, 3])
+
+        // Adding a genuinely new item should emit.
+        await cache.populate(\.items, with: [4])
+
+        let next = await iterator.next()
+        let unwrapped = try #require(next)
+        #expect(unwrapped.items == [1, 2, 3, 4])
+    }
+
+    @Test("populate(optional) does not emit when merged result is identical to current value")
+    func populateOptionalDoesNotEmitWhenUnchanged() async throws {
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: [1, 2]))
+
+        let stream = await cache.values(skipInitial: false)
+        var iterator = stream.makeAsyncIterator()
+
+        // Consume initial
+        _ = await iterator.next()
+
+        // Populating with the same items in the same order produces identical result — should not emit.
+        await cache.populate(\.optionalItems, with: [1, 2])
+
+        // Adding a genuinely new item should emit.
+        await cache.populate(\.optionalItems, with: [3])
+
+        let next = await iterator.next()
+        let unwrapped = try #require(next)
+        #expect(unwrapped.optionalItems == [1, 2, 3])
+    }
+
     @Test("populate merges and updates existing elements")
     func populateMergesAndUpdatesExisting() async throws {
         let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))

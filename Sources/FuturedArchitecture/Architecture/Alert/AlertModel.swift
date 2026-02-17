@@ -63,8 +63,12 @@ public struct AlertModel: Identifiable, Sendable {
     }
 
     /// TextField is used only within SwiftUI alert context on MainActor.
-    /// Marked as @unchecked Sendable because Binding is not Sendable but is safe
+    /// Marked as `@unchecked Sendable` because `Binding` is not `Sendable` but is safe
     /// when used exclusively on MainActor.
+    ///
+    /// - Important: `AlertModel` instances containing a `TextField` must only be
+    /// created and consumed on the MainActor. Passing them through an actor boundary
+    /// (e.g. storing in `DataCache`) is unsound.
     public struct TextField: @unchecked Sendable {
         let title: String
         let text: Binding<String>

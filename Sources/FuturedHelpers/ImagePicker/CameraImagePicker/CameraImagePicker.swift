@@ -107,9 +107,7 @@ public struct CameraImagePicker: View {
             }
 
         case .denied, .restricted:
-            Task { @MainActor in
-                permissionAlertModel = cameraPermissionAlert
-            }
+            permissionAlertModel = cameraPermissionAlert
 
         @unknown default:
             assertionFailure("Unknown state")
