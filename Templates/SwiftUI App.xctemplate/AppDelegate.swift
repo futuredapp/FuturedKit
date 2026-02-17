@@ -1,6 +1,5 @@
 //  ___FILEHEADER___
 
-import Observation
 import UIKit
 
 // swiftlint:disable discouraged_optional_collection

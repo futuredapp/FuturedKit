@@ -1,6 +1,5 @@
 //  ___FILEHEADER___
 
-import Observation
 import SwiftUI
 
 @Observable

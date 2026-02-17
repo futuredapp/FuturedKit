@@ -2,7 +2,6 @@
 
 import EnumIdentable
 import FuturedArchitecture
-import Observation
 import SwiftUI
 
 @Observable
