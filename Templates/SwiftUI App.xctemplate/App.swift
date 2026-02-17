@@ -8,11 +8,11 @@ import SwiftUI
 struct ___PACKAGENAME:identifier___App: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
-    @StateObject private var coordinator: AppCoordinator
+    @State private var coordinator: AppCoordinator
 
     init() {
         let coordinator = AppCoordinator(container: Container())
-        self._coordinator = StateObject(wrappedValue: coordinator)
+        self._coordinator = State(wrappedValue: coordinator)
         self.appDelegate.delegate = coordinator
     }
 

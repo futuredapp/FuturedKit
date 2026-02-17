@@ -1,22 +1,23 @@
 //  ___FILEHEADER___
 
-import Combine
 import FuturedArchitecture
+import Observation
 
 protocol ExampleComponentModelProtocol: ComponentModel {
     func onAppear() async
-    @MainActor func onTouchUpInside()
+    func onTouchUpInside()
 }
 
+@Observable
 final class ExampleComponentModel: @MainActor ExampleComponentModelProtocol {
 
-    let onEvent: @MainActor (Event) -> Void
+    let onEvent: (Event) -> Void
 
     private let dataCache: DataCache<DataCacheModel>
 
     init(
         dataCache: DataCache<DataCacheModel>,
-        onEvent: @escaping @MainActor (Event) -> Void
+        onEvent: @escaping (Event) -> Void
     ) {
         self.dataCache = dataCache
         self.onEvent = onEvent
@@ -27,7 +28,6 @@ final class ExampleComponentModel: @MainActor ExampleComponentModelProtocol {
         // Fetch fresh data
     }
 
-    @MainActor
     func onTouchUpInside() {
         onEvent(.touchEvent)
     }
@@ -40,10 +40,11 @@ extension ExampleComponentModel {
 }
 
 #if DEBUG
+@Observable
 final class ExampleComponentModelMock: @MainActor ExampleComponentModelProtocol {
     typealias Event = ExampleComponentModel.Event
 
-    var onEvent: @MainActor (Event) -> Void = { _ in }
+    var onEvent: (Event) -> Void = { _ in }
 
     func onAppear() async { }
 

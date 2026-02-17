@@ -1,15 +1,16 @@
 //  ___FILEHEADER___
 
-import Combine
 import EnumIdentable
 import FuturedArchitecture
+import Observation
 import SwiftUI
 
-final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationStackCoordinator {
+@Observable
+final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: @MainActor NavigationStackCoordinator {
     private var container: Container
 
-    @Published var path: [Destination] = []
-    @Published var modalCover: ModalCoverModel<Destination>?
+    var path: [Destination] = []
+    var modalCover: ModalCoverModel<Destination>?
 
     init(container: Container) {
         self.container = container
@@ -32,7 +33,7 @@ final class ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator: NavigationS
 
 extension ___VARIABLE_flowCoordinatorIdentifier___FlowCoordinator {
     @EnumIdentable
-    enum Destination {
+    nonisolated enum Destination {
         case destination
     }
 }

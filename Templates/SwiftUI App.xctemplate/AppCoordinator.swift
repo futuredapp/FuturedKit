@@ -1,16 +1,16 @@
 //  ___FILEHEADER___
 
-import Combine
+import Observation
 import SwiftUI
 
-final class AppCoordinator: ObservableObject {
+@Observable
+final class AppCoordinator {
     private var container: Container
 
     init(container: Container) {
         self.container = container
     }
 
-    @MainActor
     var rootView: some View {
         ExampleFlowCoordinator.rootView(
             with: ExampleFlowCoordinator(container: container)

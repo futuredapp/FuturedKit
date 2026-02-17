@@ -3,7 +3,7 @@
 import SwiftUI
 
 struct ___VARIABLE_sceneIdentifier___Component<Model: ___VARIABLE_sceneIdentifier___ComponentModelProtocol>: View {
-    @StateObject var model: Model
+    @State var model: Model
 
     var body: some View {
         Text( /*@START_MENU_TOKEN@*/"Hello, World!" /*@END_MENU_TOKEN@*/)

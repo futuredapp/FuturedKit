@@ -1,6 +1,6 @@
 //  ___FILEHEADER___
 
-import Combine
+import Observation
 import UIKit
 
 // swiftlint:disable discouraged_optional_collection
@@ -8,7 +8,8 @@ protocol AppDelegateProtocol: AnyObject {
     func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
 }
 
-class AppDelegate: UIResponder, UIApplicationDelegate, ObservableObject {
+@Observable
+class AppDelegate: UIResponder, UIApplicationDelegate {
     weak var delegate: AppDelegateProtocol?
 
     func application(
