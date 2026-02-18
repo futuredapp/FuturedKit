@@ -37,7 +37,7 @@ Container is not defined as a type or a protocol, but is a part of the architect
 
 Each application should have one global data cache stored in the `Container`. Individual Coordinators may have their own private Data Caches to coordinate data flows across child scenes.
 
-**Data stored in Data Cache should be directly the source of truth for views, either by subscribing to the AsyncStream or using ``DataCacheSnapshot`` for UI binding.**
+**Data stored in Data Cache should be directly the source of truth for views by subscribing to the AsyncStream.**
 
 ### Flow Provider
 

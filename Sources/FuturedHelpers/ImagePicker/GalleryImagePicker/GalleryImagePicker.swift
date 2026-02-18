@@ -63,9 +63,7 @@ public struct GalleryImagePicker: View {
                     images.append(image)
                 }
             }
-            await MainActor.run {
-                selection = images
-            }
+            selection = images
         }
     }
 }
