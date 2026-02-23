@@ -27,15 +27,7 @@ struct DataCacheTests {
 
         // Verify initial value is not emitted
         let skipStream = await cache.values(skipInitial: true)
-        await confirmation("initial value is not emitted", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in skipStream {
-                    shouldNotEmit()
-                }
-            }
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
-        }
+        await assertNoEmission(on: skipStream) {}
 
         // Verify first update is emitted
         let stream = await cache.values(skipInitial: true)
@@ -51,15 +43,8 @@ struct DataCacheTests {
         let cache = DataCache(value: 1)
 
         let stream = await cache.values(skipInitial: true)
-        await confirmation("same value does not emit", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
+        await assertNoEmission(on: stream) {
             await cache.update(with: 1)
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
         }
     }
 
@@ -84,15 +69,8 @@ struct DataCacheTests {
         let cache = DataCache(value: Model(count: 0, items: [1], optionalItems: nil))
 
         let stream = await cache.values(skipInitial: true)
-        await confirmation("empty populate does not emit", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
+        await assertNoEmission(on: stream) {
             await cache.populate(\.items, with: [Int]())
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
         }
     }
 
@@ -220,15 +198,8 @@ struct DataCacheTests {
         let cache = DataCache(value: Model(count: 5, items: [], optionalItems: nil))
 
         let stream = await cache.values(skipInitial: true)
-        await confirmation("same keyPath value does not emit", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
+        await assertNoEmission(on: stream) {
             await cache.update(\.count, with: 5)
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
         }
     }
 
@@ -237,15 +208,8 @@ struct DataCacheTests {
         let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
 
         let stream = await cache.values(skipInitial: true)
-        await confirmation("unchanged populate does not emit", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
+        await assertNoEmission(on: stream) {
             await cache.populate(\.items, with: [1, 2, 3])
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
         }
     }
 
@@ -254,15 +218,8 @@ struct DataCacheTests {
         let cache = DataCache(value: Model(count: 0, items: [], optionalItems: [1, 2]))
 
         let stream = await cache.values(skipInitial: true)
-        await confirmation("unchanged optional populate does not emit", expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
+        await assertNoEmission(on: stream) {
             await cache.populate(\.optionalItems, with: [1, 2])
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
         }
     }
 
@@ -281,5 +238,24 @@ struct DataCacheTests {
         #expect(result.contains(4))
         #expect(result.contains(5))
         #expect(result.count == 5)
+    }
+
+    // MARK: - Helper methods
+
+    /// Asserts that no values are emitted on the given stream while `action` executes.
+    private func assertNoEmission<T: Sendable>(
+        on stream: AsyncStream<T>,
+        during action: () async -> Void
+    ) async {
+        await confirmation(expectedCount: 0) { shouldNotEmit in
+            let task = Task {
+                for await _ in stream {
+                    shouldNotEmit()
+                }
+            }
+            await action()
+            try? await Task.sleep(for: .milliseconds(50))
+            task.cancel()
+        }
     }
 }
