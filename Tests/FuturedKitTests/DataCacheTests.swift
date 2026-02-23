@@ -21,10 +21,15 @@ struct DataCacheTests {
         #expect(first == 1)
     }
 
-    @Test("values(skipInitial: true) first yielded element is the first update")
+    @Test("values(skipInitial: true) does not yield the initial value, first yield is the first update")
     func valuesSkipInitialYieldsOnFirstChange() async throws {
         let cache = DataCache(value: 1)
 
+        // Verify initial value is not emitted
+        let skipStream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: skipStream) {}
+
+        // Verify first update is emitted
         let stream = await cache.values(skipInitial: true)
         var iterator = stream.makeAsyncIterator()
         await cache.update(with: 2)
@@ -33,24 +38,14 @@ struct DataCacheTests {
         #expect(first == 2)
     }
 
-    @Test("update(with:) does not emit when value is unchanged (next emission is the later different value)")
+    @Test("update(with:) does not emit when value is unchanged")
     func updateDoesNotEmitOnSameValue() async throws {
         let cache = DataCache(value: 1)
 
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        // Same value should not emit
-        await cache.update(with: 1)
-
-        // Different value should emit next
-        await cache.update(with: 2)
-
-        let next = await iterator.next()
-        #expect(next == 2) // If the same-value update emitted, next would be 1 (or not 2).
+        let stream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: stream) {
+            await cache.update(with: 1)
+        }
     }
 
     @Test("update(keyPath:with:) emits when the property changes")
@@ -73,22 +68,10 @@ struct DataCacheTests {
     func populateEmptyDoesNotEmit() async throws {
         let cache = DataCache(value: Model(count: 0, items: [1], optionalItems: nil))
 
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        // Empty should not emit…
-        await cache.populate(\.items, with: [Int]())
-
-        // …but a real populate should.
-        await cache.populate(\.items, with: [2])
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.items.contains(1) == true)
-        #expect(unwrapped.items.contains(2) == true)
+        let stream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: stream) {
+            await cache.populate(\.items, with: [Int]())
+        }
     }
 
     @Test("populate(collection) emits and appends new elements")
@@ -214,63 +197,30 @@ struct DataCacheTests {
     func updateKeyPathDoesNotEmitOnSameValue() async throws {
         let cache = DataCache(value: Model(count: 5, items: [], optionalItems: nil))
 
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        // Same value should not emit
-        await cache.update(\.count, with: 5)
-
-        // Different value should emit next
-        await cache.update(\.count, with: 10)
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.count == 10)
+        let stream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: stream) {
+            await cache.update(\.count, with: 5)
+        }
     }
 
     @Test("populate does not emit when merged result is identical to current value")
     func populateDoesNotEmitWhenUnchanged() async throws {
         let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
 
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        // Populating with the same items in the same order produces identical result — should not emit.
-        await cache.populate(\.items, with: [1, 2, 3])
-
-        // Adding a genuinely new item should emit.
-        await cache.populate(\.items, with: [4])
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.items == [1, 2, 3, 4])
+        let stream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: stream) {
+            await cache.populate(\.items, with: [1, 2, 3])
+        }
     }
 
     @Test("populate(optional) does not emit when merged result is identical to current value")
     func populateOptionalDoesNotEmitWhenUnchanged() async throws {
         let cache = DataCache(value: Model(count: 0, items: [], optionalItems: [1, 2]))
 
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        // Populating with the same items in the same order produces identical result — should not emit.
-        await cache.populate(\.optionalItems, with: [1, 2])
-
-        // Adding a genuinely new item should emit.
-        await cache.populate(\.optionalItems, with: [3])
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.optionalItems == [1, 2, 3])
+        let stream = await cache.values(skipInitial: true)
+        await assertNoEmission(on: stream) {
+            await cache.populate(\.optionalItems, with: [1, 2])
+        }
     }
 
     @Test("populate merges and updates existing elements")
@@ -288,5 +238,24 @@ struct DataCacheTests {
         #expect(result.contains(4))
         #expect(result.contains(5))
         #expect(result.count == 5)
+    }
+
+    // MARK: - Helper methods
+
+    /// Asserts that no values are emitted on the given stream while `action` executes.
+    private func assertNoEmission<T: Sendable>(
+        on stream: AsyncStream<T>,
+        during action: () async -> Void
+    ) async {
+        await confirmation(expectedCount: 0) { shouldNotEmit in
+            let task = Task {
+                for await _ in stream {
+                    shouldNotEmit()
+                }
+            }
+            await action()
+            try? await Task.sleep(for: .milliseconds(50))
+            task.cancel()
+        }
     }
 }
