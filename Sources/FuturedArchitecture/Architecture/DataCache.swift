@@ -55,9 +55,9 @@ public final class DataCache<Model: Equatable & Sendable> {
         let newItemsDict = Dictionary(uniqueKeysWithValues: newItems.map { ($0.id, $0) })
         let existingIds = Set(original.map(\.id))
 
-        for i in current.indices {
-            if let updated = newItemsDict[current[i].id] {
-                current[i] = updated
+        for index in current.indices {
+            if let updated = newItemsDict[current[index].id] {
+                current[index] = updated
             }
         }
         current.append(contentsOf: newItems.filter { !existingIds.contains($0.id) })
@@ -77,9 +77,9 @@ public final class DataCache<Model: Equatable & Sendable> {
         let newItemsDict = Dictionary(uniqueKeysWithValues: newItems.map { ($0.id, $0) })
         let existingIds = Set(original.map(\.id))
 
-        for i in current.indices {
-            if let updated = newItemsDict[current[i].id] {
-                current[i] = updated
+        for index in current.indices {
+            if let updated = newItemsDict[current[index].id] {
+                current[index] = updated
             }
         }
         current.append(contentsOf: newItems.filter { !existingIds.contains($0.id) })

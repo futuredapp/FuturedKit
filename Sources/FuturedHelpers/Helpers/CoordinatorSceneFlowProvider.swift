@@ -4,8 +4,8 @@
 //  Created by Simon Sestak on 31/07/2024.
 //
 
-import SwiftUI
 import FuturedArchitecture
+import SwiftUI
 
 /**
  A protocol providing an interface for reusable scene flow providers. *Reusable scene flow provider* is part of a scene flow, which can be used as a part of more *Flow Coordinators*. The shared section of the flow is taken out of the *Flow Coordinator* and placed into a class conforming to `CoordinatorSceneFlowProvider`.
