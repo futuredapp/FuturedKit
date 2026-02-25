@@ -11,7 +11,40 @@ import SwiftUI
 /// Protocol for the app's scene delegate that can be observed via SwiftUI's environment.
 ///
 /// Conform your `UIWindowSceneDelegate` to this protocol and annotate it with `@Observable`.
-/// Then inject it into the environment using `.environment()` modifier.
+/// Then inject it into the SwiftUI environment from your root view using `.environment()`.
+///
+/// ```swift
+/// // 1. Declare the delegate
+/// @Observable
+/// final class MySceneDelegate: NSObject, AppSceneDelegate {
+///     var delegate: SceneDelegate?
+///     // ... UIWindowSceneDelegate implementation
+/// }
+///
+/// // 2. Inject at the root
+/// @main
+/// struct MyApp: App {
+///     @State private var sceneDelegate = MySceneDelegate()
+///
+///     var body: some Scene {
+///         WindowGroup {
+///             RootView()
+///                 .environment(sceneDelegate)
+///         }
+///     }
+/// }
+///
+/// // 3. Use in a view
+/// struct RootView: View {
+///     var body: some View {
+///         ContentView()
+///             .set(appSceneDelegateClass: MySceneDelegate.self, sceneDelegate: mySceneDelegate)
+///     }
+/// }
+/// ```
+///
+/// - Important: Forgetting to inject the delegate via `.environment()` will cause a runtime crash.
+/// Unlike `@EnvironmentObject`, the compiler cannot warn you about a missing injection.
 public protocol AppSceneDelegate: AnyObject, UIWindowSceneDelegate, Observable {
     var delegate: SceneDelegate? { get set }
 }

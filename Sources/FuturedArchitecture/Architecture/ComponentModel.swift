@@ -16,6 +16,9 @@ import Foundation
 /// - Note: Each *component model* should have have *mock* class and *implementation* class.
 /// Each *Component* (i.e. View) should have own *component model*. Each instance of component
 /// model has to be referenced by no more than 1 *coordinator.*
+///
+/// - Important: Conforming types must be annotated with `@Observable`. Without it the class will
+/// compile but SwiftUI views will not react to state changes.
 @MainActor
 public protocol ComponentModel: AnyObject {
 
@@ -28,5 +31,5 @@ public protocol ComponentModel: AnyObject {
     /// The return type if this closure is `Void` intentionally. If bidirectional communication is
     /// desired, either pass closure to the *coordinator* using the event, or use other
     /// recommended pattern of data flow.
-    var onEvent: (Event) -> Void { get }
+    var onEvent: @MainActor (Event) -> Void { get }
 }

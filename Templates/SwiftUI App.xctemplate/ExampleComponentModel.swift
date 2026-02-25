@@ -24,8 +24,8 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
     }
 
     func onAppear() async {
-        // Subscribe to dataCache changes
-        // Fetch fresh data
+        // Access dataCache.value (or its properties) directly — observation is automatic.
+        // Fetch fresh data here if needed.
     }
 
     func onTouchUpInside() {

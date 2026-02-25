@@ -33,11 +33,26 @@ Container is not defined as a type or a protocol, but is a part of the architect
 
 ### Data Cache
 
-``DataCache`` is an actor holding an equatable structure. It is responsible for managing the structure as a source of truth, serializing write operations and exposing the contents as an `AsyncStream`, so consumers can subscribe to changes. Data cache may be used to store data shared across the app or cache results of an API calls.
+`DataCache` is a `@MainActor` `@Observable` class holding an equatable model struct. Because it shares the main actor with coordinators and component models, all reads and writes are synchronous. Observation is automatic: any `@Observable` context that reads `dataCache.value` will re-evaluate when it changes. Use `update(with:)`, `update(_:with:)`, and `populate(_:with:)` to mutate the cache.
 
 Each application should have one global data cache stored in the `Container`. Individual Coordinators may have their own private Data Caches to coordinate data flows across child scenes.
 
-**Data stored in Data Cache should be directly the source of truth for views by subscribing to the AsyncStream.**
+**Imperative observation** (for side effects rather than display): if a component model needs to react to cache changes programmatically, use `withObservationTracking` in a Task loop:
+
+```swift
+func onAppear() async {
+    while !Task.isCancelled {
+        await withObservationTracking {
+            processModel(dataCache.value)
+        } onChange: {
+            // Called once when any accessed property changes; loop re-observes.
+        }
+        await Task.yield()
+    }
+}
+```
+
+This is the standard Swift pattern for imperative observation and does not require any infrastructure in `DataCache` itself.
 
 ### Flow Provider
 
