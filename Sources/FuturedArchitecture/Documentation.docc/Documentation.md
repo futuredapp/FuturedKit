@@ -42,12 +42,13 @@ Each application should have one global data cache stored in the `Container`. In
 ```swift
 func onAppear() async {
     while !Task.isCancelled {
-        await withObservationTracking {
-            processModel(dataCache.value)
-        } onChange: {
-            // Called once when any accessed property changes; loop re-observes.
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                processModel(dataCache.value)
+            } onChange: {
+                continuation.resume()
+            }
         }
-        await Task.yield()
     }
 }
 ```
