@@ -55,6 +55,8 @@ func onAppear() async {
 
 This is the standard Swift pattern for imperative observation and does not require any infrastructure in `DataCache` itself.
 
+> Note: Swift 6.2 introduces `Observations`, an `AsyncSequence` that replaces the manual `withObservationTracking` + `withCheckedContinuation` loop with cleaner "did set" semantics. It requires iOS 26+ / macOS 26+. When the minimum deployment target is raised, the pattern above can be replaced with `for await state in Observations { dataCache.value } { ... }`.
+
 ### Flow Provider
 
 Flow providers are optional part of the architecture. It may be used to encapsulate parts of a flow, which may be used in number of coordinators. For more information, visit ``CoordinatorSceneFlowProvider`` and related template.

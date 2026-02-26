@@ -111,6 +111,15 @@ struct DataCacheTests {
         #expect(result[2].id == 3)
     }
 
+    @Test("populate handles duplicate IDs in newItems without crashing (last wins)")
+    func populateDuplicateIdsInNewItems() {
+        let cache = DataCache(value: Model(count: 0, items: [Item(id: 1, name: "A")], optionalItems: nil))
+        cache.populate(\.items, with: [Item(id: 2, name: "B-first"), Item(id: 2, name: "B-last")])
+        #expect(cache.value.items.count == 2)
+        #expect(cache.value.items.map(\.id) == [1, 2])
+        #expect(cache.value.items.first { $0.id == 2 }?.name == "B-last")
+    }
+
     @Test("populate is a no-op when the merged result is equal to the current collection")
     func populateNoOpWhenAllSame() {
         let items = [Item(id: 1, name: "A"), Item(id: 2, name: "B")]

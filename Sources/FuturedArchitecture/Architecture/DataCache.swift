@@ -51,19 +51,9 @@ public final class DataCache<Model: Equatable & Sendable> {
     ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
         let original = self.value[keyPath: keyPath]
-        var current = original
-        let newItemsDict = Dictionary(uniqueKeysWithValues: newItems.map { ($0.id, $0) })
-        let existingIds = Set(original.map(\.id))
-
-        for index in current.indices {
-            if let updated = newItemsDict[current[index].id] {
-                current[index] = updated
-            }
-        }
-        current.append(contentsOf: newItems.filter { !existingIds.contains($0.id) })
-
-        guard !current.elementsEqual(original) else { return }
-        self.value[keyPath: keyPath] = current
+        let merged = merging(original, with: newItems)
+        guard !merged.elementsEqual(original) else { return }
+        self.value[keyPath: keyPath] = merged
     }
 
     /// Optional-collection variant of `populate(_:with:)`.
@@ -73,18 +63,30 @@ public final class DataCache<Model: Equatable & Sendable> {
     ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
         let original = self.value[keyPath: keyPath] ?? T()
-        var current = original
-        let newItemsDict = Dictionary(uniqueKeysWithValues: newItems.map { ($0.id, $0) })
-        let existingIds = Set(original.map(\.id))
+        let merged = merging(original, with: newItems)
+        guard !merged.elementsEqual(original) else { return }
+        self.value[keyPath: keyPath] = merged
+    }
 
-        for index in current.indices {
-            if let updated = newItemsDict[current[index].id] {
-                current[index] = updated
+    private func merging<T>(
+        _ current: T,
+        with newItems: T
+    ) -> T where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
+        var result = current
+        let newItemsDict = Dictionary(newItems.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
+        let existingIds = Set(current.map(\.id))
+
+        for index in result.indices {
+            if let updated = newItemsDict[result[index].id] {
+                result[index] = updated
             }
         }
-        current.append(contentsOf: newItems.filter { !existingIds.contains($0.id) })
 
-        guard !current.elementsEqual(original) else { return }
-        self.value[keyPath: keyPath] = current
+        var appendedIds = existingIds
+        for item in newItems where appendedIds.insert(item.id).inserted {
+            result.append(newItemsDict[item.id]!)
+        }
+
+        return result
     }
 }
