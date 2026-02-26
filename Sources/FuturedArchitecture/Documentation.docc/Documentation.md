@@ -35,6 +35,8 @@ Container is not defined as a type or a protocol, but is a part of the architect
 
 `DataCache` is a `@MainActor` `@Observable` class holding an equatable model struct. Because it shares the main actor with coordinators and component models, all reads and writes are synchronous. Observation is automatic: any `@Observable` context that reads `dataCache.value` will re-evaluate when it changes. Use `update(with:)`, `update(_:with:)`, and `populate(_:with:)` to mutate the cache.
 
+**Observation granularity:** `@Observable` tracks at the stored property level. `DataCache` has one stored property — `value`. All computed properties that read `dataCache.value` (regardless of which sub-property) re-evaluate when *any* part of the model changes. For SwiftUI views this is fine — body re-evaluation is cheap and SwiftUI diffs the output. For imperative subscriptions, add manual deduplication or use `Observations` + `.removeDuplicates()` on iOS 26+ (see below).
+
 Each application should have one global data cache stored in the `Container`. Individual Coordinators may have their own private Data Caches to coordinate data flows across child scenes.
 
 **Imperative observation** (for side effects rather than display): if a component model needs to react to cache changes programmatically, use `withObservationTracking` in a Task loop:
@@ -55,7 +57,14 @@ func onAppear() async {
 
 This is the standard Swift pattern for imperative observation and does not require any infrastructure in `DataCache` itself.
 
-> Note: Swift 6.2 introduces `Observations`, an `AsyncSequence` that replaces the manual `withObservationTracking` + `withCheckedContinuation` loop with cleaner "did set" semantics. It requires iOS 26+ / macOS 26+. When the minimum deployment target is raised, the pattern above can be replaced with `for await state in Observations { dataCache.value } { ... }`.
+> Note: From iOS 26+ / macOS 26+, `Observations` (an `AsyncSequence` from Swift 6.2) replaces the manual `withObservationTracking` + `withCheckedContinuation` loop with cleaner "did set" semantics. Combined with [`AsyncAlgorithms`](https://github.com/apple/swift-async-algorithms)' `.removeDuplicates()`, it also provides per-property filtering similar to what Combine's `.map(\.prop).removeDuplicates()` offered:
+>
+> ```swift
+> // Requires: import AsyncAlgorithms, iOS 26+ / macOS 26+
+> for await items in Observations({ dataCache.value.items }).removeDuplicates() {
+>     processItems(items)   // fires only when items actually changed
+> }
+> ```
 
 ### Flow Provider
 
