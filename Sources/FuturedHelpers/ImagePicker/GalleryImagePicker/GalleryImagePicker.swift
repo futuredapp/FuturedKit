@@ -1,8 +1,8 @@
 #if canImport(UIKit)
 
 import BindingKit
-import SwiftUI
 import PhotosUI
+import SwiftUI
 
 /// A view that displays a Photos picker for choosing assets from the photo library.
 ///

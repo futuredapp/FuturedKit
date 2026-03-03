@@ -26,8 +26,7 @@ final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdent
     }
 
     func onAppear() async {
-        // Subscribe to dataCache changes
-        // Fetch fresh data
+        // Fetch fresh data from network or subscribe to cache changes
     }
 }
 

@@ -1,152 +1,91 @@
 import Foundation
 
-/// `DataCache` is intended to store state which may be used by
-/// more than one *component* and/or fetched from remote.
+/// `DataCache` stores shared mutable state that can be read by multiple components
+/// and/or fetched from remote.
 ///
-/// An Application should contain one shared application-wide cache, but each
-/// coordinator may also create a private data cache.
+/// Because `DataCache` is `@MainActor`, all reads and writes are synchronous from any
+/// `@MainActor` context (coordinators, component models).
 ///
-/// The data from data cache should be taken as a subscription and modified
-/// only via provided `update` methods. As a general rule, value types should
-/// be used as a `Model`.
+/// Observation is handled by the `@Observable` macro: any `@Observable` or SwiftUI
+/// context that reads `dataCache.value` (or a keyPath of it) will automatically
+/// re-evaluate when the value changes.
 ///
-/// - Experiment: This API is in preview and subject to change.
-/// - ToDo: How the `DataCache` may interact with persistence such as
-/// `CoreData` or `SwiftData` is an open question and subject of further
-/// research.
-public actor DataCache<Model: Equatable & Sendable> {
-
-    // MARK: Stored state
+/// Mutate the cache only via the provided `update` and `populate` methods.
+/// As a general rule, value types should be used as the `Model`.
+///
+/// An application should contain one shared application-wide cache stored in the
+/// `Container`, but each coordinator may also create a private data cache.
+@Observable
+@MainActor
+public final class DataCache<Model: Equatable & Sendable> {
 
     /// The data held by this data cache.
     public private(set) var value: Model
-
-    private var subscribers: [UUID: AsyncStream<Model>.Continuation] = [:]
-
-    // MARK: Init
 
     public init(value: Model) {
         self.value = value
     }
 
-    deinit {
-        for continuation in subscribers.values {
-            continuation.finish()
-        }
-        subscribers.removeAll()
-    }
-
-    // MARK: Observation (Swift Concurrency)
-
-    /// Observe changes of the cache value.
-    ///
-    /// - Parameter skipInitial: When `true`, the returned stream does not yield the current value
-    ///   immediately. It only yields subsequent changes.
-    ///
-    /// This stream yields whenever `value` changes via any of the `update`/`populate` methods.
-    ///
-    /// Each call creates a new stream ("one stream per subscriber").
-    ///
-    /// The stream uses `bufferingNewest(1)` because this is "state": consumers typically only care
-    /// about the latest value, and we want to avoid unbounded buffering if updates happen faster
-    /// than the consumer can process them.
-    public func values(skipInitial: Bool = false) -> AsyncStream<Model> {
-        let id = UUID()
-        return AsyncStream(Model.self, bufferingPolicy: .bufferingNewest(1)) { continuation in
-            // Register subscriber inside the actor.
-            subscribers[id] = continuation
-
-            // Yield the current value immediately unless the caller asked to skip it.
-            if !skipInitial {
-                continuation.yield(value)
-            }
-
-            continuation.onTermination = { [weak self] _ in
-                Task { // Hop back into the actor to remove subscriber.
-                    await self?.removeSubscriber(id: id)
-                }
-            }
-        }
-    }
-
-    // MARK: Updates
-
-    /// Atomically update the whole data cache. Use this method if you need
-    /// to perform number of changes at once.
+    /// Replace the whole model. Use this method when you need to update multiple
+    /// properties at once. No-op if the value is unchanged.
     public func update(with value: Model) {
         guard value != self.value else { return }
         self.value = value
-        broadcast(self.value)
     }
 
-    /// Atomically update one variable.
-    ///
-    /// - ToDo: Investigate whether we can use variadic generics to improve the API.
-    /// No change is emitted when the value is the same.
+    /// Replace one property via keyPath. No-op if the value is unchanged.
     public func update<T: Equatable>(_ keyPath: WritableKeyPath<Model, T>, with value: T) {
         guard value != self.value[keyPath: keyPath] else { return }
         self.value[keyPath: keyPath] = value
-        broadcast(self.value)
     }
 
-    /// Populate one variable of Collection type.
-    /// - Description: The method will append new elements to the existing collection. The elements which are already
-    /// in the collection as well as in the new collection will be updated. No change is emitted when the new collection is empty
-    /// or when the merged result is the same as the current value.
+    /// Merge a collection by Identifiable identity.
+    ///
+    /// - Existing items whose ID appears in `newItems` are updated in place (order preserved).
+    /// - Items in `newItems` whose ID is absent from the current collection are appended.
+    /// - Items already in the collection but absent from `newItems` are kept unchanged.
+    /// - No write occurs when the merged result is equal to the current collection.
     public func populate<T>(
         _ keyPath: WritableKeyPath<Model, T>,
         with newItems: T
-    ) where T: RangeReplaceableCollection, T.Element: Equatable {
+    ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
-        let current = self.value[keyPath: keyPath]
-        let merged = mergedCollection(current: current, newItems: newItems)
-        guard !current.elementsEqual(merged) else { return }
+        let original = self.value[keyPath: keyPath]
+        let merged = merging(original, with: newItems)
+        guard !merged.elementsEqual(original) else { return }
         self.value[keyPath: keyPath] = merged
-        broadcast(self.value)
     }
 
-    /// Populate one optional variable of Collection type.
-    ///
-    /// - Description: The method will append new elements to the existing collection. The elements which are already
-    /// in the collection as well as in the new collection will be updated. No change is emitted when the new collection is empty
-    /// or when the merged result is the same as the current value.
+    /// Optional-collection variant of `populate(_:with:)`.
     public func populate<T>(
         _ keyPath: WritableKeyPath<Model, T?>,
         with newItems: T
-    ) where T: RangeReplaceableCollection, T.Element: Equatable {
+    ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
-        let current = self.value[keyPath: keyPath] ?? T()
-        let merged = mergedCollection(current: current, newItems: newItems)
-        guard !current.elementsEqual(merged) else { return }
+        let original = self.value[keyPath: keyPath] ?? T()
+        let merged = merging(original, with: newItems)
+        guard !merged.elementsEqual(original) else { return }
         self.value[keyPath: keyPath] = merged
-        broadcast(self.value)
     }
 
-    // MARK: Private Helpers
+    private func merging<T>(
+        _ current: T,
+        with newItems: T
+    ) -> T where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
+        var result = current
+        let newItemsDict = Dictionary(newItems.map { ($0.id, $0) }, uniquingKeysWith: { _, last in last })
+        let existingIds = Set(current.map(\.id))
 
-    private func removeSubscriber(id: UUID) {
-        subscribers[id]?.finish()
-        subscribers[id] = nil
-    }
-
-    private func broadcast(_ value: Model) {
-        for continuation in subscribers.values {
-            continuation.yield(value)
+        for index in result.indices {
+            if let updated = newItemsDict[result[index].id] {
+                result[index] = updated
+            }
         }
-    }
 
-    private func mergedCollection<T>(
-        current: T,
-        newItems: T
-    ) -> T where T: RangeReplaceableCollection, T.Element: Equatable {
-        var result = T()
-        result.reserveCapacity(current.count + newItems.count)
-
-        let filteredExisting = current.filter { existingItem in
-            !newItems.contains(existingItem)
+        var appendedIds = existingIds
+        for item in newItems where appendedIds.insert(item.id).inserted {
+            result.append(newItemsDict[item.id]!)
         }
-        result.append(contentsOf: filteredExisting)
-        result.append(contentsOf: newItems)
 
         return result
     }

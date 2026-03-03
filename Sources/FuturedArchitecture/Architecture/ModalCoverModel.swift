@@ -5,8 +5,8 @@
 //  Created by Simon Sestak on 01/08/2024.
 //
 
-import SwiftUI
 import Foundation
+import SwiftUI
 
 public enum SheetDetent: Hashable {
     case medium

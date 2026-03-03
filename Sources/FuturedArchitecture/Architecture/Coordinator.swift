@@ -40,13 +40,13 @@ public protocol Coordinator: AnyObject {
     func onModalDismiss()
 }
 
-public extension Coordinator {
+extension Coordinator {
     /// Convenience function for presenting a modal over the *container*.
     /// - Parameters:
     ///   - destination: The description of the desired view passed to the ``scene(for:)`` function
     ///   of the *coordinator*.
     ///   - type: Kind of modal presentation.
-    func present(modal destination: Destination, type: ModalCoverModelStyle) {
+    public func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
             self.modalCover = .init(destination: destination, style: .sheet)
@@ -58,11 +58,11 @@ public extension Coordinator {
     }
 
     /// Convenience method for dismissing a modal.
-    func dismissModal() {
+    public func dismissModal() {
         self.modalCover = nil
     }
 
-    func onModalDismiss() {}
+    public func onModalDismiss() {}
 }
 
 /// `TabCoordinator` provides additional requirements for the use with ``SwiftUI.TabView``.
@@ -73,6 +73,7 @@ public extension Coordinator {
 /// which is essentially duplication of `Destination`. Consider, how the API limits the use of tabs.
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
+
     var selectedTab: Tab { get set }
 }
 
@@ -85,14 +86,14 @@ public protocol NavigationStackCoordinator: Coordinator {
     var path: [Destination] { get set }
 }
 
-public extension NavigationStackCoordinator {
+extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
-    func navigate(to destination: Destination) {
+    public func navigate(to destination: Destination) {
         self.path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
-    func pop() {
+    public func pop() {
         self.path.removeLast()
     }
 
@@ -100,7 +101,7 @@ public extension NavigationStackCoordinator {
     /// - Parameter destination: Destination to be reached. If nil is passed, or such destination
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
-    func pop(to destination: Destination) {
+    public func pop(to destination: Destination) {
         guard let index = self.path.lastIndex(of: destination) else {
             assertionFailure("Destination not found on the stack")
             return
@@ -108,11 +109,11 @@ public extension NavigationStackCoordinator {
         self.path = Array(path[path.startIndex...index])
     }
 
-    func popToRoot() {
+    public func popToRoot() {
         path = []
     }
 
-    func reset() {
+    public func reset() {
         path = []
         modalCover = nil
     }

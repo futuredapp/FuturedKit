@@ -1,261 +1,185 @@
 import FuturedArchitecture
+import Observation
 import Testing
 
 @Suite("DataCache")
+@MainActor
 struct DataCacheTests {
+
+    private struct Item: Identifiable, Equatable, Sendable {
+        let id: Int
+        var name: String
+    }
 
     private struct Model: Equatable, Sendable {
         var count: Int
-        var items: [Int]
-        var optionalItems: [Int]?
+        var items: [Item]
+        var optionalItems: [Item]?
     }
 
-    @Test("values(skipInitial: false) yields the initial value immediately")
-    func valuesEmitsInitialValue() async throws {
+    // MARK: update(with:)
+
+    @Test("update(with:) stores the new value")
+    func updateSetsValue() {
         let cache = DataCache(value: 1)
-
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        let first = await iterator.next()
-        #expect(first == 1)
+        cache.update(with: 2)
+        #expect(cache.value == 2)
     }
 
-    @Test("values(skipInitial: true) does not yield the initial value, first yield is the first update")
-    func valuesSkipInitialYieldsOnFirstChange() async throws {
+    @Test("update(with:) is a no-op when the value is unchanged")
+    func updateNoOpOnSameValue() {
         let cache = DataCache(value: 1)
-
-        // Verify initial value is not emitted
-        let skipStream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: skipStream) {}
-
-        // Verify first update is emitted
-        let stream = await cache.values(skipInitial: true)
-        var iterator = stream.makeAsyncIterator()
-        await cache.update(with: 2)
-
-        let first = await iterator.next()
-        #expect(first == 2)
-    }
-
-    @Test("update(with:) does not emit when value is unchanged")
-    func updateDoesNotEmitOnSameValue() async throws {
-        let cache = DataCache(value: 1)
-
-        let stream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: stream) {
-            await cache.update(with: 1)
+        assertNoChange(on: cache) {
+            cache.update(with: 1)
         }
     }
 
-    @Test("update(keyPath:with:) emits when the property changes")
-    func updateKeyPathEmits() async throws {
+    // MARK: update(_:with:)
+
+    @Test("update(_:with:) sets the property at the given keyPath")
+    func updateKeyPathSetsProperty() {
         let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
-
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        await cache.update(\.count, with: 1)
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.count == 1)
+        cache.update(\.count, with: 5)
+        #expect(cache.value.count == 5)
     }
 
-    @Test("populate(collection) does not emit when passed an empty collection")
-    func populateEmptyDoesNotEmit() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [1], optionalItems: nil))
-
-        let stream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: stream) {
-            await cache.populate(\.items, with: [Int]())
-        }
-    }
-
-    @Test("populate(collection) emits and appends new elements")
-    func populateEmitsAndAppends() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [1], optionalItems: nil))
-
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        await cache.populate(\.items, with: [2, 3])
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.items.contains(1) == true)
-        #expect(unwrapped.items.contains(2) == true)
-        #expect(unwrapped.items.contains(3) == true)
-    }
-
-    @Test("populate(optional collection) emits when optional is nil and collection is non-empty")
-    func populateOptionalEmitsFromNil() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
-
-        let stream = await cache.values(skipInitial: false)
-        var iterator = stream.makeAsyncIterator()
-
-        // Consume initial
-        _ = await iterator.next()
-
-        await cache.populate(\.optionalItems, with: [1, 2])
-
-        let next = await iterator.next()
-        let unwrapped = try #require(next)
-        #expect(unwrapped.optionalItems == [1, 2])
-    }
-
-    @Test("values() creates a new stream per subscriber: two subscribers both receive the same update")
-    func valuesCreatesNewStreamPerSubscriber() async throws {
-        let cache = DataCache(value: 0)
-
-        let streamA = await cache.values(skipInitial: false)
-        let streamB = await cache.values(skipInitial: false)
-
-        var iteratorA = streamA.makeAsyncIterator()
-        var iteratorB = streamB.makeAsyncIterator()
-
-        // Each stream yields initial value independently.
-        let valueA0 = await iteratorA.next()
-        let valueB0 = await iteratorB.next()
-        #expect(valueA0 == 0)
-        #expect(valueB0 == 0)
-
-        // One update should be delivered to BOTH subscribers.
-        await cache.update(with: 1)
-
-        let valueA1 = await iteratorA.next()
-        let valueB1 = await iteratorB.next()
-        #expect(valueA1 == 1)
-        #expect(valueB1 == 1)
-    }
-
-    @Test("Concurrent updates are serialized by actor isolation")
-    func concurrentUpdatesAreSerialized() async throws {
-        let cache = DataCache(value: 0)
-
-        // Launch multiple concurrent updates
-        await withTaskGroup(of: Void.self) { group in
-            for i in 1...100 {
-                group.addTask {
-                    await cache.update(with: i)
-                }
-            }
-        }
-
-        // The final value should be one of the updates (actor serializes access)
-        let finalValue = await cache.value
-        #expect(finalValue >= 1 && finalValue <= 100)
-    }
-
-    @Test("Concurrent keyPath updates maintain consistency")
-    func concurrentKeyPathUpdatesAreConsistent() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
-
-        // Launch concurrent updates to the count property
-        await withTaskGroup(of: Void.self) { group in
-            for i in 1...50 {
-                group.addTask {
-                    await cache.update(\.count, with: i)
-                }
-            }
-        }
-
-        // The final count should be one of the updates
-        let finalModel = await cache.value
-        #expect(finalModel.count >= 1 && finalModel.count <= 50)
-    }
-
-    @Test("Stream termination removes subscriber from cache")
-    func streamTerminationRemovesSubscriber() async throws {
-        let cache = DataCache(value: 0)
-
-        // Create and immediately discard a stream
-        do {
-            let stream = await cache.values(skipInitial: false)
-            var iterator = stream.makeAsyncIterator()
-            _ = await iterator.next()
-            // Stream goes out of scope here
-        }
-
-        // Give time for cleanup
-        try? await Task.sleep(for: .seconds(0.1))
-
-        // Cache should still work fine with new subscribers
-        let newStream = await cache.values(skipInitial: false)
-        var newIterator = newStream.makeAsyncIterator()
-        let value = await newIterator.next()
-        #expect(value == 0)
-    }
-
-    @Test("update(keyPath:with:) does not emit when value is unchanged")
-    func updateKeyPathDoesNotEmitOnSameValue() async throws {
+    @Test("update(_:with:) is a no-op when the property value is unchanged")
+    func updateKeyPathNoOpOnSameValue() {
         let cache = DataCache(value: Model(count: 5, items: [], optionalItems: nil))
-
-        let stream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: stream) {
-            await cache.update(\.count, with: 5)
+        assertNoChange(on: cache) {
+            cache.update(\.count, with: 5)
         }
     }
 
-    @Test("populate does not emit when merged result is identical to current value")
-    func populateDoesNotEmitWhenUnchanged() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
+    // MARK: populate(_:with:)
 
-        let stream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: stream) {
-            await cache.populate(\.items, with: [1, 2, 3])
+    @Test("populate does not change the collection when newItems is empty")
+    func populateEmptyIsNoOp() {
+        let cache = DataCache(value: Model(count: 0, items: [Item(id: 1, name: "A")], optionalItems: nil))
+        assertNoChange(on: cache) {
+            cache.populate(\.items, with: [Item]())
         }
     }
 
-    @Test("populate(optional) does not emit when merged result is identical to current value")
-    func populateOptionalDoesNotEmitWhenUnchanged() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: [1, 2]))
+    @Test("populate appends items whose IDs are not already in the collection")
+    func populateAppendsNewItems() {
+        let cache = DataCache(value: Model(count: 0, items: [Item(id: 1, name: "A")], optionalItems: nil))
+        cache.populate(\.items, with: [Item(id: 2, name: "B"), Item(id: 3, name: "C")])
+        #expect(cache.value.items.count == 3)
+        #expect(cache.value.items.map(\.id) == [1, 2, 3])
+    }
 
-        let stream = await cache.values(skipInitial: true)
-        await assertNoEmission(on: stream) {
-            await cache.populate(\.optionalItems, with: [1, 2])
+    @Test("populate into an empty collection appends all new items")
+    func populateIntoEmptyCollection() {
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
+        cache.populate(\.items, with: [Item(id: 1, name: "A"), Item(id: 2, name: "B")])
+        #expect(cache.value.items == [Item(id: 1, name: "A"), Item(id: 2, name: "B")])
+    }
+
+    @Test("populate updates an existing item by ID without producing a duplicate")
+    func populateUpdatesExistingById() {
+        let cache = DataCache(value: Model(count: 0, items: [Item(id: 1, name: "A")], optionalItems: nil))
+        cache.populate(\.items, with: [Item(id: 1, name: "Updated")])
+        #expect(cache.value.items.count == 1)
+        #expect(cache.value.items[0].name == "Updated")
+    }
+
+    @Test("populate keeps items that are absent from newItems unchanged")
+    func populateKeepsUntouchedItems() {
+        let cache = DataCache(value: Model(
+            count: 0,
+            items: [Item(id: 1, name: "A"), Item(id: 2, name: "B")],
+            optionalItems: nil
+        ))
+        cache.populate(\.items, with: [Item(id: 2, name: "B-updated")])
+        #expect(cache.value.items.first { $0.id == 1 }?.name == "A")
+        #expect(cache.value.items.first { $0.id == 2 }?.name == "B-updated")
+    }
+
+    @Test("populate preserves original order and appends new items at the end")
+    func populateOrderPreserved() {
+        let cache = DataCache(value: Model(
+            count: 0,
+            items: [Item(id: 1, name: "A"), Item(id: 2, name: "B")],
+            optionalItems: nil
+        ))
+        cache.populate(\.items, with: [Item(id: 2, name: "B2"), Item(id: 3, name: "C")])
+        let result = cache.value.items
+        #expect(result[0].id == 1)
+        #expect(result[1].id == 2)
+        #expect(result[1].name == "B2")
+        #expect(result[2].id == 3)
+    }
+
+    @Test("populate handles duplicate IDs in newItems without crashing (last wins)")
+    func populateDuplicateIdsInNewItems() {
+        let cache = DataCache(value: Model(count: 0, items: [Item(id: 1, name: "A")], optionalItems: nil))
+        cache.populate(\.items, with: [Item(id: 2, name: "B-first"), Item(id: 2, name: "B-last")])
+        #expect(cache.value.items.count == 2)
+        #expect(cache.value.items.map(\.id) == [1, 2])
+        #expect(cache.value.items.first { $0.id == 2 }?.name == "B-last")
+    }
+
+    @Test("populate is a no-op when the merged result is equal to the current collection")
+    func populateNoOpWhenAllSame() {
+        let items = [Item(id: 1, name: "A"), Item(id: 2, name: "B")]
+        let cache = DataCache(value: Model(count: 0, items: items, optionalItems: nil))
+        assertNoChange(on: cache) {
+            cache.populate(\.items, with: items)
         }
     }
 
-    @Test("populate merges and updates existing elements")
-    func populateMergesAndUpdatesExisting() async throws {
-        let cache = DataCache(value: Model(count: 0, items: [1, 2, 3], optionalItems: nil))
+    // MARK: populate(_:with:) — optional variant
 
-        // Populate with items that include an existing element (2) and new ones (4, 5)
-        await cache.populate(\.items, with: [2, 4, 5])
-
-        let result = await cache.value.items
-        // Should contain: 1, 3 (existing not in new), 2, 4, 5 (from new)
-        #expect(result.contains(1))
-        #expect(result.contains(2))
-        #expect(result.contains(3))
-        #expect(result.contains(4))
-        #expect(result.contains(5))
-        #expect(result.count == 5)
+    @Test("populate on a nil optional collection initialises it from newItems")
+    func populateOptionalFromNil() {
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: nil))
+        cache.populate(\.optionalItems, with: [Item(id: 1, name: "A"), Item(id: 2, name: "B")])
+        #expect(cache.value.optionalItems == [Item(id: 1, name: "A"), Item(id: 2, name: "B")])
     }
 
-    // MARK: - Helper methods
+    @Test("populate updates an existing item by ID in a non-nil optional collection")
+    func populateOptionalUpdatesExistingById() {
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: [Item(id: 1, name: "A")]))
+        cache.populate(\.optionalItems, with: [Item(id: 1, name: "Updated")])
+        #expect(cache.value.optionalItems?.count == 1)
+        #expect(cache.value.optionalItems?.first?.name == "Updated")
+    }
 
-    /// Asserts that no values are emitted on the given stream while `action` executes.
-    private func assertNoEmission<T: Sendable>(
-        on stream: AsyncStream<T>,
-        during action: () async -> Void
-    ) async {
-        await confirmation(expectedCount: 0) { shouldNotEmit in
-            let task = Task {
-                for await _ in stream {
-                    shouldNotEmit()
-                }
-            }
-            await action()
-            try? await Task.sleep(for: .milliseconds(50))
-            task.cancel()
+    @Test("populate on an optional collection is a no-op when the merged result is unchanged")
+    func populateOptionalNoOpWhenSame() {
+        let items: [Item] = [Item(id: 1, name: "A"), Item(id: 2, name: "B")]
+        let cache = DataCache(value: Model(count: 0, items: [], optionalItems: items))
+        assertNoChange(on: cache) {
+            cache.populate(\.optionalItems, with: items)
         }
+    }
+
+    // MARK: - Helper
+
+    /// Asserts that `action` does not trigger an observation change on `cache.value`.
+    ///
+    /// `withObservationTracking` fires `onChange` synchronously on `@MainActor` the moment
+    /// a tracked property is written, so the check is immediate and race-free.
+    ///
+    /// `ChangeDetector` is `@unchecked Sendable` because `onChange` is always dispatched
+    /// on `@MainActor` (mutations come from `@MainActor DataCache`), matching the actor
+    /// of the test itself — there is no actual concurrent access.
+    private final class ChangeDetector: @unchecked Sendable {
+        var didChange = false
+    }
+
+    private func assertNoChange<M: Equatable & Sendable>(
+        on cache: DataCache<M>,
+        during action: () -> Void
+    ) {
+        let detector = ChangeDetector()
+        withObservationTracking {
+            _ = cache.value
+        } onChange: {
+            detector.didChange = true
+        }
+        action()
+        #expect(!detector.didChange)
     }
 }

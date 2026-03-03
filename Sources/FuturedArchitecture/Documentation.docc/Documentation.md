@@ -33,11 +33,63 @@ Container is not defined as a type or a protocol, but is a part of the architect
 
 ### Data Cache
 
-``DataCache`` is an actor holding an equatable structure. It is responsible for managing the structure as a source of truth, serializing write operations and exposing the contents as an `AsyncStream`, so consumers can subscribe to changes. Data cache may be used to store data shared across the app or cache results of an API calls.
+`DataCache` is a `@MainActor` `@Observable` class holding an equatable model struct. Because it shares the main actor with coordinators and component models, all reads and writes are synchronous. Observation is automatic: any `@Observable` context that reads `dataCache.value` will re-evaluate when it changes. Use `update(with:)`, `update(_:with:)`, and `populate(_:with:)` to mutate the cache.
 
 Each application should have one global data cache stored in the `Container`. Individual Coordinators may have their own private Data Caches to coordinate data flows across child scenes.
 
-**Data stored in Data Cache should be directly the source of truth for views by subscribing to the AsyncStream.**
+#### 1. Computed properties (display) — primary pattern
+
+Derive display state from the cache using computed properties. `@Observable` tracks reads through the entire chain — SwiftUI views reading these properties automatically re-evaluate when the underlying cache value changes. **Do not copy cache values into stored properties**; that creates a one-time snapshot that won't reflect later changes (e.g. when a modal adds or modifies an item).
+
+```swift
+var items: [Item] {
+    dataCache.value.items
+}
+var userName: String {
+    dataCache.value.user.name
+}
+```
+
+Use `onAppear` for fetching fresh data from the network or subscribing to cache changes (see below) — not for copying cache state.
+
+#### 2. Imperative observation (side effects)
+
+When a component model needs to react to cache changes programmatically (not for display), use `withObservationTracking` in a Task loop. Concrete use cases include:
+
+- triggering a network re-fetch when a related cache value changes,
+- firing an analytics event on state transition,
+- performing navigation based on cache state.
+
+```swift
+func onAppear() async {
+    while !Task.isCancelled {
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                processModel(dataCache.value)
+            } onChange: {
+                continuation.resume()
+            }
+        }
+    }
+}
+```
+
+This is the standard Swift pattern for imperative observation and does not require any infrastructure in `DataCache` itself.
+
+#### 3. Observations + removeDuplicates() (iOS 26+)
+
+From iOS 26+ / macOS 26+, `Observations` (an `AsyncSequence` from Swift 6.2) replaces the manual `withObservationTracking` + `withCheckedContinuation` loop with cleaner "did set" semantics. Combined with [`AsyncAlgorithms`](https://github.com/apple/swift-async-algorithms)' `.removeDuplicates()`, it also provides per-property filtering similar to what Combine's `.map(\.prop).removeDuplicates()` offered:
+
+```swift
+// Requires: import AsyncAlgorithms, iOS 26+ / macOS 26+
+for await items in Observations({ dataCache.value.items }).removeDuplicates() {
+    processItems(items)   // fires only when items actually changed
+}
+```
+
+#### Observation granularity
+
+`@Observable` tracks at the stored property level. `DataCache` has one stored property — `value`. All computed properties that read `dataCache.value` (regardless of which sub-property) re-evaluate when *any* part of the model changes. For SwiftUI views this is fine — body re-evaluation is cheap and SwiftUI diffs the output. For imperative subscriptions, add manual deduplication or use `Observations` + `.removeDuplicates()` on iOS 26+ (see above).
 
 ### Flow Provider
 

@@ -1,8 +1,8 @@
 #if canImport(UIKit)
 
 import AVFoundation
-import SwiftUI
 import FuturedArchitecture
+import SwiftUI
 
 /// A view that displays a camera for picking photo.
 ///
