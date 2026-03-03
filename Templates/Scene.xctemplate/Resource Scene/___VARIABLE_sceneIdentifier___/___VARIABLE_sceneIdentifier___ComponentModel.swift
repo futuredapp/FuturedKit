@@ -26,8 +26,7 @@ final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdent
     }
 
     func onAppear() async {
-        // Access dataCache.value (or its properties) directly — observation is automatic.
-        // Fetch fresh data here if needed.
+        // Fetch fresh data from network or subscribe to cache changes
     }
 }
 
