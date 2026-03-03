@@ -1,4 +1,5 @@
 {
+  "originHash" : "6354240cbef4dceef9719ed1f9a46112183ddb48f1e4101d988a169c2837f1ab",
   "pins" : [
     {
       "identity" : "bindingkit",
@@ -7,15 +8,6 @@
       "state" : {
         "revision" : "fe58851b967301ec5c391a2c34979b676b854f89",
         "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "collectionconcurrencykit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/JohnSundell/CollectionConcurrencyKit",
-      "state" : {
-        "revision" : "b4f23e24b5a1bff301efc5e70871083ca029ff95",
-        "version" : "0.2.0"
       }
     },
     {
@@ -37,5 +29,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

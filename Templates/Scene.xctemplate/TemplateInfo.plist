@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>Description</key>
-    <string>This generates a new SwiftUI scene using Futured architecture. It consists of the Component (SwiftUI View) and its ComponentModel (ObservableObject)</string>
+    <string>This generates a new SwiftUI scene using Futured architecture. It consists of the Component (SwiftUI View) and its ComponentModel (@Observable class)</string>
     <key>Kind</key>
     <string>Xcode.IDEKit.TextSubstitutionFileTemplateKind</string>
     <key>Options</key>

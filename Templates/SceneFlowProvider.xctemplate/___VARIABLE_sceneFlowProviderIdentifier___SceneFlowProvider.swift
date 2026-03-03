@@ -5,7 +5,7 @@ import FuturedArchitecture
 import FuturedHelpers
 import SwiftUI
 
-final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: CoordinatorSceneFlowProvider {
+final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: @MainActor CoordinatorSceneFlowProvider {
     let navigateTo: (Destination) -> Void
     let pop: () -> Void
     let present: ((Destination, ModalCoverModelStyle) -> Void)? = nil
@@ -39,7 +39,7 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: Coordin
 
 extension ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider {
     @EnumIdentable
-    enum Destination {
+    nonisolated enum Destination {
         case someDestination
         case otherDestination
         // Uncomment 'end' case if the coordinator may present additional scenes following those defined by the flow provider.

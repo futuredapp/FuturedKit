@@ -7,7 +7,8 @@ import SwiftUI
 ///
 /// This base `protocol` contains set of common requirements for all coordinators. Other protocols
 /// tailored to specific Containers are provided as well.
-public protocol Coordinator: ObservableObject {
+@MainActor
+public protocol Coordinator: AnyObject {
     /// Type used to represent the state of the container, i.e. which child-components should be presented.
     associatedtype Destination: Hashable & Identifiable
     /// The root view of the coordinator is commonly the container itself.
@@ -20,21 +21,17 @@ public protocol Coordinator: ObservableObject {
     /// ``SwiftUI.EmptyView``. If you do so, remember to always capture the `instance` of the *coordinator* weakly!
     /// - Warning: Maintain its purity by defining only the view, without added logic or modifiers.
     /// If logic or modifiers are needed, encapsulate them in a separate view that can accommodate necessary dependencies.
-    /// Skipping this recommendation may prevent UI updates when changing `@Published` properties, as `rootView` is static.
+    /// Skipping this recommendation may prevent UI updates when changing observed properties, as `rootView` is static.
     /// - Parameter instance: An instance of `Coordinator` which will be retained by the *container*.
     /// - Returns: The container view.
-    @MainActor
     @ViewBuilder
     static func rootView(with instance: Self) -> RootView
 
     /// Modal cover is part of the model of the container. It represents the state of the View covering the container.
-    @MainActor
     var modalCover: ModalCoverModel<Destination>? { get set }
-
 
     /// This function provides an instance of a `View` (commonly a *Component*) for each possible state of the
     /// container (the destination).
-    @MainActor
     @ViewBuilder
     func scene(for destination: Destination) -> DestinationViews
 
@@ -49,7 +46,6 @@ public extension Coordinator {
     ///   - destination: The description of the desired view passed to the ``scene(for:)`` function
     ///   of the *coordinator*.
     ///   - type: Kind of modal presentation.
-    @MainActor
     func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
@@ -62,7 +58,6 @@ public extension Coordinator {
     }
 
     /// Convenience method for dismissing a modal.
-    @MainActor
     func dismissModal() {
         self.modalCover = nil
     }
@@ -78,8 +73,6 @@ public extension Coordinator {
 /// which is essentially duplication of `Destination`. Consider, how the API limits the use of tabs.
 public protocol TabCoordinator: Coordinator {
     associatedtype Tab: Hashable
-
-    @MainActor
     var selectedTab: Tab { get set }
 }
 
@@ -89,19 +82,16 @@ public protocol TabCoordinator: Coordinator {
 /// - ToDo: Create a template for this coordinator.
 public protocol NavigationStackCoordinator: Coordinator {
     /// Property modeling the Views currently placed on stack.
-    @MainActor
     var path: [Destination] { get set }
 }
 
 public extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
-    @MainActor
     func navigate(to destination: Destination) {
         self.path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
-    @MainActor
     func pop() {
         self.path.removeLast()
     }
@@ -110,7 +100,6 @@ public extension NavigationStackCoordinator {
     /// - Parameter destination: Destination to be reached. If nil is passed, or such destination
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
-    @MainActor
     func pop(to destination: Destination) {
         guard let index = self.path.lastIndex(of: destination) else {
             assertionFailure("Destination not found on the stack")
@@ -119,12 +108,10 @@ public extension NavigationStackCoordinator {
         self.path = Array(path[path.startIndex...index])
     }
 
-    @MainActor
     func popToRoot() {
         path = []
     }
 
-    @MainActor
     func reset() {
         path = []
         modalCover = nil

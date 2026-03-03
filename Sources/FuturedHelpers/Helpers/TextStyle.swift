@@ -33,34 +33,34 @@ import SwiftUI
 /// - Note: The `stylize(with:)` method does not apply line spacing, text case, or vertical padding based on line height.
 /// - Note: The `NSAttributedString` initializer does not apply line spacing, text case, or vertical padding based on line height.
 public struct TextStyle {
-    
+
     /// An enumeration that represents a type of font for a text style.
     public enum FontType {
 
         /// A custom font specified by its name.
-        /// - Parameter name: The name of the font to be used.
+        /// - Parameter name: The name of the font to be used
         case custom(name: String)
-        
+
         /// A system font specified by its weight and width.
         /// - Parameters:
         ///  - weight: The weight of the system font.
         ///  - width: The width of the system font. Default is `.standard`.
         ///  - design: The design of the system font. Default is `.default`.
         case system(weight: Font.Weight, width: Font.Width = .standard, design: Font.Design = .default)    }
-    
+
     /// An enumeration that represents a type of font scaling for a text style.
     public enum FontScaling {
-        
+
         /// The default font scaling using default font metrics object.
         case `default`
-        
+
         /// The fixed size font scaling without any scaling.
         case fixedSize
-        
+
         /// The font scaling relative to the specified text style.
         /// - Parameter textStyle: The text style to which the font scaling is relative.
         case relativeTo(textStyle: Font.TextStyle)
-        
+
         /// The font metrics object for the specified font scaling.
         public var fontMetrics: UIFontMetrics? {
             switch self {
@@ -73,14 +73,14 @@ public struct TextStyle {
             }
         }
     }
-    
+
     /// An enumeration that represents a type of letter spacing for a text style.
     public enum Letter {
-        
+
         /// The relative letter spacing expressed as a percentage of the font size.
         /// - Parameter percent: The percentage of the font size for the relative letter spacing.
         case relative(percent: CGFloat)
-        
+
         /// The absolute letter spacing expressed in points.
         /// - Parameter points: The points for the absolute letter spacing.
         case absolute(points: CGFloat)
@@ -88,10 +88,10 @@ public struct TextStyle {
 
     /// An enumeration that represents a type of text decoration for a text style.
     public enum TextDecoration: String {
-        
+
         /// The underline text decoration.
         case underline
-        
+
         /// The strikethrough text decoration.
         case strikethrough
     }
@@ -104,19 +104,19 @@ public struct TextStyle {
 
     /// The line height of the font for the text style.
     public let lineHeight: CGFloat
-    
+
     /// The font scaling for the text style.
     public let scaling: FontScaling
-    
+
     /// The letter spacing for the text style.
     public let letter: Letter
-    
+
     /// The text case for the text style.
     public let textCase: Text.Case?
-    
+
     /// The text decoration for the text style.
     public let textDecoration: TextDecoration?
-    
+
     /// The line spacing of the font for the text style.
     public var lineSpacing: CGFloat {
         (scaling.fontMetrics?.scaledValue(for: lineHeight) ?? lineHeight) - uiFont.lineHeight
@@ -158,7 +158,7 @@ public struct TextStyle {
             }
         }
     }
-    
+
     /// The kerning of the font for the text style.
     public var kerning: CGFloat {
         switch letter {
@@ -213,16 +213,16 @@ extension View {
             .textCase(style.textCase)
             .padding(.vertical, style.lineSpacing / 2)
     }
-    
+
     /// Applies the specified text style to the view with a custom foreground color.
     /// - Parameters:
     /// - style: The text style to apply to the view.
-    /// - foregroundColor: The foreground color to apply to the view.
+    /// - foregroundStyle: The foreground color to apply to the view.
     /// - Returns: A view that applies the specified text style with the custom foreground color.
-    public func textStyle(_ style: TextStyle, foregroundColor: Color) -> some View {
+    public func textStyle(_ style: TextStyle, foregroundStyle: Color) -> some View {
         self
             .textStyle(style)
-            .foregroundColor(foregroundColor)
+            .foregroundStyle(foregroundStyle)
     }
 }
 
@@ -239,24 +239,18 @@ extension Text {
             .underline(style.textDecoration == .underline)
             .strikethrough(style.textDecoration == .strikethrough)
     }
-    
+
     /// Applies the specified text style to the text with a custom foreground color.
     /// Use this modifier when you need to apply a text style to a `Text`, rather than to a generic View.
     /// - Parameters:
     /// - style: The text style to apply to the text.
-    /// - foregroundColor: The foreground color to apply to the text
+    /// - foregroundStyle: The foreground color to apply to the text
     /// - Returns: A text that applies the specified text style with the custom foreground color.
     /// - Note: This modifier does not apply line spacing, text case, or vertical padding based on line height.
-    public func textStyleText(_ style: TextStyle, foregroundColor: Color) -> Text {
-        if #available(iOS 17.0, *) {
-            self
-                .textStyleText(style)
-                .foregroundStyle(foregroundColor)
-        } else {
-            self
-                .textStyleText(style)
-                .foregroundColor(foregroundColor)
-        }
+    public func textStyleText(_ style: TextStyle, foregroundStyle: Color) -> Text {
+        self
+            .textStyleText(style)
+            .foregroundStyle(foregroundStyle)
     }
 }
 
@@ -288,7 +282,7 @@ extension NSAttributedString {
             string: string,
             attributes: [
                 .font: textStyle.uiFont,
-                .kern: textStyle.kerning,
+                .kern: textStyle.kerning
             ]
         )
     }

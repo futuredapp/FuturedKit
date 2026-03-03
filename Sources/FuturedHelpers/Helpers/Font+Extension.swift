@@ -8,41 +8,33 @@ extension Font.TextStyle {
     public var uiFontTextStyle: UIFont.TextStyle {
         switch self {
         case .largeTitle:
-            return .largeTitle
+            .largeTitle
         case .title:
-            return .title1
+            .title1
         case .title2:
-            return .title2
+            .title2
         case .title3:
-            return .title3
+            .title3
         case .headline:
-            return .headline
+            .headline
         case .subheadline:
-            return .subheadline
+            .subheadline
         case .body:
-            return .body
+            .body
         case .callout:
-            return .callout
+            .callout
         case .footnote:
-            return .footnote
+            .footnote
         case .caption:
-            return .caption1
+            .caption1
         case .caption2:
-            return .caption2
+            .caption2
         case .extraLargeTitle:
-            if #available(iOS 17.0, *) {
-                return .extraLargeTitle
-            } else {
-                return .largeTitle
-            }
+            .extraLargeTitle
         case .extraLargeTitle2:
-            if #available(iOS 17.0, *) {
-                return .extraLargeTitle2
-            } else {
-                return .largeTitle
-            }
+            .extraLargeTitle2
         @unknown default:
-            return .body
+            .body
         }
     }
 }

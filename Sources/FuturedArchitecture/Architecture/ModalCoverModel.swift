@@ -8,7 +8,6 @@
 import SwiftUI
 import Foundation
 
-
 public enum SheetDetent: Hashable {
     case medium
     case large
@@ -41,7 +40,7 @@ public enum ModalCoverModelStyle {
 public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiable {
     public let destination: Destination
     public let style: ModalCoverModelStyle
-    
+
     public var id: Destination.ID {
         destination.id
     }

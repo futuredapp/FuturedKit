@@ -1,21 +1,20 @@
 //  ___FILEHEADER___
 
-import Combine
 import EnumIdentable
 import FuturedArchitecture
 import SwiftUI
 
-final class ExampleFlowCoordinator: NavigationStackCoordinator {
+@Observable
+final class ExampleFlowCoordinator: @MainActor NavigationStackCoordinator {
     private var container: Container
 
-    @Published var path: [Destination] = []
-    @Published var modalCover: ModalCoverModel<Destination>?
+    var path: [Destination] = []
+    var modalCover: ModalCoverModel<Destination>?
 
     init(container: Container) {
         self.container = container
     }
 
-    @MainActor
     static func rootView(with instance: ExampleFlowCoordinator) -> some View {
         NavigationStackFlow(coordinator: instance) {
             ExampleComponent(
@@ -30,7 +29,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
         }
     }
 
-    @MainActor @ViewBuilder
+    @ViewBuilder
     func scene(for destination: Destination) -> some View {
         switch destination {
         case .destination:
@@ -41,7 +40,7 @@ final class ExampleFlowCoordinator: NavigationStackCoordinator {
 
 extension ExampleFlowCoordinator {
     @EnumIdentable
-    enum Destination {
+    nonisolated enum Destination {
         case destination
     }
 }

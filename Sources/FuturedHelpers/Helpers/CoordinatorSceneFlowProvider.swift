@@ -50,6 +50,7 @@ import FuturedArchitecture
  }
  ```
  */
+@MainActor
 public protocol CoordinatorSceneFlowProvider {
     associatedtype Destination: Hashable & Identifiable
     associatedtype DestinationViews: View

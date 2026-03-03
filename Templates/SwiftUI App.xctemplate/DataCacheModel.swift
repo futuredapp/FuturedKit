@@ -1,5 +1,5 @@
 //  ___FILEHEADER___
 
-struct DataCacheModel: Equatable {
+nonisolated struct DataCacheModel: Equatable, Sendable {
     // Cached properties
 }

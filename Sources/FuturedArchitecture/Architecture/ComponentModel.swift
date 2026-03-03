@@ -16,8 +16,9 @@ import Foundation
 /// - Note: Each *component model* should have have *mock* class and *implementation* class.
 /// Each *Component* (i.e. View) should have own *component model*. Each instance of component
 /// model has to be referenced by no more than 1 *coordinator.*
-public protocol ComponentModel: ObservableObject {
-    
+@MainActor
+public protocol ComponentModel: AnyObject {
+
     /// Type used to pass events to the *coordinator*. `enum` is used in most cases, but not required.
     associatedtype Event
 
@@ -27,5 +28,5 @@ public protocol ComponentModel: ObservableObject {
     /// The return type if this closure is `Void` intentionally. If bidirectional communication is
     /// desired, either pass closure to the *coordinator* using the event, or use other
     /// recommended pattern of data flow.
-    var onEvent: @MainActor (Event) -> Void { get }
+    var onEvent: (Event) -> Void { get }
 }

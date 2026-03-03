@@ -1,22 +1,21 @@
 //  ___FILEHEADER___
 
-import Combine
 import EnumIdentable
 import FuturedArchitecture
 import SwiftUI
 
-final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinator {
-    enum Tab {
+@Observable
+final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: @MainActor TabCoordinator {
+    nonisolated enum Tab {
         case firstTab
         case secondTab
     }
 
     private let container: Container
 
-    @Published var selectedTab: Tab
-    @Published var modalCover: ModalCoverModel<Destination>?
+    var selectedTab: Tab
+    var modalCover: ModalCoverModel<Destination>?
 
-    @MainActor
     init(container: Container, selectedTab: Tab) {
         self.container = container
         self.selectedTab = selectedTab
@@ -49,7 +48,7 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: TabCoordinato
 
 extension ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator {
     @EnumIdentable
-    enum Destination {
+    nonisolated enum Destination {
         case destination
     }
 }

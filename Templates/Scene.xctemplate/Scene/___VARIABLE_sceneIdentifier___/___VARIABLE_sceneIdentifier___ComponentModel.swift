@@ -1,21 +1,22 @@
 //  ___FILEHEADER___
 
-import Combine
 import FuturedArchitecture
+import Observation
 
 protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
     func onAppear() async
 }
 
-final class ___VARIABLE_sceneIdentifier___ComponentModel: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+@Observable
+final class ___VARIABLE_sceneIdentifier___ComponentModel: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
 
-    let onEvent: @MainActor (Event) -> Void
+    let onEvent: (Event) -> Void
 
     private let dataCache: DataCache<DataCacheModel>
 
     init(
         dataCache: DataCache<DataCacheModel>,
-        onEvent: @escaping @MainActor (Event) -> Void
+        onEvent: @escaping (Event) -> Void
     ) {
         self.dataCache = dataCache
         self.onEvent = onEvent
@@ -32,10 +33,11 @@ extension ___VARIABLE_sceneIdentifier___ComponentModel {
 }
 
 #if DEBUG
-final class ___VARIABLE_sceneIdentifier___ComponentModelMock: @MainActor ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
+@Observable
+final class ___VARIABLE_sceneIdentifier___ComponentModelMock: ___VARIABLE_sceneIdentifier___ComponentModelProtocol {
     typealias Event = ___VARIABLE_sceneIdentifier___ComponentModel.Event
 
-    var onEvent: @MainActor (Event) -> Void = { _ in }
+    var onEvent: (Event) -> Void = { _ in }
 
     func onAppear() async {}
 }

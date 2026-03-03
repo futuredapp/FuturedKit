@@ -97,6 +97,8 @@
                 <string>UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
                 <key>CODE_SIGN_STYLE</key>
                 <string>Manual</string>
+                <key>SWIFT_VERSION</key>
+                <string>6</string>
             </dict>
             <key>Configurations</key>
             <dict>
