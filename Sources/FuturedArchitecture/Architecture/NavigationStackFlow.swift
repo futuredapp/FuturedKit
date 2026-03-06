@@ -31,8 +31,8 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         coordinator: Coordinator,
         content: @MainActor @escaping () -> Content
     ) {
-        self.navigationDetents = detents.map { Set($0.map { $0.detent() }) }
-        self._coordinator = State(wrappedValue: coordinator)
+        navigationDetents = detents.map { Set($0.map { $0.detent() }) }
+        _coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
 
@@ -45,7 +45,7 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         #if !os(macOS)
         .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss) { destination in
-            if let sourceID = coordinator.modalCover?.zoomSourceID {
+            if #available(iOS 18.0, *), let sourceID = coordinator.modalCover?.zoomSourceID {
                 coordinator.scene(for: destination)
                     .navigationTransition(.zoom(sourceID: sourceID, in: zoomNamespace))
             } else {

@@ -42,30 +42,34 @@ public protocol Coordinator: AnyObject {
 
 extension Coordinator {
     /// Convenience function for presenting a modal over the *container*.
+    ///
+    /// When `zoomSourceID` is provided and the style is `.fullscreenCover`, the presented view
+    /// uses a zoom transition. The source view should use `.matchedTransitionSource(id:in:)`
+    /// with the same ID and the namespace from `@Environment(\.zoomNamespace)`.
     /// - Parameters:
     ///   - destination: The description of the desired view passed to the ``scene(for:)`` function
     ///   of the *coordinator*.
     ///   - type: Kind of modal presentation.
-    public func present(modal destination: Destination, type: ModalCoverModelStyle) {
+    ///   - zoomSourceID: Optional ID matching the source view's `.matchedTransitionSource`.
+    ///   When provided, enables a zoom transition for fullscreen covers.
+    public func present(modal destination: Destination, type: ModalCoverModelStyle, zoomSourceID: (some Hashable)? = nil as String?) {
         switch type {
         case .sheet:
-            self.modalCover = .init(destination: destination, style: .sheet)
+            modalCover = .init(destination: destination, style: .sheet)
         #if !os(macOS)
         case .fullscreenCover:
-            self.modalCover = .init(destination: destination, style: .fullscreenCover)
+            if let zoomSourceID {
+                modalCover = .init(destination: destination, style: .fullscreenCover, zoomSourceID: zoomSourceID)
+            } else {
+                modalCover = .init(destination: destination, style: .fullscreenCover)
+            }
         #endif
         }
     }
 
-    #if !os(macOS)
-    public func present(modal destination: Destination, type: ModalCoverModelStyle, zoomSourceID: some Hashable) {
-        self.modalCover = .init(destination: destination, style: type, zoomSourceID: zoomSourceID)
-    }
-    #endif
-
     /// Convenience method for dismissing a modal.
     public func dismissModal() {
-        self.modalCover = nil
+        modalCover = nil
     }
 
     public func onModalDismiss() {}
@@ -95,12 +99,12 @@ public protocol NavigationStackCoordinator: Coordinator {
 extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
     public func navigate(to destination: Destination) {
-        self.path.append(destination)
+        path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
     public func pop() {
-        self.path.removeLast()
+        path.removeLast()
     }
 
     /// Convenience function used to remove all views from the stack, until the provided destination.
@@ -108,11 +112,11 @@ extension NavigationStackCoordinator {
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
     public func pop(to destination: Destination) {
-        guard let index = self.path.lastIndex(of: destination) else {
+        guard let index = path.lastIndex(of: destination) else {
             assertionFailure("Destination not found on the stack")
             return
         }
-        self.path = Array(path[path.startIndex...index])
+        path = Array(path[path.startIndex...index])
     }
 
     public func popToRoot() {

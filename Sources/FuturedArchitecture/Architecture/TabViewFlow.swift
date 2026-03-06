@@ -32,7 +32,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         .environment(\.zoomNamespace, zoomNamespace)
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss) { destination in
-            if let sourceID = coordinator.modalCover?.zoomSourceID {
+            if #available(iOS 18.0, *), let sourceID = coordinator.modalCover?.zoomSourceID {
                 coordinator.scene(for: destination)
                     .navigationTransition(.zoom(sourceID: sourceID, in: zoomNamespace))
             } else {

@@ -49,7 +49,7 @@ public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiabl
     public init(destination: Destination, style: ModalCoverModelStyle) {
         self.destination = destination
         self.style = style
-        self.zoomSourceID = nil
+        zoomSourceID = nil
     }
 
     public init(destination: Destination, style: ModalCoverModelStyle, zoomSourceID: some Hashable) {
