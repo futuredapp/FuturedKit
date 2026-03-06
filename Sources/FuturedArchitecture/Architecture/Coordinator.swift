@@ -57,6 +57,12 @@ extension Coordinator {
         }
     }
 
+    #if !os(macOS)
+    public func present(modal destination: Destination, type: ModalCoverModelStyle, zoomSourceID: some Hashable) {
+        self.modalCover = .init(destination: destination, style: type, zoomSourceID: zoomSourceID)
+    }
+    #endif
+
     /// Convenience method for dismissing a modal.
     public func dismissModal() {
         self.modalCover = nil

@@ -40,6 +40,7 @@ public enum ModalCoverModelStyle {
 public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiable {
     public let destination: Destination
     public let style: ModalCoverModelStyle
+    public let zoomSourceID: AnyHashable?
 
     public var id: Destination.ID {
         destination.id
@@ -48,5 +49,12 @@ public struct ModalCoverModel<Destination: Hashable & Identifiable>: Identifiabl
     public init(destination: Destination, style: ModalCoverModelStyle) {
         self.destination = destination
         self.style = style
+        self.zoomSourceID = nil
+    }
+
+    public init(destination: Destination, style: ModalCoverModelStyle, zoomSourceID: some Hashable) {
+        self.destination = destination
+        self.style = style
+        self.zoomSourceID = AnyHashable(zoomSourceID)
     }
 }

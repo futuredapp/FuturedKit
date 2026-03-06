@@ -1,10 +1,22 @@
 import SwiftUI
 
+private struct ZoomNamespaceKey: EnvironmentKey {
+    static let defaultValue: Namespace.ID? = nil
+}
+
+extension EnvironmentValues {
+    public var zoomNamespace: Namespace.ID? {
+        get { self[ZoomNamespaceKey.self] }
+        set { self[ZoomNamespaceKey.self] = newValue }
+    }
+}
+
 /// The `NavigationStackFlow` encapsulates the ``SwiftUI.NavigationStack`` and binds it to the
 /// variables and callbacks of the ``NavigationStackCoordinator`` which it retains as a ``SwiftUI.State``.
 public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Content: View>: View {
     @State private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
+    @Namespace private var zoomNamespace
 
     /// Use in case when whole navigation stack should have detents.
     @State private var navigationDetents: Set<PresentationDetent>?
@@ -28,10 +40,18 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         NavigationStack(path: $coordinator.path) {
             content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
         }
+        .environment(\.zoomNamespace, zoomNamespace)
         .modifier(OptionalPresentationDetentsModifier(detents: navigationDetents))
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         #if !os(macOS)
-        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss) { destination in
+            if let sourceID = coordinator.modalCover?.zoomSourceID {
+                coordinator.scene(for: destination)
+                    .navigationTransition(.zoom(sourceID: sourceID, in: zoomNamespace))
+            } else {
+                coordinator.scene(for: destination)
+            }
+        }
         #endif
     }
 

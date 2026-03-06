@@ -6,6 +6,7 @@ import SwiftUI
 public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     @State private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
+    @Namespace private var zoomNamespace
 
     /// - Parameters:
     ///   - coordinator: The instance of the coordinator used as the model and retained as ``SwiftUI.State``
@@ -28,8 +29,16 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
         TabView(selection: $coordinator.selectedTab) {
             content()
         }
+        .environment(\.zoomNamespace, zoomNamespace)
         .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss) { destination in
+            if let sourceID = coordinator.modalCover?.zoomSourceID {
+                coordinator.scene(for: destination)
+                    .navigationTransition(.zoom(sourceID: sourceID, in: zoomNamespace))
+            } else {
+                coordinator.scene(for: destination)
+            }
+        }
     }
     #endif
 
