@@ -1,0 +1,9 @@
+// Debug configuration
+#include? "Local.xcconfig"
+
+// TODO: Add API configuration
+// API_KEY =
+// API_BASE_URL =
+
+// TODO: Add Swift compilation flags
+// OTHER_SWIFT_FLAGS = $(inherited) -D LOG_ENABLED

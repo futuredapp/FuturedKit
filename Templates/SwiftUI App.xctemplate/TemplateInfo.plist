@@ -59,8 +59,15 @@
     <dict>
         <key>Configurations</key>
         <dict>
+            <key>Debug</key>
+            <dict>
+                <key>baseConfigurationReferenceRelativePath</key>
+                <string>Configuration/Debug.xcconfig</string>
+            </dict>
             <key>Beta</key>
             <dict>
+                <key>baseConfigurationReferenceRelativePath</key>
+                <string>Configuration/Beta.xcconfig</string>
                 <key>ENABLE_NS_ASSERTIONS</key>
                 <string>NO</string>
                 <key>MTL_ENABLE_DEBUG_INFO</key>
@@ -73,6 +80,11 @@
                 <string>-O</string>
                 <key>VALIDATE_PRODUCT</key>
                 <string>YES</string>
+            </dict>
+            <key>Release</key>
+            <dict>
+                <key>baseConfigurationReferenceRelativePath</key>
+                <string>Configuration/Release.xcconfig</string>
             </dict>
         </dict>
     </dict>
@@ -122,6 +134,10 @@
     <key>Nodes</key>
     <array>
         <string>Resources/Assets.xcassets</string>
+        <string>Configuration/Debug.xcconfig</string>
+        <string>Configuration/Beta.xcconfig</string>
+        <string>Configuration/Release.xcconfig</string>
+        <string>Configuration/Local.xcconfig</string>
         <string>___PACKAGENAME:identifier___App.swift</string>
         <string>AppCoordinator.swift</string>
         <string>AppDelegate.swift</string>
@@ -157,6 +173,43 @@
             </array>
             <key>SortOrder</key>
             <integer>100</integer>
+        </dict>
+
+        <key>Configuration/Debug.xcconfig</key>
+        <dict>
+            <key>Path</key>
+            <string>Debug.xcconfig</string>
+            <key>Group</key>
+            <string>Configuration</string>
+            <key>SortOrder</key>
+            <integer>98</integer>
+        </dict>
+        <key>Configuration/Beta.xcconfig</key>
+        <dict>
+            <key>Path</key>
+            <string>Beta.xcconfig</string>
+            <key>Group</key>
+            <string>Configuration</string>
+            <key>SortOrder</key>
+            <integer>98</integer>
+        </dict>
+        <key>Configuration/Release.xcconfig</key>
+        <dict>
+            <key>Path</key>
+            <string>Release.xcconfig</string>
+            <key>Group</key>
+            <string>Configuration</string>
+            <key>SortOrder</key>
+            <integer>98</integer>
+        </dict>
+        <key>Configuration/Local.xcconfig</key>
+        <dict>
+            <key>Path</key>
+            <string>Local.xcconfig</string>
+            <key>Group</key>
+            <string>Configuration</string>
+            <key>SortOrder</key>
+            <integer>98</integer>
         </dict>
 
         <key>___PACKAGENAME:identifier___App.swift</key>
