@@ -1,11 +1,6 @@
 // Beta configuration
 
-// TODO: Add API configuration
-// API_KEY =
-// API_BASE_URL =
-
-// TODO: Add Swift compilation flags
-// OTHER_SWIFT_FLAGS = $(inherited)
+// Do not add any key-value pairs here, they should be injected via CI
 
 // NOTE: Each key added here must also be added to Info.plist as:
 //   <key>KEY_NAME</key>

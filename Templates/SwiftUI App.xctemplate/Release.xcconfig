@@ -1,17 +1,3 @@
 // Release configuration
 
-// TODO: Add API configuration
-// API_KEY =
-// API_BASE_URL =
-
-// TODO: Add Swift compilation flags
-// OTHER_SWIFT_FLAGS = $(inherited)
-
-// NOTE: Each key added here must also be added to Info.plist as:
-//   <key>KEY_NAME</key>
-//   <string>$(KEY_NAME)</string>
-// Then access it in code using the ConfigKey protocol from FuturedHelpers:
-//   enum AppConfigKey: String, ConfigKey {
-//       case apiKey = "API_KEY"
-//   }
-//   let value = try AppConfigKey.apiKey.value
+// Do not add any key-value pairs here, they should be injected via CI

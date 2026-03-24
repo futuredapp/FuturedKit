@@ -2,13 +2,13 @@
 #include? "Local.xcconfig"
 
 // TODO: Add API configuration
-// API_KEY =
+// API_KEY = <specify in Local.xcconfig so the key will not be part of git history>
 // API_BASE_URL =
 
 // TODO: Add Swift compilation flags
 // OTHER_SWIFT_FLAGS = $(inherited) -D LOG_ENABLED
 
-// NOTE: Each key added here must also be added to Info.plist as:
+// IMPORTANT: Each key added must also be added to Info.plist as:
 //   <key>KEY_NAME</key>
 //   <string>$(KEY_NAME)</string>
 // Then access it in code using the ConfigKey protocol from FuturedHelpers:
