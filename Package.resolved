@@ -1,15 +1,6 @@
 {
-  "originHash" : "6354240cbef4dceef9719ed1f9a46112183ddb48f1e4101d988a169c2837f1ab",
+  "originHash" : "21d858265c65e921299db7dc6008ca77cae2d4c783d3ba8ea1c50f9b36d324c8",
   "pins" : [
-    {
-      "identity" : "bindingkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mkj-is/BindingKit",
-      "state" : {
-        "revision" : "fe58851b967301ec5c391a2c34979b676b854f89",
-        "version" : "1.0.0"
-      }
-    },
     {
       "identity" : "futured-macros",
       "kind" : "remoteSourceControl",
