@@ -22,8 +22,6 @@ This target contains non-mandatory extension to the Architecture and additional 
 are commonly used.
 
 - ``TextStyle`` (See source documentation)
-- ``CameraImagePicker`` (See source documentation)
-- ``GalleryImagePicker`` (See source documentation)
 
 ## Installation
 
