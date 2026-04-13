@@ -5,8 +5,8 @@ import SwiftUI
 /// Configuration used by `StateInfoView` to render non-populated component
 /// states (`.empty` and `.error`). The same shape is reused so empty and
 /// error views share one visual language.
-struct StateInfoConfig: Equatable {
-    struct Action: Equatable {
+nonisolated struct StateInfoConfig: Equatable {
+    nonisolated struct Action: Equatable {
         let title: String
         let action: @Sendable () async -> Void
 

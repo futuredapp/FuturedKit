@@ -4,7 +4,7 @@
 ///
 /// `.empty` and `.error` require a `StateInfoConfig` so that every
 /// non-populated state is explicitly designed — no silent placeholders.
-enum ComponentState: Equatable {
+nonisolated enum ComponentState: Equatable {
     case ready
     case loading
     case empty(StateInfoConfig)

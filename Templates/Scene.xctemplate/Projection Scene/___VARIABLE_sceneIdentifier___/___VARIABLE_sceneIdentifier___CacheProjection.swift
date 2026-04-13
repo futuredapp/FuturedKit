@@ -2,7 +2,8 @@
 
 import ProxyMembers
 
-struct ___VARIABLE_sceneIdentifier___CacheProjection: CacheProjection {
+@dynamicMemberLookup
+nonisolated struct ___VARIABLE_sceneIdentifier___CacheProjection: CacheProjection {
     typealias ID = Void // swiftlint:disable:this type_name
 
     var state: ComponentState
@@ -18,7 +19,7 @@ struct ___VARIABLE_sceneIdentifier___CacheProjection: CacheProjection {
     }
 }
 
-struct ___VARIABLE_sceneIdentifier___Data: Equatable, Mockable {
+nonisolated struct ___VARIABLE_sceneIdentifier___Data: Equatable, Mockable {
     // TODO: Add data properties
 
     static var mock: Self {

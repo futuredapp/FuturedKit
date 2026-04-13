@@ -2,7 +2,8 @@
 
 import ProxyMembers
 
-struct ExampleCacheProjection: CacheProjection {
+@dynamicMemberLookup
+nonisolated struct ExampleCacheProjection: CacheProjection {
     typealias ID = Void // swiftlint:disable:this type_name
 
     var state: ComponentState
@@ -23,7 +24,7 @@ struct ExampleCacheProjection: CacheProjection {
     }
 }
 
-struct ExampleData: Equatable, Mockable {
+nonisolated struct ExampleData: Equatable, Mockable {
     var title: String
 
     static var mock: Self {

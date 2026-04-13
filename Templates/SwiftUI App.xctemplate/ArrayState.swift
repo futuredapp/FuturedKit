@@ -6,7 +6,7 @@
 /// computed property on your `CacheProjection` data struct, then render
 /// with `ItemStateView`. Direct array rendering tends to leak filtering
 /// and sorting logic into views.
-enum ArrayState<Value: Equatable & Mockable>: Equatable {
+nonisolated enum ArrayState<Value: Equatable & Mockable>: Equatable {
     case populated(MockableArray<Value>)
     case loading
     case error(StateInfoConfig)
@@ -26,7 +26,7 @@ enum ArrayState<Value: Equatable & Mockable>: Equatable {
     }
 }
 
-struct MockableArray<Element: Equatable & Mockable>: Equatable, Mockable {
+nonisolated struct MockableArray<Element: Equatable & Mockable>: Equatable, Mockable {
     let items: [Element]
 
     static var mock: Self {

@@ -3,7 +3,7 @@
 /// State wrapper for a single data item inside a component.
 ///
 /// There is no `.empty` case — `.populated` implies the data exists.
-enum ItemState<Value: Mockable & Equatable>: Equatable {
+nonisolated enum ItemState<Value: Mockable & Equatable>: Equatable {
     case populated(Value)
     case loading
     case error(StateInfoConfig)
