@@ -3,7 +3,7 @@
 protocol CacheProjection: Equatable {
     associatedtype CacheModel: Equatable
     associatedtype Data: Equatable & Mockable
-    associatedtype ID
+    associatedtype ID // swiftlint:disable:this type_name
 
     var state: ComponentState { get set }
     var data: Data { get set }
@@ -17,11 +17,9 @@ protocol CacheProjection: Equatable {
     static func data(for id: ID, from cache: CacheModel) -> Self?
 }
 
-extension CacheProjection {
-    static func data(from cache: CacheModel) -> Self? {
-        nil
-    }
-
+/// Default `data(for:from:)` for projections that don't use an ID.
+/// Projections with a real `ID` type are forced to implement it.
+extension CacheProjection where ID == Void {
     static func data(for id: ID, from cache: CacheModel) -> Self? {
         nil
     }

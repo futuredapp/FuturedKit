@@ -1,17 +1,12 @@
 //  ___FILEHEADER___
 
-@dynamicMemberLookup
+import ProxyMembers
+
 struct ExampleCacheProjection: CacheProjection {
-    typealias CacheModel = DataCacheModel
-    typealias ID = Void
+    typealias ID = Void // swiftlint:disable:this type_name
 
     var state: ComponentState
-    var data: ExampleData
-
-    subscript<T>(dynamicMember keyPath: WritableKeyPath<ExampleData, T>) -> T {
-        get { data[keyPath: keyPath] }
-        set { data[keyPath: keyPath] = newValue }
-    }
+    @ProxyMembers var data: ExampleData
 
     static func empty(state: ComponentState) -> Self {
         Self(state: state, data: .mock)

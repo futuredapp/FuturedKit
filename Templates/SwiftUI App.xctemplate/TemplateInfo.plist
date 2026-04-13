@@ -144,14 +144,14 @@
         <string>Container.swift</string>
         <string>Model/DataCacheModel.swift</string>
         <string>Model/Mockable.swift</string>
-        <string>Model/ErrorViewConfig.swift</string>
+        <string>Model/StateInfoConfig.swift</string>
         <string>Model/ComponentState.swift</string>
         <string>Model/ItemState.swift</string>
         <string>Model/ArrayState.swift</string>
         <string>Model/CacheProjection.swift</string>
+        <string>UI/Views/StateInfoView.swift</string>
         <string>UI/Views/ComponentStateView.swift</string>
         <string>UI/Views/ItemStateView.swift</string>
-        <string>UI/Views/ArrayStateView.swift</string>
         <string>Scenes/Example/ExampleCacheProjection.swift</string>
         <string>Scenes/Example/ExampleComponentModel.swift</string>
         <string>Scenes/Example/ExampleComponent.swift</string>
@@ -268,12 +268,12 @@
             <key>Group</key>
             <string>Model</string>
         </dict>
-        <key>Model/ErrorViewConfig.swift</key>
+        <key>Model/StateInfoConfig.swift</key>
         <dict>
             <key>SortOrder</key>
             <integer>99</integer>
             <key>Path</key>
-            <string>ErrorViewConfig.swift</string>
+            <string>StateInfoConfig.swift</string>
             <key>Group</key>
             <string>Model</string>
         </dict>
@@ -337,12 +337,12 @@
                 <string>Views</string>
             </array>
         </dict>
-        <key>UI/Views/ArrayStateView.swift</key>
+        <key>UI/Views/StateInfoView.swift</key>
         <dict>
             <key>SortOrder</key>
             <integer>99</integer>
             <key>Path</key>
-            <string>ArrayStateView.swift</string>
+            <string>StateInfoView.swift</string>
             <key>Group</key>
             <array>
                 <string>UI</string>

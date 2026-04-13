@@ -7,30 +7,20 @@ struct ExampleComponent<Model: ExampleComponentModelProtocol>: View {
 
     var body: some View {
         ComponentStateView(state: model.projection.state) {
-            VStack {
-                Text(model.projection.title)
-
-                Button("Hello, World!") {
-                    model.onTouchUpInside()
-                }
-            }
-        } emptyView: {
-            Text("No data available")
-        } errorView: { config in
-            VStack {
-                Text(config.title)
-
-                if let retryConfig = config.retryConfig {
-                    Button(retryConfig.title) {
-                        Task {
-                            await retryConfig.action()
-                        }
-                    }
-                }
-            }
+            content
         }
         .task {
             await model.onAppear()
+        }
+    }
+
+    private var content: some View {
+        VStack {
+            Text(model.projection.title)
+
+            Button("Hello, World!") {
+                model.onTouchUpInside()
+            }
         }
     }
 }

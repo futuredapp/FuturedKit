@@ -8,10 +8,6 @@ struct ___VARIABLE_sceneIdentifier___Component<Model: ___VARIABLE_sceneIdentifie
     var body: some View {
         ComponentStateView(state: model.projection.state) {
             Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-        } emptyView: {
-            Text("No data available")
-        } errorView: { config in
-            Text(config.title)
         }
         .task {
             await model.onAppear()

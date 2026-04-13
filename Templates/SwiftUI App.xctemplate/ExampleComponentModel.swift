@@ -5,6 +5,7 @@ import Observation
 
 protocol ExampleComponentModelProtocol: ComponentModel {
     var projection: ExampleCacheProjection { get }
+
     func onAppear() async
     func onTouchUpInside()
 }
@@ -16,8 +17,10 @@ final class ExampleComponentModel: ExampleComponentModelProtocol {
 
     private let dataCache: DataCache<DataCacheModel>
 
-    /// Computed projection: automatically observes dataCache.value changes
-    /// via @Observable tracking. No Combine subscription needed.
+    /// Computed projection. Reading `dataCache.value` inside this getter
+    /// registers the view as an observer of the cache via `@Observable`,
+    /// so the view re-renders automatically when the cache changes.
+    /// No Combine subscription needed.
     var projection: ExampleCacheProjection {
         ExampleCacheProjection.data(from: dataCache.value) ?? .empty(state: .loading)
     }
