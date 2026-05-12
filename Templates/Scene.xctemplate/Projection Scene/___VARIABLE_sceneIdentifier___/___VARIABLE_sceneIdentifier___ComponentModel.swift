@@ -5,6 +5,7 @@ import Observation
 
 protocol ___VARIABLE_sceneIdentifier___ComponentModelProtocol: ComponentModel {
     var projection: ___VARIABLE_sceneIdentifier___CacheProjection { get }
+
     func onAppear() async
 }
 

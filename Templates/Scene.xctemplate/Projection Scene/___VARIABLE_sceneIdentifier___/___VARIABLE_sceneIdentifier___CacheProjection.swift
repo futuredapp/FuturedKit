@@ -4,8 +4,6 @@ import ProxyMembers
 
 @dynamicMemberLookup
 nonisolated struct ___VARIABLE_sceneIdentifier___CacheProjection: CacheProjection {
-    typealias ID = Void // swiftlint:disable:this type_name
-
     var state: ComponentState
     @ProxyMembers var data: ___VARIABLE_sceneIdentifier___Data
 
