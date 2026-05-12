@@ -111,6 +111,8 @@
                 <string>Manual</string>
                 <key>SWIFT_VERSION</key>
                 <string>6</string>
+                <key>ENABLE_USER_SCRIPT_SANDBOXING</key>
+                <string>NO</string>
             </dict>
             <key>Configurations</key>
             <dict>
@@ -142,6 +144,18 @@ else
     echo "warning: SwiftLint not installed — install with: brew install swiftlint"
 fi
 </string>
+                </dict>
+                <dict>
+                    <key>Class</key>
+                    <string>Sources</string>
+                </dict>
+                <dict>
+                    <key>Class</key>
+                    <string>Frameworks</string>
+                </dict>
+                <dict>
+                    <key>Class</key>
+                    <string>Resources</string>
                 </dict>
             </array>
         </dict>
