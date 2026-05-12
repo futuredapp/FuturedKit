@@ -6,6 +6,10 @@ import SwiftUI
 /// Uses the legacy `.tabItem` + `.tag` pattern. For iOS 18+ projects that need
 /// ``SwiftUI.Tab`` features (e.g. `Tab(role: .search)`), use ``TabContentFlow`` instead.
 /// - Experiment: This API is in preview and subject to change.
+@available(iOS, deprecated: 18.0, message: "Use TabContentFlow for the iOS 18+ Tab API.")
+@available(macOS, deprecated: 15.0, message: "Use TabContentFlow for the macOS 15+ Tab API.")
+@available(tvOS, deprecated: 18.0, message: "Use TabContentFlow for the tvOS 18+ Tab API.")
+@available(watchOS, deprecated: 11.0, message: "Use TabContentFlow for the watchOS 11+ Tab API.")
 public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     @State private var coordinator: Coordinator
     @ViewBuilder private let content: () -> Content
