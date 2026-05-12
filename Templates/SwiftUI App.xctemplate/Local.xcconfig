@@ -1,0 +1,14 @@
+// Local configuration (not tracked by git)
+// Add your local overrides and secrets here
+
+// API_KEY =
+// OTHER_SWIFT_FLAGS = $(inherited) -D LOG_ENABLED
+
+// NOTE: Each key added here must also be added to Info.plist as:
+//   <key>KEY_NAME</key>
+//   <string>$(KEY_NAME)</string>
+// Then access it in code using the ConfigKey protocol from FuturedHelpers:
+//   enum AppConfigKey: String, ConfigKey {
+//       case apiKey = "API_KEY"
+//   }
+//   let value = try AppConfigKey.apiKey.value
