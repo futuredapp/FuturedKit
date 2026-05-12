@@ -147,7 +147,6 @@
         <string>Model/StateInfoConfig.swift</string>
         <string>Model/ComponentState.swift</string>
         <string>Model/ItemState.swift</string>
-        <string>Model/ArrayState.swift</string>
         <string>Model/CacheProjection.swift</string>
         <string>UI/Views/StateInfoView.swift</string>
         <string>UI/Views/ComponentStateView.swift</string>
@@ -292,15 +291,6 @@
             <integer>99</integer>
             <key>Path</key>
             <string>ItemState.swift</string>
-            <key>Group</key>
-            <string>Model</string>
-        </dict>
-        <key>Model/ArrayState.swift</key>
-        <dict>
-            <key>SortOrder</key>
-            <integer>99</integer>
-            <key>Path</key>
-            <string>ArrayState.swift</string>
             <key>Group</key>
             <string>Model</string>
         </dict>
