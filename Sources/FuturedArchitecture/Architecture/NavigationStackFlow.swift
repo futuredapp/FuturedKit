@@ -29,29 +29,8 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
             content().navigationDestination(for: Coordinator.Destination.self, destination: coordinator.scene(for:))
         }
         .modifier(OptionalPresentationDetentsModifier(detents: navigationDetents))
-        .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-        #if !os(macOS)
-        .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-        #endif
+        .modifier(ModalCoverModifier(coordinator: coordinator))
     }
-
-    private var sheetBinding: Binding<Coordinator.Destination?> {
-        .init {
-            coordinator.modalCover?.style == .sheet ? coordinator.modalCover?.destination : nil
-        } set: { destination in
-            coordinator.modalCover = destination.map { .init(destination: $0, style: .sheet) }
-        }
-    }
-
-    #if !os(macOS)
-    private var fullscreenCoverBinding: Binding<Coordinator.Destination?> {
-        .init {
-            coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
-        } set: { destination in
-            coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
-        }
-    }
-    #endif
 }
 
 /// A view modifier that conditionally applies presentation detents only when they are non-nil.
