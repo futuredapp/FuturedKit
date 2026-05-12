@@ -77,6 +77,17 @@ public protocol TabCoordinator: Coordinator {
     var selectedTab: Tab { get set }
 }
 
+extension TabCoordinator {
+    /// Resets the tab coordinator by selecting the given tab and dismissing any modal cover.
+    /// - Parameter defaultTab: Tab to select after the reset. The framework cannot infer
+    /// a default because `Tab` is a project-specific associated type.
+    /// - Note: Child flow coordinators are not reset; call their own `reset()` if needed.
+    public func reset(to defaultTab: Tab) {
+        selectedTab = defaultTab
+        modalCover = nil
+    }
+}
+
 /// `NavigationStackCoordinator` provides additional requirements for use with ``SwiftUI.NavigationStack``.
 /// This *coordinator* is ment have ``NavigationStackFlow`` as the Root view.
 ///
