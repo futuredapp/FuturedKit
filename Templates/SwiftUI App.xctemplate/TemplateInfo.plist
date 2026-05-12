@@ -111,6 +111,8 @@
                 <string>Manual</string>
                 <key>SWIFT_VERSION</key>
                 <string>6</string>
+                <key>ENABLE_USER_SCRIPT_SANDBOXING</key>
+                <string>NO</string>
             </dict>
             <key>Configurations</key>
             <dict>
@@ -124,6 +126,26 @@
                     <string>___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___PACKAGENAMEASRFC1034IDENTIFIER___.beta</string>
                 </dict>
             </dict>
+            <key>BuildPhases</key>
+            <array>
+                <dict>
+                    <key>Class</key>
+                    <string>ShellScript</string>
+                    <key>Name</key>
+                    <string>SwiftLint</string>
+                    <key>ShellPath</key>
+                    <string>/bin/sh</string>
+                    <key>ShellScript</key>
+                    <string>export PATH="$PATH:/opt/homebrew/bin"
+if which swiftlint &gt; /dev/null; then
+    swiftlint --fix --quiet
+    swiftlint
+else
+    echo "warning: SwiftLint not installed — install with: brew install swiftlint"
+fi
+</string>
+                </dict>
+            </array>
         </dict>
     </array>
 
