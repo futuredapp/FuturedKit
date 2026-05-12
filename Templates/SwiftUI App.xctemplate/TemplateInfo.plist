@@ -143,6 +143,15 @@
         <string>AppDelegate.swift</string>
         <string>Container.swift</string>
         <string>Model/DataCacheModel.swift</string>
+        <string>Model/Mockable.swift</string>
+        <string>Model/StateInfoConfig.swift</string>
+        <string>Model/ComponentState.swift</string>
+        <string>Model/ItemState.swift</string>
+        <string>Model/CacheProjection.swift</string>
+        <string>UI/Views/StateInfoView.swift</string>
+        <string>UI/Views/ComponentStateView.swift</string>
+        <string>UI/Views/ItemStateView.swift</string>
+        <string>Scenes/Example/ExampleCacheProjection.swift</string>
         <string>Scenes/Example/ExampleComponentModel.swift</string>
         <string>Scenes/Example/ExampleComponent.swift</string>
         <string>Flow Coordinators/ExampleFlowCoordinator.swift</string>
@@ -248,6 +257,99 @@
             <string>DataCacheModel.swift</string>
             <key>Group</key>
             <string>Model</string>
+        </dict>
+        <key>Model/Mockable.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>Mockable.swift</string>
+            <key>Group</key>
+            <string>Model</string>
+        </dict>
+        <key>Model/StateInfoConfig.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>StateInfoConfig.swift</string>
+            <key>Group</key>
+            <string>Model</string>
+        </dict>
+        <key>Model/ComponentState.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>ComponentState.swift</string>
+            <key>Group</key>
+            <string>Model</string>
+        </dict>
+        <key>Model/ItemState.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>ItemState.swift</string>
+            <key>Group</key>
+            <string>Model</string>
+        </dict>
+        <key>Model/CacheProjection.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>CacheProjection.swift</string>
+            <key>Group</key>
+            <string>Model</string>
+        </dict>
+        <key>UI/Views/ComponentStateView.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>ComponentStateView.swift</string>
+            <key>Group</key>
+            <array>
+                <string>UI</string>
+                <string>Views</string>
+            </array>
+        </dict>
+        <key>UI/Views/ItemStateView.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>ItemStateView.swift</string>
+            <key>Group</key>
+            <array>
+                <string>UI</string>
+                <string>Views</string>
+            </array>
+        </dict>
+        <key>UI/Views/StateInfoView.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>StateInfoView.swift</string>
+            <key>Group</key>
+            <array>
+                <string>UI</string>
+                <string>Views</string>
+            </array>
+        </dict>
+        <key>Scenes/Example/ExampleCacheProjection.swift</key>
+        <dict>
+            <key>SortOrder</key>
+            <integer>99</integer>
+            <key>Path</key>
+            <string>ExampleCacheProjection.swift</string>
+            <key>Group</key>
+            <array>
+                <string>Scenes</string>
+                <string>Example</string>
+            </array>
         </dict>
         <key>Flow Coordinators/ExampleFlowCoordinator.swift</key>
         <dict>
