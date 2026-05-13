@@ -37,6 +37,10 @@ public final class CameraManager {
 
     private let cameraSession: CameraSession
     private var timerTask: Task<Void, Never>?
+    /// `true` between `startRecording()` being called and the delegate
+    /// confirming the recording actually began. Prevents the user from
+    /// starting twice and ensures `stopRecording()` works on an in-flight start.
+    private var isStartingRecording = false
 
     public init(session: CameraSession = CameraSession(), initialCaptureMode: CaptureMode = .photo) {
         self.cameraSession = session
@@ -92,19 +96,19 @@ public final class CameraManager {
     // MARK: - Video Recording
 
     public func startRecording() {
-        guard !isRecording else {
+        guard !isRecording, !isStartingRecording else {
             return
         }
-        isRecording = true
-        recordingDuration = 0
+        isStartingRecording = true
         cameraSession.startRecording(flashMode: flashMode)
     }
 
     public func stopRecording() async -> URL? {
-        guard isRecording else {
+        guard isRecording || isStartingRecording else {
             return nil
         }
         let url = await cameraSession.stopRecording()
+        isStartingRecording = false
         isRecording = false
         stopRecordingTimer()
         return url
@@ -142,6 +146,7 @@ extension CameraManager: CameraSessionDelegate {
         Task { @MainActor [weak self] in
             guard let self else { return }
             isSessionRunning = false
+            isStartingRecording = false
             isRecording = false
             stopRecordingTimer()
         }
@@ -155,7 +160,13 @@ extension CameraManager: CameraSessionDelegate {
 
     public nonisolated func cameraSessionRecordingDidStart() {
         Task { @MainActor [weak self] in
-            self?.startRecordingTimer()
+            guard let self, isStartingRecording else {
+                return
+            }
+            isStartingRecording = false
+            isRecording = true
+            recordingDuration = 0
+            startRecordingTimer()
         }
     }
 

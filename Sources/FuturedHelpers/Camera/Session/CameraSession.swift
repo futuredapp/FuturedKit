@@ -170,7 +170,12 @@ public nonisolated final class CameraSession: @unchecked Sendable {
                     return
                 }
 
-                removeMovieOutputIfNeededLocked()
+                if captureSession.outputs.contains(where: { $0 is AVCaptureMovieFileOutput }) {
+                    captureSession.beginConfiguration()
+                    removeMovieOutputIfNeededLocked()
+                    captureSession.commitConfiguration()
+                    updateMirroring()
+                }
 
                 let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
                 if let device = videoInput?.device, device.hasFlash {
@@ -198,7 +203,9 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
     // MARK: - Video Recording
 
-    /// Begins recording video to a temporary `.mov` file.
+    /// Begins recording video to a temporary `.mov` file. The
+    /// ``CameraSessionDelegate/cameraSessionRecordingDidStart()`` callback is
+    /// fired only after AVFoundation reports the file has actually opened.
     public func startRecording(flashMode: FlashMode) {
         sessionQueue.async { [weak self] in
             guard let self else {
@@ -213,9 +220,10 @@ public nonisolated final class CameraSession: @unchecked Sendable {
             let tempURL = FileManager.default.temporaryDirectory
                 .appendingPathComponent(UUID().uuidString)
                 .appendingPathExtension("mov")
+            videoDelegate.setStartHandler { [weak self] in
+                self?.notifyDelegate { $0.cameraSessionRecordingDidStart() }
+            }
             movieOutput.startRecording(to: tempURL, recordingDelegate: videoDelegate)
-
-            notifyDelegate { $0.cameraSessionRecordingDidStart() }
         }
     }
 
@@ -395,14 +403,46 @@ private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegat
 
 /// Bridges AVFoundation's delegate-based recording API to Swift concurrency.
 ///
-/// `setContinuation` is called from the session queue; `fileOutput(_:didFinishRecordingTo:...)`
-/// is called by AVFoundation on an internal background thread. `OSAllocatedUnfairLock`
-/// ensures the handoff is atomic and the continuation is resumed exactly once.
+/// `setContinuation` is called from the session queue; the AVFoundation
+/// delegate callbacks fire on an internal background thread.
+/// `OSAllocatedUnfairLock` ensures the handoff is atomic and the continuation
+/// is resumed exactly once.
 private final class VideoCaptureDelegate: NSObject, AVCaptureFileOutputRecordingDelegate, @unchecked Sendable {
-    private let state = OSAllocatedUnfairLock<CheckedContinuation<URL?, Never>?>(initialState: nil)
+    private struct State {
+        var continuation: CheckedContinuation<URL?, Never>?
+        var startHandler: (@Sendable () -> Void)?
+    }
 
+    private let state = OSAllocatedUnfairLock(initialState: State())
+
+    /// Stores a continuation that will be resumed when recording finishes.
+    /// If a continuation is already pending it is resumed with `nil` first,
+    /// to guarantee single-resume even when callers stack `stopRecording()`.
     func setContinuation(_ continuation: CheckedContinuation<URL?, Never>) {
-        state.withLock { $0 = continuation }
+        let stale = state.withLock { value -> CheckedContinuation<URL?, Never>? in
+            let previous = value.continuation
+            value.continuation = continuation
+            return previous
+        }
+        stale?.resume(returning: nil)
+    }
+
+    /// Stores a handler invoked when AVFoundation reports recording has begun.
+    func setStartHandler(_ handler: @escaping @Sendable () -> Void) {
+        state.withLock { $0.startHandler = handler }
+    }
+
+    func fileOutput(
+        _ output: AVCaptureFileOutput,
+        didStartRecordingTo fileURL: URL,
+        from connections: [AVCaptureConnection]
+    ) {
+        let handler = state.withLock { value -> (@Sendable () -> Void)? in
+            let current = value.startHandler
+            value.startHandler = nil
+            return current
+        }
+        handler?()
     }
 
     func fileOutput(
@@ -411,9 +451,10 @@ private final class VideoCaptureDelegate: NSObject, AVCaptureFileOutputRecording
         from connections: [AVCaptureConnection],
         error: Error?
     ) {
-        let continuation = state.withLock { value in
-            let current = value
-            value = nil
+        let continuation = state.withLock { value -> CheckedContinuation<URL?, Never>? in
+            let current = value.continuation
+            value.continuation = nil
+            value.startHandler = nil
             return current
         }
 
