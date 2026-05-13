@@ -35,14 +35,14 @@ public final class CameraManager {
 
     // MARK: - Private
 
-    private let cameraSession: CameraSession
+    private let cameraSession: any CameraSessionType
     private var timerTask: Task<Void, Never>?
     /// `true` between `startRecording()` being called and the delegate
     /// confirming the recording actually began. Prevents the user from
     /// starting twice and ensures `stopRecording()` works on an in-flight start.
     private var isStartingRecording = false
 
-    public init(session: CameraSession = CameraSession(), initialCaptureMode: CaptureMode = .photo) {
+    public init(session: any CameraSessionType = CameraSession(), initialCaptureMode: CaptureMode = .photo) {
         self.cameraSession = session
         self.captureMode = initialCaptureMode
         session.delegate = self

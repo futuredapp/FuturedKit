@@ -4,30 +4,35 @@ import AVFoundation
 import Foundation
 import os
 
-/// Owns all AVFoundation objects for a camera capture session and confines mutable
-/// state to a private serial queue.
+/// Owns the AVFoundation capture session and orchestrates the per-feature
+/// coordinators (``PhotoCaptureCoordinator``, ``VideoRecordingCoordinator``,
+/// ``TorchController``, ``CameraConfigurator``).
 ///
 /// Thread-safety contract (`@unchecked Sendable`):
-/// - Session-queue-only (mutable): `videoInput`, `audioInput`, `photoDelegate`, `currentCaptureMode`, `currentPosition`
-/// - Immutable (`let`): `captureSession`, `sessionQueue`, `photoOutput`, `movieOutput`, `videoDelegate`
-/// - Set-once-before-use: `delegate`
-public nonisolated final class CameraSession: @unchecked Sendable {
+/// - Session-queue-only (mutable): `videoInput`, `audioInput`, `currentCaptureMode`,
+///   `currentPosition`, `photoCaptureCoordinator`'s state, `videoRecordingCoordinator`'s state
+/// - Immutable (`let`): `captureSession`, `sessionQueue`, `photoOutput`, `movieOutput`,
+///   `photoCaptureCoordinator`, `videoRecordingCoordinator`
+/// - Synchronized via `delegateLock`: `delegate`
+public nonisolated final class CameraSession: CameraSessionType, @unchecked Sendable {
 
     /// The underlying capture session. Exposed for ``CameraPreview``.
     public let captureSession = AVCaptureSession()
 
-    /// Set once before calling ``configure(mode:position:)``. Held weakly.
-    public weak var delegate: CameraSessionDelegate?
+    private let delegateLock = OSAllocatedUnfairLock<CameraSessionDelegate?>(initialState: nil)
+    public var delegate: CameraSessionDelegate? {
+        get { delegateLock.withLock { $0 } }
+        set { delegateLock.withLock { $0 = newValue } }
+    }
 
     private let sessionQueue = DispatchQueue(label: "app.futured.futuredkit.camera.session")
-    private var videoInput: AVCaptureDeviceInput?
-    private var audioInput: AVCaptureDeviceInput?
     private let photoOutput = AVCapturePhotoOutput()
     private let movieOutput = AVCaptureMovieFileOutput()
-    private let videoDelegate = VideoCaptureDelegate()
+    private let photoCaptureCoordinator = PhotoCaptureCoordinator()
+    private let videoRecordingCoordinator = VideoRecordingCoordinator()
 
-    /// Session-queue-confined. All reads/writes occur inside `sessionQueue.async` blocks.
-    private var photoDelegate: PhotoCaptureDelegate?
+    private var videoInput: AVCaptureDeviceInput?
+    private var audioInput: AVCaptureDeviceInput?
     private var currentPosition: CameraPosition = .back
     private var currentCaptureMode: CaptureMode = .photo
 
@@ -35,17 +40,15 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
     // MARK: - Session Lifecycle
 
-    /// Configures the underlying `AVCaptureSession` with the given mode and position,
-    /// then starts running. Callbacks are delivered via ``CameraSessionDelegate``.
     public func configure(mode: CaptureMode = .photo, position: CameraPosition = .back) {
         sessionQueue.async { [weak self] in
-            self?.currentCaptureMode = mode
-            self?.currentPosition = position
-            self?.configureSession()
+            guard let self else { return }
+            currentCaptureMode = mode
+            currentPosition = position
+            configureSession()
         }
     }
 
-    /// Stops the session, ending any in-flight recording and turning the torch off.
     public func stop() {
         sessionQueue.async { [weak self] in
             guard let self, captureSession.isRunning else {
@@ -54,22 +57,16 @@ public nonisolated final class CameraSession: @unchecked Sendable {
             if movieOutput.isRecording {
                 movieOutput.stopRecording()
             }
-            applyTorchMode(.off)
+            TorchController.apply(.off, to: videoInput?.device)
             captureSession.stopRunning()
-            if let delegate = photoDelegate {
-                delegate.cancel()
-                photoDelegate = nil
-            }
+            photoCaptureCoordinator.cancel()
             audioInput = nil
             notifyDelegate { $0.cameraSessionDidStop() }
         }
     }
 
     private func configureSession() {
-        let position: AVCaptureDevice.Position = currentPosition == .back ? .back : .front
-        guard let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)
-                ?? AVCaptureDevice.default(for: .video),
-              let input = try? AVCaptureDeviceInput(device: videoDevice) else {
+        guard let input = CameraConfigurator.makeVideoInput(for: currentPosition) else {
             notifyDelegate { $0.cameraSession(didFail: .configurationFailed) }
             return
         }
@@ -87,11 +84,11 @@ public nonisolated final class CameraSession: @unchecked Sendable {
         }
 
         if currentCaptureMode == .video {
-            addMovieOutputIfNeeded()
+            CameraConfigurator.addMovieOutputIfNeeded(movieOutput, on: captureSession)
         }
 
         captureSession.commitConfiguration()
-        updateMirroring()
+        CameraConfigurator.disableMirroring(on: photoOutput, movieOutput: movieOutput)
         captureSession.startRunning()
 
         notifyDelegate { $0.cameraSessionDidStart() }
@@ -99,39 +96,26 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
     // MARK: - Camera Switch
 
-    /// Toggles between back and front camera.
     public func switchCamera() {
         sessionQueue.async { [weak self] in
-            guard let self else {
-                return
-            }
+            guard let self else { return }
 
             let newPosition = currentPosition.toggled
-            let avPosition: AVCaptureDevice.Position = newPosition == .back ? .back : .front
-            guard let newDevice = AVCaptureDevice.default(
-                .builtInWideAngleCamera,
-                for: .video,
-                position: avPosition
-            ),
-                  let newInput = try? AVCaptureDeviceInput(device: newDevice)
-            else {
+            guard let newInput = CameraConfigurator.makeVideoInput(for: newPosition) else {
                 return
             }
 
             captureSession.beginConfiguration()
-
             if let currentInput = videoInput {
                 captureSession.removeInput(currentInput)
             }
-
             if captureSession.canAddInput(newInput) {
                 captureSession.addInput(newInput)
                 videoInput = newInput
                 currentPosition = newPosition
             }
-
             captureSession.commitConfiguration()
-            updateMirroring()
+            CameraConfigurator.disableMirroring(on: photoOutput, movieOutput: movieOutput)
 
             notifyDelegate { [newPosition] in $0.cameraSession(didChangePosition: newPosition) }
         }
@@ -139,7 +123,6 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
     // MARK: - Capture Mode
 
-    /// Reconfigures outputs for the given capture mode.
     public func setCaptureMode(_ mode: CaptureMode) {
         sessionQueue.async { [weak self] in
             guard let self, currentCaptureMode != mode else {
@@ -149,21 +132,19 @@ public nonisolated final class CameraSession: @unchecked Sendable {
             captureSession.beginConfiguration()
             switch mode {
             case .photo:
-                removeMovieOutputIfNeededLocked()
+                CameraConfigurator.removeMovieOutputIfNeeded(movieOutput, on: captureSession)
             case .video:
-                addMovieOutputIfNeeded()
+                CameraConfigurator.addMovieOutputIfNeeded(movieOutput, on: captureSession)
             }
             captureSession.commitConfiguration()
-            updateMirroring()
+            CameraConfigurator.disableMirroring(on: photoOutput, movieOutput: movieOutput)
         }
     }
 
     // MARK: - Photo Capture
 
-    /// Captures a JPEG photo and writes it to a temporary file. Returns the file
-    /// URL on success, or `nil` if capture failed or was cancelled.
     public func takePhoto(flashMode: FlashMode) async -> URL? {
-        await withCheckedContinuation { continuation in
+        await withCheckedContinuation { (continuation: CheckedContinuation<URL?, Never>) in
             sessionQueue.async { [weak self] in
                 guard let self else {
                     continuation.resume(returning: nil)
@@ -172,72 +153,60 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
                 if captureSession.outputs.contains(where: { $0 is AVCaptureMovieFileOutput }) {
                     captureSession.beginConfiguration()
-                    removeMovieOutputIfNeededLocked()
+                    CameraConfigurator.removeMovieOutputIfNeeded(movieOutput, on: captureSession)
                     captureSession.commitConfiguration()
-                    updateMirroring()
+                    CameraConfigurator.disableMirroring(on: photoOutput, movieOutput: movieOutput)
                 }
 
-                let settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
-                if let device = videoInput?.device, device.hasFlash {
-                    switch flashMode {
-                    case .off:
-                        settings.flashMode = .off
-                    case .on:
-                        settings.flashMode = .on
-                    case .auto:
-                        settings.flashMode = .auto
+                Task { [weak self] in
+                    guard let self else {
+                        continuation.resume(returning: nil)
+                        return
                     }
-                }
-
-                let delegate = PhotoCaptureDelegate { [weak self] url in
-                    self?.sessionQueue.async { [weak self] in
-                        self?.photoDelegate = nil
-                    }
+                    let url = await photoCaptureCoordinator.capture(
+                        output: photoOutput,
+                        device: videoInput?.device,
+                        flashMode: flashMode
+                    )
                     continuation.resume(returning: url)
                 }
-                self.photoDelegate = delegate
-                photoOutput.capturePhoto(with: settings, delegate: delegate)
             }
         }
     }
 
     // MARK: - Video Recording
 
-    /// Begins recording video to a temporary `.mov` file. The
-    /// ``CameraSessionDelegate/cameraSessionRecordingDidStart()`` callback is
-    /// fired only after AVFoundation reports the file has actually opened.
     public func startRecording(flashMode: FlashMode) {
         sessionQueue.async { [weak self] in
-            guard let self else {
-                return
-            }
+            guard let self else { return }
 
-            addMovieOutputIfNeeded()
-            updateMirroring()
+            CameraConfigurator.addMovieOutputIfNeeded(movieOutput, on: captureSession)
+            CameraConfigurator.disableMirroring(on: photoOutput, movieOutput: movieOutput)
             addAudioInputIfNeeded()
-            applyTorchMode(flashMode)
+            TorchController.apply(flashMode, to: videoInput?.device)
 
-            let tempURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent(UUID().uuidString)
-                .appendingPathExtension("mov")
-            videoDelegate.setStartHandler { [weak self] in
+            videoRecordingCoordinator.start(on: movieOutput) { [weak self] in
                 self?.notifyDelegate { $0.cameraSessionRecordingDidStart() }
             }
-            movieOutput.startRecording(to: tempURL, recordingDelegate: videoDelegate)
         }
     }
 
-    /// Stops recording, returning the file URL on success or `nil` on failure.
     public func stopRecording() async -> URL? {
-        let url: URL? = await withCheckedContinuation { continuation in
+        let url: URL? = await withCheckedContinuation { (continuation: CheckedContinuation<URL?, Never>) in
             sessionQueue.async { [weak self] in
-                guard let self, movieOutput.isRecording else {
+                guard let self else {
                     continuation.resume(returning: nil)
                     return
                 }
-                videoDelegate.setContinuation(continuation)
-                movieOutput.stopRecording()
-                applyTorchMode(.off)
+                Task { [weak self] in
+                    guard let self else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    let result = await videoRecordingCoordinator.stop(on: movieOutput)
+                    TorchController.apply(.off, to: videoInput?.device)
+                    continuation.resume(returning: result)
+                }
             }
         }
 
@@ -251,16 +220,15 @@ public nonisolated final class CameraSession: @unchecked Sendable {
 
     // MARK: - Torch
 
-    /// Applies the torch state matching the given flash mode (used during recording).
     public func setTorchMode(_ flashMode: FlashMode) {
         sessionQueue.async { [weak self] in
-            self?.applyTorchMode(flashMode)
+            TorchController.apply(flashMode, to: self?.videoInput?.device)
         }
     }
 
     // MARK: - Delegate Notification
 
-    private func notifyDelegate(_ call: @escaping @Sendable (CameraSessionDelegate) -> Void) {
+    private func notifyDelegate(_ call: (CameraSessionDelegate) -> Void) {
         guard let delegate else {
             return
         }
@@ -268,15 +236,14 @@ public nonisolated final class CameraSession: @unchecked Sendable {
     }
 }
 
-// MARK: - Session Helpers
+// MARK: - Audio Input
 
 extension CameraSession {
     private func addAudioInputIfNeeded() {
         guard audioInput == nil else {
             return
         }
-        guard let audioDevice = AVCaptureDevice.default(for: .audio),
-              let input = try? AVCaptureDeviceInput(device: audioDevice) else {
+        guard let input = CameraConfigurator.makeAudioInput() else {
             return
         }
         captureSession.beginConfiguration()
@@ -295,174 +262,6 @@ extension CameraSession {
         captureSession.removeInput(input)
         captureSession.commitConfiguration()
         audioInput = nil
-    }
-
-    /// Forces captured photos and videos to be non-mirrored, even when shooting
-    /// with the front camera. The preview layer continues to mirror for the user
-    /// (handled automatically by `AVCaptureVideoPreviewLayer`).
-    private func updateMirroring() {
-        if let connection = photoOutput.connection(with: .video),
-           connection.isVideoMirroringSupported {
-            connection.automaticallyAdjustsVideoMirroring = false
-            connection.isVideoMirrored = false
-        }
-        if let movieConn = movieOutput.connection(with: .video),
-           movieConn.isVideoMirroringSupported {
-            movieConn.automaticallyAdjustsVideoMirroring = false
-            movieConn.isVideoMirrored = false
-        }
-    }
-
-    private func addMovieOutputIfNeeded() {
-        guard !captureSession.outputs.contains(where: { $0 is AVCaptureMovieFileOutput }) else {
-            return
-        }
-        if captureSession.canAddOutput(movieOutput) {
-            captureSession.addOutput(movieOutput)
-            captureSession.sessionPreset = .high
-        }
-    }
-
-    /// Caller must wrap in begin/commitConfiguration.
-    private func removeMovieOutputIfNeededLocked() {
-        guard captureSession.outputs.contains(where: { $0 is AVCaptureMovieFileOutput }) else {
-            return
-        }
-        captureSession.removeOutput(movieOutput)
-        captureSession.sessionPreset = .photo
-    }
-
-    /// Must be called on `sessionQueue`.
-    private func applyTorchMode(_ flashMode: FlashMode) {
-        guard let device = videoInput?.device,
-              device.hasTorch,
-              (try? device.lockForConfiguration()) != nil else {
-            return
-        }
-        switch flashMode {
-        case .off:
-            device.torchMode = .off
-        case .on:
-            device.torchMode = .on
-        case .auto:
-            device.torchMode = .auto
-        }
-        device.unlockForConfiguration()
-    }
-}
-
-// MARK: - Photo Capture Delegate
-
-private final class PhotoCaptureDelegate: NSObject, AVCapturePhotoCaptureDelegate, @unchecked Sendable {
-    private let state = OSAllocatedUnfairLock<(@Sendable (URL?) -> Void)?>(initialState: nil)
-
-    init(completion: @escaping @Sendable (URL?) -> Void) {
-        super.init()
-        state.withLock { $0 = completion }
-    }
-
-    func cancel() {
-        let handler = state.withLock { value in
-            let current = value
-            value = nil
-            return current
-        }
-        handler?(nil)
-    }
-
-    func photoOutput(
-        _ output: AVCapturePhotoOutput,
-        didFinishProcessingPhoto photo: AVCapturePhoto,
-        error: Error?
-    ) {
-        let handler = state.withLock { value in
-            let current = value
-            value = nil
-            return current
-        }
-
-        guard error == nil, let data = photo.fileDataRepresentation() else {
-            handler?(nil)
-            return
-        }
-
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent(UUID().uuidString)
-            .appendingPathExtension("jpg")
-
-        do {
-            try data.write(to: url)
-            handler?(url)
-        } catch {
-            handler?(nil)
-        }
-    }
-}
-
-// MARK: - Video Capture Delegate
-
-/// Bridges AVFoundation's delegate-based recording API to Swift concurrency.
-///
-/// `setContinuation` is called from the session queue; the AVFoundation
-/// delegate callbacks fire on an internal background thread.
-/// `OSAllocatedUnfairLock` ensures the handoff is atomic and the continuation
-/// is resumed exactly once.
-private final class VideoCaptureDelegate: NSObject, AVCaptureFileOutputRecordingDelegate, @unchecked Sendable {
-    private struct State {
-        var continuation: CheckedContinuation<URL?, Never>?
-        var startHandler: (@Sendable () -> Void)?
-    }
-
-    private let state = OSAllocatedUnfairLock(initialState: State())
-
-    /// Stores a continuation that will be resumed when recording finishes.
-    /// If a continuation is already pending it is resumed with `nil` first,
-    /// to guarantee single-resume even when callers stack `stopRecording()`.
-    func setContinuation(_ continuation: CheckedContinuation<URL?, Never>) {
-        let stale = state.withLock { value -> CheckedContinuation<URL?, Never>? in
-            let previous = value.continuation
-            value.continuation = continuation
-            return previous
-        }
-        stale?.resume(returning: nil)
-    }
-
-    /// Stores a handler invoked when AVFoundation reports recording has begun.
-    func setStartHandler(_ handler: @escaping @Sendable () -> Void) {
-        state.withLock { $0.startHandler = handler }
-    }
-
-    func fileOutput(
-        _ output: AVCaptureFileOutput,
-        didStartRecordingTo fileURL: URL,
-        from connections: [AVCaptureConnection]
-    ) {
-        let handler = state.withLock { value -> (@Sendable () -> Void)? in
-            let current = value.startHandler
-            value.startHandler = nil
-            return current
-        }
-        handler?()
-    }
-
-    func fileOutput(
-        _ output: AVCaptureFileOutput,
-        didFinishRecordingTo outputFileURL: URL,
-        from connections: [AVCaptureConnection],
-        error: Error?
-    ) {
-        let continuation = state.withLock { value -> CheckedContinuation<URL?, Never>? in
-            let current = value.continuation
-            value.continuation = nil
-            value.startHandler = nil
-            return current
-        }
-
-        if error != nil {
-            continuation?.resume(returning: nil)
-        } else {
-            continuation?.resume(returning: outputFileURL)
-        }
     }
 }
 
