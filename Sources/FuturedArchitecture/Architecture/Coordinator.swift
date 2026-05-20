@@ -66,7 +66,7 @@ extension Coordinator {
 }
 
 /// `TabCoordinator` provides additional requirements for the use with ``SwiftUI.TabView``.
-/// This *coordinator* is ment to have ``TabViewFlow`` (or ``TabContentFlow`` on iOS 18+) as the Root view.
+/// This *coordinator* is meant to have ``TabViewFlow`` (or ``TabContentFlow`` on iOS 18+) as the Root view.
 /// - Experiment: This API is in preview and subject to change.
 public protocol TabCoordinator: Coordinator {
     /// The `Hashable` value used to identify the currently selected tab. Matches the `value:`
@@ -77,7 +77,7 @@ public protocol TabCoordinator: Coordinator {
 }
 
 /// `NavigationStackCoordinator` provides additional requirements for use with ``SwiftUI.NavigationStack``.
-/// This *coordinator* is ment have ``NavigationStackFlow`` as the Root view.
+/// This *coordinator* is meant to have ``NavigationStackFlow`` as the Root view.
 ///
 /// - ToDo: Create a template for this coordinator.
 public protocol NavigationStackCoordinator: Coordinator {
