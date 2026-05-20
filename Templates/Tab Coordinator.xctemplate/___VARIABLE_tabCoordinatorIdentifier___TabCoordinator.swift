@@ -6,35 +6,31 @@ import SwiftUI
 
 @Observable
 final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: @MainActor TabCoordinator {
-    nonisolated enum Tab {
+    nonisolated enum AppTab {
         case firstTab
         case secondTab
     }
 
     private let container: Container
 
-    var selectedTab: Tab
+    var selectedTab: AppTab
     var modalCover: ModalCoverModel<Destination>?
 
-    init(container: Container, selectedTab: Tab) {
+    init(container: Container, selectedTab: AppTab) {
         self.container = container
         self.selectedTab = selectedTab
     }
 
     @ViewBuilder
     static func rootView(with instance: ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator) -> some View {
-        TabViewFlow(coordinator: instance) {
-            Text("First Tab")
-                .tabItem {
-                    Text("First")
-                }
-                .tag(Tab.firstTab)
+        TabContentFlow(coordinator: instance) {
+            Tab("First", systemImage: "1.circle", value: AppTab.firstTab) {
+                Text("First Tab")
+            }
 
-            Text("Second Tab")
-                .tabItem {
-                    Text("Second")
-                }
-                .tag(Tab.secondTab)
+            Tab("Second", systemImage: "2.circle", value: AppTab.secondTab) {
+                Text("Second Tab")
+            }
         }
     }
 
