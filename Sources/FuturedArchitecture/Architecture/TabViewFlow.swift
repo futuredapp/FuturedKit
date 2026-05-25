@@ -42,20 +42,20 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
 /// Usage:
 /// ```swift
 /// TabContentFlow(coordinator: instance) {
-///     Tab("Home", systemImage: "house", value: Tab.home) { ... }
-///     Tab(value: Tab.search, role: .search) { ... }
+///     Tab("Home", systemImage: "house", value: AppTab.home) { ... }
+///     Tab(value: AppTab.search, role: .search) { ... }
 /// }
 /// ```
 /// - Experiment: This API is in preview and subject to change.
 @available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, *)
-public struct TabContentFlow<Coordinator: TabCoordinator, Content: TabContent<Coordinator.Tab>>: View {
+public struct TabContentFlow<Coordinator: TabCoordinator, Content: TabContent<Coordinator.TabValue>>: View {
     @State private var coordinator: Coordinator
-    @TabContentBuilder<Coordinator.Tab> private let content: () -> Content
+    @TabContentBuilder<Coordinator.TabValue> private let content: () -> Content
 
     /// - Parameters:
     ///   - coordinator: The instance of the coordinator used as the model and retained as ``SwiftUI.State``
     ///   - content: The definition of tabs using the ``SwiftUI.Tab`` API.
-    public init(coordinator: Coordinator, @TabContentBuilder<Coordinator.Tab> content: @MainActor @escaping () -> Content) {
+    public init(coordinator: Coordinator, @TabContentBuilder<Coordinator.TabValue> content: @MainActor @escaping () -> Content) {
         self._coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
