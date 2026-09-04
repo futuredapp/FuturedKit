@@ -16,11 +16,11 @@ public enum SheetDetent: Hashable {
     func detent() -> PresentationDetent {
         switch self {
         case .medium:
-            return .medium
+            .medium
         case .large:
-            return .large
+            .large
         case let .fraction(fraction):
-            return .fraction(fraction)
+            .fraction(fraction)
         }
     }
 }
@@ -32,7 +32,7 @@ public enum SheetDetent: Hashable {
 public enum ModalCoverModelStyle {
     case sheet
     #if !os(macOS)
-    case fullscreenCover
+        case fullscreenCover
     #endif
 }
 

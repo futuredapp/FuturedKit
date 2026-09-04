@@ -18,7 +18,6 @@ import Foundation
 @Observable
 @MainActor
 public final class DataCache<Model: Equatable & Sendable> {
-
     /// The data held by this data cache.
     public private(set) var value: Model
 
@@ -50,10 +49,10 @@ public final class DataCache<Model: Equatable & Sendable> {
         with newItems: T
     ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
-        let original = self.value[keyPath: keyPath]
+        let original = value[keyPath: keyPath]
         let merged = merging(original, with: newItems)
         guard !merged.elementsEqual(original) else { return }
-        self.value[keyPath: keyPath] = merged
+        value[keyPath: keyPath] = merged
     }
 
     /// Optional-collection variant of `populate(_:with:)`.
@@ -62,10 +61,10 @@ public final class DataCache<Model: Equatable & Sendable> {
         with newItems: T
     ) where T: RangeReplaceableCollection & MutableCollection, T.Element: Identifiable & Equatable {
         guard !newItems.isEmpty else { return }
-        let original = self.value[keyPath: keyPath] ?? T()
+        let original = value[keyPath: keyPath] ?? T()
         let merged = merging(original, with: newItems)
         guard !merged.elementsEqual(original) else { return }
-        self.value[keyPath: keyPath] = merged
+        value[keyPath: keyPath] = merged
     }
 
     private func merging<T>(

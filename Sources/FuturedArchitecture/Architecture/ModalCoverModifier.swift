@@ -17,23 +17,23 @@ struct ModalCoverModifier<C: Coordinator>: ViewModifier {
     }
 
     #if os(macOS)
-    func body(content: Content) -> some View {
-        content
-            .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-    }
-    #else
-    private var fullscreenCoverBinding: Binding<C.Destination?> {
-        .init {
-            coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
-        } set: { destination in
-            coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
+        func body(content: Content) -> some View {
+            content
+                .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
         }
-    }
+    #else
+        private var fullscreenCoverBinding: Binding<C.Destination?> {
+            .init {
+                coordinator.modalCover?.style == .fullscreenCover ? coordinator.modalCover?.destination : nil
+            } set: { destination in
+                coordinator.modalCover = destination.map { .init(destination: $0, style: .fullscreenCover) }
+            }
+        }
 
-    func body(content: Content) -> some View {
-        content
-            .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-            .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
-    }
+        func body(content: Content) -> some View {
+            content
+                .sheet(item: sheetBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+                .fullScreenCover(item: fullscreenCoverBinding, onDismiss: coordinator.onModalDismiss, content: coordinator.scene(for:))
+        }
     #endif
 }
