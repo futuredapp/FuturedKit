@@ -51,6 +51,7 @@
             <array>
                 <string>Scene</string>
                 <string>Resource Scene</string>
+                <string>Projection Scene</string>
             </array>
         </dict>
         <dict>
@@ -99,6 +100,25 @@
             <string>resourceName</string>
             <key>Name</key>
             <string>Resource name:</string>
+            <key>NotPersisted</key>
+            <true/>
+            <key>Type</key>
+            <string>static</string>
+        </dict>
+        <dict>
+            <key>RequiredOptions</key>
+            <dict>
+                <key>sceneType</key>
+                <string>Projection Scene</string>
+            </dict>
+            <key>Default</key>
+            <string>___VARIABLE_sceneIdentifier___CacheProjection</string>
+            <key>Description</key>
+            <string>Cache Projection name</string>
+            <key>Identifier</key>
+            <string>projectionName</string>
+            <key>Name</key>
+            <string>Projection name:</string>
             <key>NotPersisted</key>
             <true/>
             <key>Type</key>
