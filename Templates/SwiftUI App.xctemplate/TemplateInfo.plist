@@ -103,6 +103,8 @@
                 <string>1,2</string>
                 <key>INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents</key>
                 <string>YES</string>
+                <key>INFOPLIST_KEY_UILaunchScreen_Generation</key>
+                <string>YES</string>
                 <key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone</key>
                 <string>UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight</string>
                 <key>INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad</key>

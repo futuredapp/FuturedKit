@@ -19,7 +19,7 @@ final class ExampleFlowCoordinator: @MainActor NavigationStackCoordinator {
         NavigationStackFlow(coordinator: instance) {
             ExampleComponent(
                 model: ExampleComponentModel(
-                    dataCache: instance.container.dataCache) { [weak instance] event in
+                    dataCache: instance.container.dataCache) { [weak instance = instance] event in
                     switch event {
                     case .touchEvent:
                         instance?.navigate(to: .destination)
