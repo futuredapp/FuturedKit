@@ -28,7 +28,7 @@ are commonly used.
 When using Swift package manager install using or add following line to your dependencies:
 
 ```swift
-.package(url: "https://github.com/futuredapp/FuturedKit.git", from: "1.0.0")
+.package(url: "https://github.com/futuredapp/FuturedKit.git", from: "2.0.0")
 ```
 
 The repository provides number of Xcode Templates for user convenience.
