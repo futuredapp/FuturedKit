@@ -84,7 +84,7 @@ public final class DataCache<Model: Equatable & Sendable> {
 
         var appendedIds = existingIds
         for item in newItems where appendedIds.insert(item.id).inserted {
-            result.append(newItemsDict[item.id]!)
+            result.append(newItemsDict[item.id] ?? item)
         }
 
         return result
