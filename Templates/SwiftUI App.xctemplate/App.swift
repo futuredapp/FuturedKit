@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -14,8 +14,8 @@ struct ___PACKAGENAME:identifier___App: App {
 
     init() {
         let coordinator = AppCoordinator(container: Container())
-        self._coordinator = State(wrappedValue: coordinator)
-        self.appDelegate.delegate = coordinator
+        _coordinator = State(wrappedValue: coordinator)
+        appDelegate.delegate = coordinator
     }
 
     var body: some Scene {

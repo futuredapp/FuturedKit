@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import ProxyMembers
 
@@ -11,7 +11,7 @@ nonisolated struct ___VARIABLE_sceneIdentifier___CacheProjection: CacheProjectio
         Self(state: state, data: .mock)
     }
 
-    static func data(from cache: DataCacheModel) -> Self? {
+    static func data(from _: DataCacheModel) -> Self? {
         // TODO: Map cache data to projection
         nil
     }

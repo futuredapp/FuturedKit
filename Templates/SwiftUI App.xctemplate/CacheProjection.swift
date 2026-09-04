@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 protocol CacheProjection: Equatable {
     associatedtype CacheModel: Equatable
@@ -20,7 +20,7 @@ protocol CacheProjection: Equatable {
 /// Default `data(for:from:)` for projections that don't use an ID.
 /// Projections with a real `ID` type are forced to implement it.
 extension CacheProjection where ID == Void {
-    static func data(for id: ID, from cache: CacheModel) -> Self? {
+    static func data(for _: ID, from _: CacheModel) -> Self? {
         nil
     }
 }

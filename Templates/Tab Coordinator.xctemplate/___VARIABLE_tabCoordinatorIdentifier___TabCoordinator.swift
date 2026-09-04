@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import EnumIdentable
 import FuturedArchitecture
@@ -21,7 +21,6 @@ final class ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator: @MainActor Ta
         self.selectedTab = selectedTab
     }
 
-    @ViewBuilder
     static func rootView(with instance: ___VARIABLE_tabCoordinatorIdentifier___TabCoordinator) -> some View {
         TabContentFlow(coordinator: instance) {
             Tab("First", systemImage: "1.circle", value: AppTab.firstTab) {

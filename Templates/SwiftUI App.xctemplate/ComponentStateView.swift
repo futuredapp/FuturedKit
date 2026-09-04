@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -51,7 +51,7 @@ struct ComponentStateView<
     }
 }
 
-// MARK: - Default empty/error via StateInfoView
+// MARK: Default empty/error via StateInfoView
 
 extension ComponentStateView where EmptyView == StateInfoView, ErrorView == StateInfoView {
     /// Uses `StateInfoView` as the default renderer for both empty and
@@ -91,7 +91,7 @@ extension ComponentStateView where
     }
 }
 
-// MARK: - Custom loading, default empty/error
+// MARK: Custom loading, default empty/error
 
 extension ComponentStateView where LoadingView == PopulatedView {
     /// Loading reuses populated; empty and error fully custom.
@@ -111,7 +111,7 @@ extension ComponentStateView where LoadingView == PopulatedView {
     }
 }
 
-// MARK: - Customize only error (empty defaults to StateInfoView)
+// MARK: Customize only error (empty defaults to StateInfoView)
 
 extension ComponentStateView where EmptyView == StateInfoView {
     /// Custom error view; empty stays as the default `StateInfoView`.
@@ -148,7 +148,7 @@ extension ComponentStateView where LoadingView == PopulatedView, EmptyView == St
     }
 }
 
-// MARK: - Customize only empty (error defaults to StateInfoView)
+// MARK: Customize only empty (error defaults to StateInfoView)
 
 extension ComponentStateView where ErrorView == StateInfoView {
     /// Custom empty view; error stays as the default `StateInfoView`.
@@ -162,9 +162,8 @@ extension ComponentStateView where ErrorView == StateInfoView {
             state: state,
             populatedView: populatedView,
             loadingView: loadingView,
-            emptyView: emptyView,
-            errorView: { StateInfoView(config: $0) }
-        )
+            emptyView: emptyView
+        ) { StateInfoView(config: $0) }
     }
 }
 
@@ -179,8 +178,7 @@ extension ComponentStateView where LoadingView == PopulatedView, ErrorView == St
             state: state,
             populatedView: populatedView,
             loadingView: populatedView,
-            emptyView: emptyView,
-            errorView: { StateInfoView(config: $0) }
-        )
+            emptyView: emptyView
+        ) { StateInfoView(config: $0) }
     }
 }

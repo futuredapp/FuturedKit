@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 /// State wrapper for a single data item inside a component.
 ///

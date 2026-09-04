@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import EnumIdentable
 import FuturedArchitecture
@@ -31,8 +31,8 @@ final class ___VARIABLE_sceneFlowProviderIdentifier___SceneFlowProvider: @MainAc
             EmptyView()
         case .otherDestination:
             EmptyView()
-        // case .end:
-        //     EmptyView()
+            // case .end:
+            //     EmptyView()
         }
     }
 }

@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -19,6 +19,5 @@ final class AppCoordinator {
 
 extension AppCoordinator: AppDelegateProtocol {
     // swiftlint:disable:next discouraged_optional_collection
-    func applicationDidFinishLaunching(with launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
-    }
+    func applicationDidFinishLaunching(with _: [UIApplication.LaunchOptionsKey: Any]?) {}
 }

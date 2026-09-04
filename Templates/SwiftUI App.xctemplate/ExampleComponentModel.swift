@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import FuturedArchitecture
 import Observation
@@ -12,7 +12,6 @@ protocol ExampleComponentModelProtocol: ComponentModel {
 
 @Observable
 final class ExampleComponentModel: ExampleComponentModelProtocol {
-
     let onEvent: (Event) -> Void
 
     private let dataCache: DataCache<DataCacheModel>
@@ -49,15 +48,15 @@ extension ExampleComponentModel {
 }
 
 #if DEBUG
-@Observable
-final class ExampleComponentModelMock: ExampleComponentModelProtocol {
-    typealias Event = ExampleComponentModel.Event
+    @Observable
+    final class ExampleComponentModelMock: ExampleComponentModelProtocol {
+        typealias Event = ExampleComponentModel.Event
 
-    var onEvent: (Event) -> Void = { _ in }
-    var projection: ExampleCacheProjection = .empty(state: .ready)
+        var onEvent: (Event) -> Void = { _ in }
+        var projection: ExampleCacheProjection = .empty(state: .ready)
 
-    func onAppear() async { }
+        func onAppear() async {}
 
-    func onTouchUpInside() { }
-}
+        func onTouchUpInside() {}
+    }
 #endif

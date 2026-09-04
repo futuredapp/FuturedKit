@@ -1,7 +1,5 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
-protocol ___VARIABLE_sceneIdentifier___ResourceProtocol {
-}
+protocol ___VARIABLE_sceneIdentifier___ResourceProtocol {}
 
-struct ___VARIABLE_sceneIdentifier___Resource: ___VARIABLE_sceneIdentifier___ResourceProtocol {
-}
+struct ___VARIABLE_sceneIdentifier___Resource: ___VARIABLE_sceneIdentifier___ResourceProtocol {}

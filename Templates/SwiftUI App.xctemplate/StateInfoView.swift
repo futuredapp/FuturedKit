@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -63,24 +63,24 @@ struct StateInfoView: View {
 }
 
 #if DEBUG
-#Preview("Empty") {
-    StateInfoView(config: .init(
-        icon: Image(systemName: "tray"),
-        title: "No items yet",
-        message: "Pull to refresh or tap the button below.",
-        actions: [.init(title: "Refresh", action: {})]
-    ))
-}
+    #Preview("Empty") {
+        StateInfoView(config: .init(
+            title: "No items yet",
+            icon: Image(systemName: "tray"),
+            message: "Pull to refresh or tap the button below.",
+            actions: [.init(title: "Refresh") {}]
+        ))
+    }
 
-#Preview("Error") {
-    StateInfoView(config: .init(
-        icon: Image(systemName: "exclamationmark.triangle"),
-        title: "Something went wrong",
-        message: "We couldn't load this screen. Please try again.",
-        actions: [
-            .init(title: "Retry", action: {}),
-            .init(title: "Cancel", action: {})
-        ]
-    ))
-}
+    #Preview("Error") {
+        StateInfoView(config: .init(
+            title: "Something went wrong",
+            icon: Image(systemName: "exclamationmark.triangle"),
+            message: "We couldn't load this screen. Please try again.",
+            actions: [
+                .init(title: "Retry") {},
+                .init(title: "Cancel") {}
+            ]
+        ))
+    }
 #endif

@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -21,8 +21,8 @@ nonisolated struct StateInfoConfig: Equatable {
     let actions: [Action]
 
     init(
-        icon: Image? = nil,
         title: String,
+        icon: Image? = nil,
         message: String? = nil,
         actions: [Action] = []
     ) {

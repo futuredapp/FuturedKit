@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import FuturedArchitecture
 
@@ -11,6 +11,6 @@ final class Container {
 
     func resetContainer() {
         // Reset services
-        self.dataCache = DataCache(value: DataCacheModel())
+        dataCache = DataCache(value: DataCacheModel())
     }
 }
