@@ -111,6 +111,8 @@
                 <string>Manual</string>
                 <key>SWIFT_VERSION</key>
                 <string>6</string>
+                <key>ENABLE_USER_SCRIPT_SANDBOXING</key>
+                <string>NO</string>
             </dict>
             <key>Configurations</key>
             <dict>
@@ -124,6 +126,62 @@
                     <string>___VARIABLE_bundleIdentifierPrefix:bundleIdentifier___.___PACKAGENAMEASRFC1034IDENTIFIER___.beta</string>
                 </dict>
             </dict>
+            <key>BuildPhases</key>
+            <array>
+                <dict>
+                    <key>Class</key>
+                    <string>ShellScript</string>
+                    <key>Name</key>
+                    <string>SwiftFormat</string>
+                    <key>ShellPath</key>
+                    <string>/bin/sh</string>
+                    <key>ShellScript</key>
+                    <string>if [[ "${BUILD_DIR}" =~ "Previews" ]]; then
+    echo "SwiftFormat not enabled when compiling for previews"
+    exit
+fi
+
+if test -d "/opt/homebrew/bin/"; then
+  PATH="/opt/homebrew/bin/:${PATH}"
+fi
+
+export PATH
+
+if which swiftformat &gt;/dev/null; then
+    swiftformat "$SRCROOT"
+else
+    echo "warning: SwiftFormat not installed, run: brew install swiftformat"
+fi
+</string>
+                </dict>
+                <dict>
+                    <key>Class</key>
+                    <string>ShellScript</string>
+                    <key>Name</key>
+                    <string>SwiftLint</string>
+                    <key>ShellPath</key>
+                    <string>/bin/sh</string>
+                    <key>ShellScript</key>
+                    <string>if [[ "${BUILD_DIR}" =~ "Previews" ]]; then
+    echo "SwiftLint not enabled when compiling for previews"
+    exit
+fi
+
+if test -d "/opt/homebrew/bin/"; then
+  PATH="/opt/homebrew/bin/:${PATH}"
+fi
+
+export PATH
+
+if which swiftlint &gt;/dev/null; then
+    swiftlint --fix --quiet
+    swiftlint
+else
+    echo "error: SwiftLint not installed, run: brew install swiftlint"
+fi
+</string>
+                </dict>
+            </array>
         </dict>
     </array>
 
