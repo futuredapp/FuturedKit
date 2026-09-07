@@ -1,0 +1,8 @@
+--swiftversion 6.1
+--exclude Templates,.build
+--header ignore
+--extensionacl on-declarations
+--trailingcommas never
+--decimalgrouping 3,4
+--modifierorder isolated,nonisolated,private,fileprivate,internal,package,public,open,private(set),fileprivate(set),internal(set),package(set),public(set),final,convenience
+--disable swiftTestingTestCaseNames,redundantSendable,wrapMultilineStatementBraces

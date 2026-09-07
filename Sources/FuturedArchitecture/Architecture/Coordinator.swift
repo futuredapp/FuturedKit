@@ -49,17 +49,17 @@ extension Coordinator {
     public func present(modal destination: Destination, type: ModalCoverModelStyle) {
         switch type {
         case .sheet:
-            self.modalCover = .init(destination: destination, style: .sheet)
+            modalCover = .init(destination: destination, style: .sheet)
         #if !os(macOS)
-        case .fullscreenCover:
-            self.modalCover = .init(destination: destination, style: .fullscreenCover)
+            case .fullscreenCover:
+                modalCover = .init(destination: destination, style: .fullscreenCover)
         #endif
         }
     }
 
     /// Convenience method for dismissing a modal.
     public func dismissModal() {
-        self.modalCover = nil
+        modalCover = nil
     }
 
     public func onModalDismiss() {}
@@ -88,12 +88,12 @@ public protocol NavigationStackCoordinator: Coordinator {
 extension NavigationStackCoordinator {
     /// Convenience function used to add new view to the navigation stack.
     public func navigate(to destination: Destination) {
-        self.path.append(destination)
+        path.append(destination)
     }
 
     /// Convenience function used to remove topmost view from the navigation stack.
     public func pop() {
-        self.path.removeLast()
+        path.removeLast()
     }
 
     /// Convenience function used to remove all views from the stack, until the provided destination.
@@ -101,11 +101,11 @@ extension NavigationStackCoordinator {
     /// is not currently on the stack, all views are removed.
     /// - Experiment: This API is in preview and subject to change.
     public func pop(to destination: Destination) {
-        guard let index = self.path.lastIndex(of: destination) else {
+        guard let index = path.lastIndex(of: destination) else {
             assertionFailure("Destination not found on the stack")
             return
         }
-        self.path = Array(path[path.startIndex...index])
+        path = Array(path[path.startIndex ... index])
     }
 
     public func popToRoot() {

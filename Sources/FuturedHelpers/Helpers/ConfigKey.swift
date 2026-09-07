@@ -7,9 +7,9 @@ public protocol ConfigKey: RawRepresentable where RawValue == String {
     var value: String { get throws }
 }
 
-public extension ConfigKey {
+extension ConfigKey {
     /// Default implementation that reads from Info.plist and handles Base64 decoding
-    var value: String {
+    public var value: String {
         get throws {
             guard let rawValue = Bundle.main.object(forInfoDictionaryKey: rawValue) as? String else {
                 throw ConfigKeyError.valueNotFound(key: rawValue)

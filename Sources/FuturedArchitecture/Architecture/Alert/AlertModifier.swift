@@ -4,7 +4,7 @@ private struct AlertModifier: ViewModifier {
     @Binding var model: AlertModel?
 
     init(_ model: Binding<AlertModel?>) {
-        self._model = model
+        _model = model
     }
 
     func body(content: Content) -> some View {

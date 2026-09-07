@@ -5,7 +5,6 @@ import Testing
 @Suite("DataCache")
 @MainActor
 struct DataCacheTests {
-
     private struct Item: Identifiable, Equatable, Sendable {
         let id: Int
         var name: String
@@ -169,8 +168,8 @@ struct DataCacheTests {
         var didChange = false
     }
 
-    private func assertNoChange<M: Equatable & Sendable>(
-        on cache: DataCache<M>,
+    private func assertNoChange(
+        on cache: DataCache<some Equatable & Sendable>,
         during action: () -> Void
     ) {
         let detector = ChangeDetector()

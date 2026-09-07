@@ -21,7 +21,6 @@ import Foundation
 /// compile but SwiftUI views will not react to state changes.
 @MainActor
 public protocol ComponentModel: AnyObject {
-
     /// Type used to pass events to the *coordinator*. `enum` is used in most cases, but not required.
     associatedtype Event
 

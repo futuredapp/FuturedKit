@@ -19,7 +19,7 @@ public struct TabViewFlow<Coordinator: TabCoordinator, Content: View>: View {
     ///   - content: The definition of tabs held by this TabView should be placed into this ViewBuilder. You are required to use instances of `Tab`
     ///   type as tags of the views. For an example refer to the template.
     public init(coordinator: Coordinator, @ViewBuilder content: @MainActor @escaping () -> Content) {
-        self._coordinator = State(wrappedValue: coordinator)
+        _coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
 
@@ -56,7 +56,7 @@ public struct TabContentFlow<Coordinator: TabCoordinator, Content: TabContent<Co
     ///   - coordinator: The instance of the coordinator used as the model and retained as ``SwiftUI.State``
     ///   - content: The definition of tabs using the ``SwiftUI.Tab`` API.
     public init(coordinator: Coordinator, @TabContentBuilder<Coordinator.TabValue> content: @MainActor @escaping () -> Content) {
-        self._coordinator = State(wrappedValue: coordinator)
+        _coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
 

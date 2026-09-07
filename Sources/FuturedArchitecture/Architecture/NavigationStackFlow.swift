@@ -19,8 +19,8 @@ public struct NavigationStackFlow<Coordinator: NavigationStackCoordinator, Conte
         coordinator: Coordinator,
         content: @MainActor @escaping () -> Content
     ) {
-        self.navigationDetents = detents.map { Set($0.map { $0.detent() }) }
-        self._coordinator = State(wrappedValue: coordinator)
+        navigationDetents = detents.map { Set($0.map { $0.detent() }) }
+        _coordinator = State(wrappedValue: coordinator)
         self.content = content
     }
 
