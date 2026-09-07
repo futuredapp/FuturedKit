@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 protocol Mockable {
     nonisolated static var mock: Self { get }

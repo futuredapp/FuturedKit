@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import UIKit
 
@@ -12,11 +12,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     weak var delegate: AppDelegateProtocol?
 
     func application(
-        _ application: UIApplication,
+        _: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         delegate?.applicationDidFinishLaunching(with: launchOptions)
         return true
     }
 }
+
 // swiftlint:enable discouraged_optional_collection

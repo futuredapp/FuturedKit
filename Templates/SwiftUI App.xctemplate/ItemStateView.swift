@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -51,7 +51,7 @@ extension ItemStateView where LoadingView == PopulatedView {
     ) {
         self.state = state
         self.populatedView = populatedView
-        self.loadingView = populatedView
+        loadingView = populatedView
         self.errorView = errorView
     }
 }
@@ -67,7 +67,7 @@ extension ItemStateView where ErrorView == StateInfoView {
         self.state = state
         self.populatedView = populatedView
         self.loadingView = loadingView
-        self.errorView = { StateInfoView(config: $0) }
+        errorView = { StateInfoView(config: $0) }
     }
 }
 
@@ -80,7 +80,7 @@ extension ItemStateView where LoadingView == PopulatedView, ErrorView == StateIn
     ) {
         self.state = state
         self.populatedView = populatedView
-        self.loadingView = populatedView
-        self.errorView = { StateInfoView(config: $0) }
+        loadingView = populatedView
+        errorView = { StateInfoView(config: $0) }
     }
 }

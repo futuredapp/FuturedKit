@@ -1,7 +1,7 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 nonisolated struct DataCacheModel: Equatable, Sendable {
-    // Cached properties
+    /// Cached properties
     var exampleItem: ExampleItem?
 }
 

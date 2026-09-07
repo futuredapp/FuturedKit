@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 import SwiftUI
 
@@ -26,9 +26,9 @@ struct ExampleComponent<Model: ExampleComponentModelProtocol>: View {
 }
 
 #if DEBUG
-#Preview {
-    ExampleComponent(
-        model: ExampleComponentModelMock()
-    )
-}
+    #Preview {
+        ExampleComponent(
+            model: ExampleComponentModelMock()
+        )
+    }
 #endif

@@ -1,4 +1,4 @@
-//  ___FILEHEADER___
+//___FILEHEADER___
 
 /// Screen/component-level lifecycle state.
 ///
@@ -11,21 +11,25 @@ nonisolated enum ComponentState: Equatable {
     case error(StateInfoConfig)
 
     var isLoading: Bool {
-        if case .loading = self { return true }
+        if case .loading = self {
+            return true
+        }
         return false
     }
 
     var isError: Bool {
-        if case .error = self { return true }
+        if case .error = self {
+            return true
+        }
         return false
     }
 
     var infoConfig: StateInfoConfig? {
         switch self {
         case let .empty(config), let .error(config):
-            return config
+            config
         case .ready, .loading:
-            return nil
+            nil
         }
     }
 }
