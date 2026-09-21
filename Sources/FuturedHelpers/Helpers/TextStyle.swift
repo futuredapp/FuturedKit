@@ -29,7 +29,9 @@
     ///     }
     /// }
     /// ```
-    /// - Note: The `textStyleText(_:)` modifier does not apply line spacing, text case, or vertical padding based on line height.
+    /// - Note: The `textStyleText(_:)` modifier does not apply line spacing, text case, or vertical padding based on line height,
+    /// and because `Text` cannot read the environment it does not react to Dynamic Type changes unless the size is passed
+    /// explicitly through `textStyleText(_:dynamicTypeSize:)`.
     /// - Note: The `stylize(with:)` method does not apply line spacing, text case, or vertical padding based on line height.
     /// - Note: The `NSAttributedString` initializer does not apply line spacing, text case, or vertical padding based on line height.
     public struct TextStyle {
@@ -113,15 +115,38 @@
         /// The text decoration for the text style.
         public let textDecoration: TextDecoration?
 
-        /// The line spacing of the font for the text style.
+        /// The line spacing of the font for the text style, resolved against the current trait collection.
         public var lineSpacing: CGFloat {
-            (scaling.fontMetrics?.scaledValue(for: lineHeight) ?? lineHeight) - uiFont.lineHeight
+            lineSpacing(for: nil)
         }
 
-        /// The font for the text style.
+        /// The font for the text style, resolved against the current trait collection.
         public var font: Font {
+            font(for: nil)
+        }
+
+        /// The `UIFont` for the text style, resolved against the current trait collection.
+        public var uiFont: UIFont {
+            uiFont(for: nil)
+        }
+
+        /// The kerning of the font for the text style, resolved against the current trait collection.
+        public var kerning: CGFloat {
+            kerning(for: nil)
+        }
+
+        /// The line spacing of the font for the text style at the given Dynamic Type size.
+        /// - Parameter dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
+        public func lineSpacing(for dynamicTypeSize: DynamicTypeSize?) -> CGFloat {
+            scaledValue(lineHeight, for: dynamicTypeSize) - uiFont(for: dynamicTypeSize).lineHeight
+        }
+
+        /// The font for the text style at the given Dynamic Type size.
+        /// - Parameter dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
+        public func font(for dynamicTypeSize: DynamicTypeSize?) -> Font {
             switch fontType {
             case let .custom(name):
+                // `Font.custom` is resolved by SwiftUI at render time, so it already tracks Dynamic Type.
                 switch scaling {
                 case .default:
                     .custom(name, size: size)
@@ -131,19 +156,23 @@
                     .custom(name, size: size, relativeTo: textStyle)
                 }
             case let .system(weight, width, design):
-                .system(size: scaling.fontMetrics?.scaledValue(for: size) ?? size, weight: weight, design: design).width(width)
+                .system(size: scaledValue(size, for: dynamicTypeSize), weight: weight, design: design).width(width)
             }
         }
 
-        /// The `UIFont` for the text style.
-        public var uiFont: UIFont {
+        /// The `UIFont` for the text style at the given Dynamic Type size.
+        /// - Parameter dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
+        public func uiFont(for dynamicTypeSize: DynamicTypeSize?) -> UIFont {
             switch fontType {
             case let .custom(name):
                 let font = UIFont(name: name, size: size) ?? .systemFont(ofSize: size)
-                return scaling.fontMetrics?.scaledFont(for: font) ?? font
+                guard let metrics = scaling.fontMetrics else {
+                    return font
+                }
+                return metrics.scaledFont(for: font, compatibleWith: traitCollection(for: dynamicTypeSize))
             case let .system(weight, width, design):
                 let font = UIFont.systemFont(
-                    ofSize: scaling.fontMetrics?.scaledValue(for: size) ?? size,
+                    ofSize: scaledValue(size, for: dynamicTypeSize),
                     weight: weight.uiFontWeight,
                     width: width.uiFontWidth
                 )
@@ -155,14 +184,34 @@
             }
         }
 
-        /// The kerning of the font for the text style.
-        public var kerning: CGFloat {
+        /// The kerning of the font for the text style at the given Dynamic Type size.
+        /// - Parameter dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
+        public func kerning(for dynamicTypeSize: DynamicTypeSize?) -> CGFloat {
             switch letter {
             case let .relative(percent):
-                (scaling.fontMetrics?.scaledValue(for: lineHeight) ?? lineHeight) * (percent / 100.0)
+                scaledValue(lineHeight, for: dynamicTypeSize) * (percent / 100.0)
             case let .absolute(pixels):
-                scaling.fontMetrics?.scaledValue(for: pixels) ?? pixels
+                scaledValue(pixels, for: dynamicTypeSize)
             }
+        }
+
+        private func scaledValue(_ value: CGFloat, for dynamicTypeSize: DynamicTypeSize?) -> CGFloat {
+            guard let metrics = scaling.fontMetrics else {
+                return value
+            }
+            return metrics.scaledValue(for: value, compatibleWith: traitCollection(for: dynamicTypeSize))
+        }
+
+        private func traitCollection(for dynamicTypeSize: DynamicTypeSize?) -> UITraitCollection? {
+            guard let dynamicTypeSize else {
+                return nil
+            }
+            #if os(watchOS)
+                // UIContentSizeCategory has no DynamicTypeSize bridge on watchOS; fall back to the current trait collection.
+                return nil
+            #else
+                return UITraitCollection(preferredContentSizeCategory: .init(dynamicTypeSize))
+            #endif
         }
 
         /// Initializes a text style with the specified properties.
@@ -195,18 +244,34 @@
 
     // MARK: - Extensions
 
+    private struct TextStyleModifier: ViewModifier {
+        @Environment(\.dynamicTypeSize)
+        private var dynamicTypeSize
+
+        let style: TextStyle
+
+        func body(content: Content) -> some View {
+            content
+                .font(style.font(for: dynamicTypeSize))
+                .lineSpacing(lineSpacing)
+                .kerning(style.kerning(for: dynamicTypeSize))
+                .underline(style.textDecoration == .underline)
+                .strikethrough(style.textDecoration == .strikethrough)
+                .textCase(style.textCase)
+                .padding(.vertical, lineSpacing / 2)
+        }
+
+        private var lineSpacing: CGFloat {
+            style.lineSpacing(for: dynamicTypeSize)
+        }
+    }
+
     extension View {
         /// Applies the specified text style to the view.
         /// - Parameter style: The text style to apply to the view.
         /// - Returns: A view that applies the specified text style.
         public func textStyle(_ style: TextStyle) -> some View {
-            font(style.font)
-                .lineSpacing(style.lineSpacing)
-                .kerning(style.kerning)
-                .underline(style.textDecoration == .underline)
-                .strikethrough(style.textDecoration == .strikethrough)
-                .textCase(style.textCase)
-                .padding(.vertical, style.lineSpacing / 2)
+            modifier(TextStyleModifier(style: style))
         }
 
         /// Applies the specified text style to the view with a custom foreground color.
@@ -227,8 +292,20 @@
         /// - Returns: A text that applies the specified text style.
         /// - Note: This modifier does not apply line spacing, text case, or vertical padding based on line height.
         public func textStyleText(_ style: TextStyle) -> Text {
-            font(style.font)
-                .kerning(style.kerning)
+            textStyleText(style, dynamicTypeSize: nil)
+        }
+
+        /// Applies the specified text style to the text, resolved at the given Dynamic Type size.
+        /// `Text` cannot read the environment, so a view composing styled runs has to read
+        /// `\.dynamicTypeSize` itself and pass it in; otherwise the text does not react to Dynamic Type changes.
+        /// - Parameters:
+        /// - style: The text style to apply to the text.
+        /// - dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
+        /// - Returns: A text that applies the specified text style.
+        /// - Note: This modifier does not apply line spacing, text case, or vertical padding based on line height.
+        public func textStyleText(_ style: TextStyle, dynamicTypeSize: DynamicTypeSize?) -> Text {
+            font(style.font(for: dynamicTypeSize))
+                .kerning(style.kerning(for: dynamicTypeSize))
                 .underline(style.textDecoration == .underline)
                 .strikethrough(style.textDecoration == .strikethrough)
         }
