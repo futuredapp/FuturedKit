@@ -29,9 +29,7 @@
     ///     }
     /// }
     /// ```
-    /// - Note: The `textStyleText(_:)` modifier does not apply line spacing, text case, or vertical padding based on line height,
-    /// and because `Text` cannot read the environment it does not react to Dynamic Type changes unless the size is passed
-    /// explicitly through `textStyleText(_:dynamicTypeSize:)`.
+    /// - Note: The `textStyleText(_:)` modifier does not apply line spacing, text case, or vertical padding based on line height, and reacts to Dynamic Type only through `textStyleText(_:dynamicTypeSize:)`.
     /// - Note: The `stylize(with:)` method does not apply line spacing, text case, or vertical padding based on line height.
     /// - Note: The `NSAttributedString` initializer does not apply line spacing, text case, or vertical padding based on line height.
     public struct TextStyle {
@@ -146,7 +144,7 @@
         public func font(for dynamicTypeSize: DynamicTypeSize?) -> Font {
             switch fontType {
             case let .custom(name):
-                // `Font.custom` is resolved by SwiftUI at render time, so it already tracks Dynamic Type.
+                // Resolved by SwiftUI at render time, so it already tracks Dynamic Type.
                 switch scaling {
                 case .default:
                     .custom(name, size: size)
@@ -207,7 +205,7 @@
                 return nil
             }
             #if os(watchOS)
-                // UIContentSizeCategory has no DynamicTypeSize bridge on watchOS; fall back to the current trait collection.
+                // No UIContentSizeCategory bridge on watchOS.
                 return nil
             #else
                 return UITraitCollection(preferredContentSizeCategory: .init(dynamicTypeSize))
@@ -295,9 +293,7 @@
             textStyleText(style, dynamicTypeSize: nil)
         }
 
-        /// Applies the specified text style to the text, resolved at the given Dynamic Type size.
-        /// `Text` cannot read the environment, so a view composing styled runs has to read
-        /// `\.dynamicTypeSize` itself and pass it in; otherwise the text does not react to Dynamic Type changes.
+        /// Applies the specified text style to the text at the given Dynamic Type size, which the calling view has to read from the environment itself because `Text` cannot.
         /// - Parameters:
         /// - style: The text style to apply to the text.
         /// - dynamicTypeSize: The Dynamic Type size to resolve against, or `nil` for the current trait collection.
