@@ -86,11 +86,7 @@ public protocol NavigationStackCoordinator: Coordinator {
 }
 
 extension NavigationStackCoordinator {
-    /// Convenience function used to add new view to the navigation stack.
-    ///
-    /// The call is ignored when the topmost destination already has the same `id`, so a double tap
-    /// on a navigation trigger pushes the view only once. A destination with a different `id`, even of
-    /// the same case, is pushed normally. To intentionally stack a duplicate, append to ``path`` directly.
+    /// Pushes the destination unless the top of the stack has the same `id`; append to ``path`` to push a duplicate.
     public func navigate(to destination: Destination) {
         guard path.last?.id != destination.id else {
             return
@@ -98,8 +94,7 @@ extension NavigationStackCoordinator {
         path.append(destination)
     }
 
-    /// Convenience function used to remove topmost view from the navigation stack.
-    /// The call is ignored when the stack is already empty.
+    /// Removes the topmost view from the navigation stack; no-op when the stack is empty.
     public func pop() {
         guard !path.isEmpty else {
             return
