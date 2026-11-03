@@ -86,13 +86,19 @@ public protocol NavigationStackCoordinator: Coordinator {
 }
 
 extension NavigationStackCoordinator {
-    /// Convenience function used to add new view to the navigation stack.
+    /// Pushes the destination unless the top of the stack has the same `id`; append to ``path`` to push a duplicate.
     public func navigate(to destination: Destination) {
+        guard path.last?.id != destination.id else {
+            return
+        }
         path.append(destination)
     }
 
-    /// Convenience function used to remove topmost view from the navigation stack.
+    /// Removes the topmost view from the navigation stack; no-op when the stack is empty.
     public func pop() {
+        guard !path.isEmpty else {
+            return
+        }
         path.removeLast()
     }
 
